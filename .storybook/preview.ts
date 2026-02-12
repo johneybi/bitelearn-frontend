@@ -1,4 +1,5 @@
 import type { Preview } from '@storybook/react-vite';
+import { INITIAL_VIEWPORTS } from 'storybook/viewport';
 import '../src/index.css';
 
 const preview: Preview = {
@@ -9,7 +10,13 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
-
+    viewport: {
+      viewports: INITIAL_VIEWPORTS,
+      defaultViewport: 'iphone14',
+    },
+    chromatic: {
+      viewports: [390],
+    },
     a11y: {
       // 'todo' - show a11y violations in the test UI only
       // 'error' - fail CI on a11y violations
