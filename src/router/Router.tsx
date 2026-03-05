@@ -17,7 +17,6 @@ export default function Router() {
         <Route element={<RootLayout />}>
           <Route element={<AppLayout />}>
             <Route path="/" element={<Home />} />
-            <Route path="*" element={<NotFound />} />
           </Route>
 
           <Route element={<AuthLayout />}>
@@ -28,6 +27,8 @@ export default function Router() {
               element={<AuthCallback />}
             />
           </Route>
+
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>
