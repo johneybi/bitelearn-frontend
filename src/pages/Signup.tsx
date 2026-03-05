@@ -72,7 +72,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="mx-auto mt-20 max-w-md rounded-lg bg-white p-6 shadow-md">
+    <>
       <h2 className="mb-6 text-center text-2xl font-bold">회원가입</h2>
 
       <Form {...form}>
@@ -168,6 +168,6 @@ export default function Signup() {
           로그인하기
         </Link>
       </div>
-    </div>
+    </>
   );
 }
