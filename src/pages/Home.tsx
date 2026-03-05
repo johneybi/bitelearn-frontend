@@ -1,8 +1,24 @@
 import OnboardingModal from '@/components/features/onboarding/OnboardingModal';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function Home() {
-  const [isOnboardingOpen, setIsOnboardingOpen] = useState(true);
+  const DONE_KEY = 'onboarding:done';
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
+
+  // 온보딩 완료 여부 체크
+  useEffect(() => {
+    const done = localStorage.getItem(DONE_KEY) === '1';
+
+    if (!done) {
+      setIsOnboardingOpen(true);
+    }
+  }, []);
+
+  // 온보딩 완료 처리
+  const handleOnboardingClose = () => {
+    localStorage.setItem(DONE_KEY, '1');
+    setIsOnboardingOpen(false);
+  };
 
   return (
     <div className="mx-auto h-full w-full p-6">
@@ -11,7 +27,7 @@ function Home() {
 
       <OnboardingModal
         isOpen={isOnboardingOpen}
-        onClose={() => setIsOnboardingOpen(false)}
+        onClose={handleOnboardingClose}
       />
     </div>
   );
