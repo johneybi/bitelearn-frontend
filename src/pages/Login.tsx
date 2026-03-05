@@ -54,7 +54,7 @@ export default function Login() {
   };
 
   return (
-    <div className="mx-auto mt-20 max-w-md rounded-lg bg-white p-6 shadow-md">
+    <>
       <h2 className="mb-6 text-center text-2xl font-bold">로그인</h2>
 
       <Form {...form}>
@@ -132,6 +132,6 @@ export default function Login() {
           회원가입하기
         </Link>
       </div>
-    </div>
+    </>
   );
 }
