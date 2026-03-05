@@ -1,7 +1,11 @@
-import OnboardingModal from '@/components/features/onboarding/OnboardingModal';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import OnboardingModal from '@/components/features/onboarding/OnboardingModal';
 
 function Home() {
+  const navigate = useNavigate();
+
   const DONE_KEY = 'onboarding:done';
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
 
@@ -24,6 +28,13 @@ function Home() {
     <div className="mx-auto h-full w-full p-6">
       <h1 className="text-3xl font-bold">BiteLearn</h1>
       <p className="text-sm text-slate-600">홈 페이지</p>
+
+      <button
+        onClick={() => navigate('/learning/word/contract_step2')}
+        className="mt-6 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white"
+      >
+        단어 학습 시작
+      </button>
 
       <OnboardingModal
         isOpen={isOnboardingOpen}

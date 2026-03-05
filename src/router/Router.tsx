@@ -9,6 +9,7 @@ import Login from '@/pages/Login';
 import Signup from '@/pages/Signup';
 import AuthCallback from '@/pages/AuthCallback';
 import NotFound from '@/pages/NotFound';
+import WordLearningRoute from '@/pages/wordLearning/WordLearningRoute';
 
 export default function Router() {
   return (
@@ -18,6 +19,8 @@ export default function Router() {
           <Route element={<AppLayout />}>
             <Route path="/" element={<Home />} />
           </Route>
+
+          <Route path="/learning/word/:setId" element={<WordLearningRoute />} />
 
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
