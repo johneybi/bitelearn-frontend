@@ -14,6 +14,7 @@ import LearningPage from '@/pages/LearningPage';
 import NotesPage from '@/pages/NotesPage';
 import ArticlePage from '@/pages/ArticlePage';
 import MyPage from '@/pages/MyPage';
+import AccountInfoPage from '@/pages/AccountInfoPage';
 
 export default function Router() {
   return (
@@ -29,6 +30,7 @@ export default function Router() {
           </Route>
 
           <Route path="/learning/word/:setId" element={<WordLearningRoute />} />
+          <Route path="/mypage/account" element={<AccountInfoPage />} />
 
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<LoginPage />} />
