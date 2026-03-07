@@ -16,7 +16,7 @@ import MyPage from '@/pages/MyPage';
 import AccountInfoPage from '@/pages/AccountInfoPage';
 import ArticleListPage from '@/pages/article/ArticleListPage';
 import ArticleDetailPage from '@/pages/article/ArticleDetailPage';
-import ChapterListPage from '@/pages/learning/ChapterListPage';
+import LearningRoadmapPage from '@/pages/learning/LearningRoadmapPage';
 
 export default function Router() {
   return (
@@ -26,7 +26,10 @@ export default function Router() {
           <Route element={<AppLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/learning" element={<LearningPage />} />
-            <Route path="/learning/:categoryId" element={<ChapterListPage />} />
+            <Route
+              path="/learning/:categoryId"
+              element={<LearningRoadmapPage />}
+            />
             <Route path="/notes" element={<NotesPage />} />
             <Route path="/articles" element={<ArticleListPage />} />
             <Route path="/mypage" element={<MyPage />} />

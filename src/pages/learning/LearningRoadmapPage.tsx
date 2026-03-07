@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { MOCK_CATEGORY_CHAPTERS } from '@/mock/chapter';
 import { cn } from '@/lib/utils';
 
-export default function ChapterListPage() {
+export default function LearningRoadmapPage() {
   const navigate = useNavigate();
   const { categoryId } = useParams();
 
@@ -28,8 +28,8 @@ export default function ChapterListPage() {
 
   return (
     <div className="flex h-full flex-col bg-white text-slate-900">
-      <div className="shrink-0 border-b border-slate-100 bg-white">
-        <div className="flex h-14 items-center px-4">
+      <div className="shrink-0 border-b border-slate-100 bg-white px-4">
+        <div className="flex h-14 items-center">
           <Button
             variant="ghost"
             size="icon"
