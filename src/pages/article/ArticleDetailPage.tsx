@@ -1,9 +1,11 @@
-import { Bookmark, CheckCircle2, ChevronLeft, Share2 } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { mockArticles } from '@/mock/article';
 import { formatDate } from '@/utils/formatDate';
 import { renderContentBlock } from '@/components/features/article/renderContentBlock';
+import ArticleDetailHeader from '@/components/features/article/ArticleDetailHeader';
+import ArticleDetailCTA from '@/components/features/article/ArticleDetailCTA';
 
 export default function ArticleDetailPage() {
   const navigate = useNavigate();
@@ -26,31 +28,7 @@ export default function ArticleDetailPage() {
 
   return (
     <main className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-white text-slate-900">
-      <header className="z-10 flex h-14 shrink-0 items-center justify-between border-b border-slate-100 bg-white/90 px-2 backdrop-blur-md">
-        <button
-          type="button"
-          onClick={handleBack}
-          className="flex h-10 w-10 items-center justify-center rounded-full text-slate-800 transition-colors hover:bg-slate-100"
-        >
-          <ChevronLeft className="h-6 w-6" />
-        </button>
-
-        <div className="flex gap-1">
-          <button
-            type="button"
-            className="flex h-10 w-10 items-center justify-center rounded-full text-slate-600 transition-colors hover:bg-slate-100"
-          >
-            <Bookmark className="h-5 w-5" />
-          </button>
-
-          <button
-            type="button"
-            className="flex h-10 w-10 items-center justify-center rounded-full text-slate-600 transition-colors hover:bg-slate-100"
-          >
-            <Share2 className="h-5 w-5" />
-          </button>
-        </div>
-      </header>
+      <ArticleDetailHeader onBack={handleBack} />
 
       <section className="hide-scrollbar min-h-0 flex-1 overflow-y-auto">
         <div className="relative aspect-[4/3] w-full bg-slate-100">
@@ -145,18 +123,7 @@ export default function ArticleDetailPage() {
       </section>
 
       {article.callToAction && (
-        <div className="shrink-0 border-t border-slate-100 bg-white/95 px-5 py-4 backdrop-blur-md">
-          <button
-            type="button"
-            className={`flex w-full items-center justify-center rounded-2xl py-4 text-[16px] font-bold shadow-md transition-all ${
-              article.callToAction.style === 'primary'
-                ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-                : 'bg-slate-900 text-white hover:bg-slate-800'
-            }`}
-          >
-            {article.callToAction.text}
-          </button>
-        </div>
+        <ArticleDetailCTA callToAction={article.callToAction} />
       )}
     </main>
   );
