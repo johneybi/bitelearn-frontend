@@ -12,9 +12,10 @@ import NotFoundPage from '@/pages/NotFoundPage';
 import WordLearningRoute from '@/pages/wordLearning/WordLearningRoute';
 import LearningPage from '@/pages/LearningPage';
 import NotesPage from '@/pages/NotesPage';
-import ArticlePage from '@/pages/ArticlePage';
 import MyPage from '@/pages/MyPage';
 import AccountInfoPage from '@/pages/AccountInfoPage';
+import ArticleListPage from '@/pages/article/ArticleListPage';
+import ArticleDetailPage from '@/pages/article/ArticleDetailPage';
 
 export default function Router() {
   return (
@@ -25,12 +26,13 @@ export default function Router() {
             <Route path="/" element={<HomePage />} />
             <Route path="/learning" element={<LearningPage />} />
             <Route path="/notes" element={<NotesPage />} />
-            <Route path="/article" element={<ArticlePage />} />
+            <Route path="/articles" element={<ArticleListPage />} />
             <Route path="/mypage" element={<MyPage />} />
           </Route>
 
           <Route path="/learning/word/:setId" element={<WordLearningRoute />} />
           <Route path="/mypage/account" element={<AccountInfoPage />} />
+          <Route path="/articles/:articleId" element={<ArticleDetailPage />} />
 
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<LoginPage />} />
