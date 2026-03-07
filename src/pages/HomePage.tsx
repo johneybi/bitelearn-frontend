@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import OnboardingModal from '@/components/features/onboarding/OnboardingModal';
 
-function Home() {
+function HomePage() {
   const navigate = useNavigate();
 
   const DONE_KEY = 'onboarding:done';
@@ -44,4 +44,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default HomePage;
