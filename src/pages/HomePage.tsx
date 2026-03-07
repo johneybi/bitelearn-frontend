@@ -12,6 +12,8 @@ import {
   DASHBOARD_RECOMMENDATIONS,
 } from '@/mock/dashboard';
 import DashboardTodayRecommendation from '@/components/features/dashboard/DashboardTodayRecommendation';
+import DashboardArticle from '@/components/features/dashboard/DashboardArticle';
+import { mockArticles } from '@/mock/article';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -63,7 +65,7 @@ function HomePage() {
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      <section className="hide-scrollbar flex-1 overflow-y-auto px-6 pb-6 pt-4">
+      <section className="hide-scrollbar flex-1 overflow-y-auto px-6 pb-28 pt-4">
         <div className="flex flex-col">
           <DashboardHeader
             title={headerContent.title}
@@ -95,6 +97,12 @@ function HomePage() {
               onRecommendationClick={(recommendation) => {
                 console.log(recommendation.title);
               }}
+            />
+
+            <DashboardArticle
+              articles={mockArticles}
+              onMoreClick={() => {}}
+              onSelectArticle={() => {}}
             />
           </div>
         </div>
