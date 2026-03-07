@@ -20,7 +20,7 @@ export const BOTTOM_NAV_TABS: BottomNavTab[] = [
   },
   {
     label: '노트',
-    path: '/note',
+    path: '/notes',
     icon: BookOpenCheck,
   },
   {

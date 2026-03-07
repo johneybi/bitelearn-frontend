@@ -101,8 +101,8 @@ function HomePage() {
 
             <DashboardArticle
               articles={mockArticles}
-              onMoreClick={() => {}}
-              onSelectArticle={() => {}}
+              onMoreClick={() => navigate('/article')}
+              onSelectArticle={(articleId) => navigate(`/article/${articleId}`)}
             />
           </div>
         </div>

@@ -10,6 +10,10 @@ import SignupPage from '@/pages/SignupPage';
 import AuthCallbackPage from '@/pages/AuthCallbackPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 import WordLearningRoute from '@/pages/wordLearning/WordLearningRoute';
+import LearningPage from '@/pages/LearningPage';
+import NotesPage from '@/pages/NotesPage';
+import ArticlePage from '@/pages/ArticlePage';
+import MyPage from '@/pages/MyPage';
 
 export default function Router() {
   return (
@@ -18,6 +22,10 @@ export default function Router() {
         <Route element={<RootLayout />}>
           <Route element={<AppLayout />}>
             <Route path="/" element={<HomePage />} />
+            <Route path="/learning" element={<LearningPage />} />
+            <Route path="/notes" element={<NotesPage />} />
+            <Route path="/article" element={<ArticlePage />} />
+            <Route path="/mypage" element={<MyPage />} />
           </Route>
 
           <Route path="/learning/word/:setId" element={<WordLearningRoute />} />
