@@ -7,7 +7,11 @@ import { getDashboardHeaderContent } from '@/components/features/dashboard/getDa
 import DashboardContinueCard from '@/components/features/dashboard/DashboardContinueCard';
 import { getDashboardContinueCardContent } from '@/components/features/dashboard/getDashboardContinueCardContent';
 import DashboardCategoryList from '@/components/features/dashboard/DashboardCategoryList';
-import { DASHBOARD_CATEGORIES } from '@/mock/dashboardCategories';
+import {
+  DASHBOARD_CATEGORIES,
+  DASHBOARD_RECOMMENDATIONS,
+} from '@/mock/dashboard';
+import DashboardTodayRecommendation from '@/components/features/dashboard/DashboardTodayRecommendation';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -83,6 +87,13 @@ function HomePage() {
               categories={DASHBOARD_CATEGORIES}
               onCategoryClick={(category) => {
                 console.log(category.name);
+              }}
+            />
+
+            <DashboardTodayRecommendation
+              recommendations={DASHBOARD_RECOMMENDATIONS}
+              onRecommendationClick={(recommendation) => {
+                console.log(recommendation.title);
               }}
             />
           </div>

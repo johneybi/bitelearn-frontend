@@ -10,3 +10,9 @@ export type DashboardCategory = {
   chapterCount: number;
   progressPercent: number;
 };
+
+export type DashboardRecommendation = {
+  category: string;
+  title: string;
+  estimatedMinutes: number;
+};
