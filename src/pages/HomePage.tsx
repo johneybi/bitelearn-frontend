@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import OnboardingModal from '@/components/features/onboarding/OnboardingModal';
 import DashboardHeader from '@/components/features/dashboard/DashboardHeader';
 import { getDashboardHeaderText } from '@/components/features/dashboard/getDashboardHeaderText';
+import DashboardContinueCard from '@/components/features/dashboard/DashboardContinueCard';
+import { getDashboardContinueCardText } from '@/components/features/dashboard/getDashboardContinueCardText';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -39,6 +41,20 @@ function HomePage() {
     navigate(isLoggedIn ? '/mypage' : '/login');
   };
 
+  // 최근 학습 데이터 (임시)
+  const recentLearning = {
+    category: '부동산 · 주거',
+    chapterTitle: '전세사기 예방 기초',
+    progressPercent: 68,
+  };
+
+  const shouldShowContinueCard =
+    recentLearning != null && recentLearning.progressPercent < 100;
+
+  const continueCardContent = shouldShowContinueCard
+    ? getDashboardContinueCardText(recentLearning)
+    : null;
+
   return (
     <div className="flex h-full flex-col overflow-hidden">
       <section className="hide-scrollbar flex-1 overflow-y-auto px-6 pb-6 pt-4">
@@ -49,6 +65,18 @@ function HomePage() {
             profileButtonLabel={headerText.profileButtonLabel}
             onProfileClick={handleProfileClick}
           />
+
+          <div className="space-y-12">
+            {shouldShowContinueCard && continueCardContent && (
+              <DashboardContinueCard
+                category={continueCardContent.category}
+                chapterTitle={continueCardContent.chapterTitle}
+                meta={continueCardContent.meta}
+                progressPercent={continueCardContent.progressPercent}
+                onContinue={() => {}}
+              />
+            )}
+          </div>
         </div>
 
         <button
