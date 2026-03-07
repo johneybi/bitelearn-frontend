@@ -4,12 +4,16 @@ import RootLayout from '@/layouts/RootLayout';
 import AppLayout from '@/layouts/AppLayout';
 import AuthLayout from '@/layouts/AuthLayout';
 
-import Home from '@/pages/Home';
-import Login from '@/pages/Login';
-import Signup from '@/pages/Signup';
-import AuthCallback from '@/pages/AuthCallback';
-import NotFound from '@/pages/NotFound';
+import HomePage from '@/pages/HomePage';
+import LoginPage from '@/pages/LoginPage';
+import SignupPage from '@/pages/SignupPage';
+import AuthCallbackPage from '@/pages/AuthCallbackPage';
+import NotFoundPage from '@/pages/NotFoundPage';
 import WordLearningRoute from '@/pages/wordLearning/WordLearningRoute';
+import LearningPage from '@/pages/LearningPage';
+import NotesPage from '@/pages/NotesPage';
+import ArticlePage from '@/pages/ArticlePage';
+import MyPage from '@/pages/MyPage';
 
 export default function Router() {
   return (
@@ -17,21 +21,25 @@ export default function Router() {
       <Routes>
         <Route element={<RootLayout />}>
           <Route element={<AppLayout />}>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/learning" element={<LearningPage />} />
+            <Route path="/notes" element={<NotesPage />} />
+            <Route path="/article" element={<ArticlePage />} />
+            <Route path="/mypage" element={<MyPage />} />
           </Route>
 
           <Route path="/learning/word/:setId" element={<WordLearningRoute />} />
 
           <Route element={<AuthLayout />}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
             <Route
               path="/oauth/callback/:provider"
-              element={<AuthCallback />}
+              element={<AuthCallbackPage />}
             />
           </Route>
 
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

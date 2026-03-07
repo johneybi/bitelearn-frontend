@@ -1,15 +1,13 @@
 import { Outlet } from 'react-router-dom';
-import Header from '@/components/common/Header';
-import Footer from '@/components/common/Footer';
+import BottomNav from '@/components/common/BottomNav';
 
 export default function AppLayout() {
   return (
-    <div className="flex min-h-dvh flex-col">
-      <Header />
-      <main className="flex-1">
+    <div className="flex min-h-dvh flex-1 flex-col">
+      <main className="flex-1 overflow-hidden">
         <Outlet />
       </main>
-      <Footer />
+      <BottomNav />
     </div>
   );
 }

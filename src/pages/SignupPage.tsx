@@ -40,7 +40,7 @@ const signupSchema = z
 // Zod 스키마를 바탕으로 타입 추론
 type SignupFormValues = z.infer<typeof signupSchema>;
 
-export default function Signup() {
+export default function SignupPage() {
   const navigate = useNavigate();
 
   // react-hook-form 설정
