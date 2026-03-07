@@ -1,8 +1,4 @@
-export type RecentLearning = {
-  category: string;
-  chapterTitle: string;
-  progressPercent: number;
-};
+import type { RecentLearning } from './dashboard.types';
 
 type DashboardContinueCardContent = {
   category: string;

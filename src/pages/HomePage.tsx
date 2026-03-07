@@ -6,6 +6,8 @@ import DashboardHeader from '@/components/features/dashboard/DashboardHeader';
 import { getDashboardHeaderContent } from '@/components/features/dashboard/getDashboardHeaderContent';
 import DashboardContinueCard from '@/components/features/dashboard/DashboardContinueCard';
 import { getDashboardContinueCardContent } from '@/components/features/dashboard/getDashboardContinueCardContent';
+import DashboardCategoryList from '@/components/features/dashboard/DashboardCategoryList';
+import { DASHBOARD_CATEGORIES } from '@/mock/dashboardCategories';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -76,6 +78,13 @@ function HomePage() {
                 onContinue={() => {}}
               />
             )}
+
+            <DashboardCategoryList
+              categories={DASHBOARD_CATEGORIES}
+              onCategoryClick={(category) => {
+                console.log(category.name);
+              }}
+            />
           </div>
         </div>
 
