@@ -25,7 +25,7 @@ export const BOTTOM_NAV_TABS: BottomNavTab[] = [
   },
   {
     label: '아티클',
-    path: '/article',
+    path: '/articles',
     icon: FileText,
   },
   {
