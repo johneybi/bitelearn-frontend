@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 
 import OnboardingModal from '@/components/features/onboarding/OnboardingModal';
 import DashboardHeader from '@/components/features/dashboard/DashboardHeader';
-import { getDashboardHeaderText } from '@/components/features/dashboard/getDashboardHeaderText';
+import { getDashboardHeaderContent } from '@/components/features/dashboard/getDashboardHeaderContent';
 import DashboardContinueCard from '@/components/features/dashboard/DashboardContinueCard';
-import { getDashboardContinueCardText } from '@/components/features/dashboard/getDashboardContinueCardText';
+import { getDashboardContinueCardContent } from '@/components/features/dashboard/getDashboardContinueCardContent';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ function HomePage() {
   const isLoggedIn = true;
   const nickname = null;
 
-  const headerText = getDashboardHeaderText({
+  const headerContent = getDashboardHeaderContent({
     isLoggedIn,
     nickname,
   });
@@ -52,7 +52,7 @@ function HomePage() {
     recentLearning != null && recentLearning.progressPercent < 100;
 
   const continueCardContent = shouldShowContinueCard
-    ? getDashboardContinueCardText(recentLearning)
+    ? getDashboardContinueCardContent(recentLearning)
     : null;
 
   return (
@@ -60,9 +60,9 @@ function HomePage() {
       <section className="hide-scrollbar flex-1 overflow-y-auto px-6 pb-6 pt-4">
         <div className="flex flex-col">
           <DashboardHeader
-            title={headerText.title}
-            subtitle={headerText.subtitle}
-            profileButtonLabel={headerText.profileButtonLabel}
+            title={headerContent.title}
+            subtitle={headerContent.subtitle}
+            profileButtonLabel={headerContent.profileButtonLabel}
             onProfileClick={handleProfileClick}
           />
 

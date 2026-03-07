@@ -4,16 +4,16 @@ export type RecentLearning = {
   progressPercent: number;
 };
 
-type DashboardContinueCardText = {
+type DashboardContinueCardContent = {
   category: string;
   chapterTitle: string;
   meta: string;
   progressPercent: number;
 };
 
-export function getDashboardContinueCardText(
+export function getDashboardContinueCardContent(
   recentLearning: RecentLearning
-): DashboardContinueCardText {
+): DashboardContinueCardContent {
   return {
     category: recentLearning.category,
     chapterTitle: recentLearning.chapterTitle,

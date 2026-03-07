@@ -1,18 +1,18 @@
-type DashboardHeaderTextParams = {
+type DashboardHeaderContentParams = {
   isLoggedIn: boolean;
   nickname?: string | null;
 };
 
-type DashboardHeaderText = {
+type DashboardHeaderContent = {
   title: string;
   subtitle: string;
   profileButtonLabel: string;
 };
 
-export function getDashboardHeaderText({
+export function getDashboardHeaderContent({
   isLoggedIn,
   nickname,
-}: DashboardHeaderTextParams): DashboardHeaderText {
+}: DashboardHeaderContentParams): DashboardHeaderContent {
   if (!isLoggedIn) {
     return {
       title: 'BiteLearn',
