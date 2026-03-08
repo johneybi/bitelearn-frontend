@@ -95,7 +95,7 @@ export default function DocumentResultView({
       </section>
 
       <QuizFooter onClick={onNext}>
-        {isLastQuestion ? '최종 결과 확인' : '다음 문제'}
+        {isLastQuestion ? '학습 끝내기' : '다음 문제'}
       </QuizFooter>
     </div>
   );
