@@ -116,13 +116,6 @@ function HomePage() {
             />
           </div>
         </div>
-
-        <button
-          onClick={() => navigate('/learning/word/contract_step2')}
-          className="mt-6 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white"
-        >
-          단어 학습 시작
-        </button>
       </section>
       <OnboardingModal
         isOpen={isOnboardingOpen}
