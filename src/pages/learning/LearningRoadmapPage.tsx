@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -5,6 +6,12 @@ import StageNode from '@/components/features/learning/StageNode';
 import { Button } from '@/components/ui/button';
 import { MOCK_CATEGORY_CHAPTERS } from '@/mock/chapter';
 import { cn } from '@/lib/utils';
+import RoadmapCurve from '@/components/features/learning/RoadmapCurve';
+import {
+  getRoadmapLayoutHeight,
+  getRoadmapOffset,
+  STEP_Y,
+} from '@/components/features/learning/roadmap.utils';
 
 export default function LearningRoadmapPage() {
   const navigate = useNavigate();
@@ -25,6 +32,9 @@ export default function LearningRoadmapPage() {
   const handleSelectChapter = (chapterId: string) => {
     navigate(`/learning/${category.categoryId}/${chapterId}`);
   };
+
+  const count = category.chapters.length;
+  const roadmapHeight = getRoadmapLayoutHeight(count);
 
   return (
     <div className="flex h-full flex-col bg-white text-slate-900">
@@ -87,27 +97,41 @@ export default function LearningRoadmapPage() {
           </div>
 
           <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-            <div
+            <motion.div
               className="h-full rounded-full bg-slate-900"
-              style={{ width: `${progressPercent}%` }}
+              initial={{ width: 0 }}
+              animate={{ width: `${progressPercent}%` }}
+              transition={{ duration: 1, ease: 'circOut' }}
             />
           </div>
         </div>
 
-        <div className="relative flex flex-col items-center gap-16">
-          <div className="absolute bottom-8 top-8 w-1 rounded-full bg-slate-50" />
+        <div
+          className="relative mx-auto w-full"
+          style={{ height: roadmapHeight }}
+        >
+          <RoadmapCurve count={count} totalHeight={roadmapHeight} />
 
           {category.chapters.map((chapter, index) => (
-            <StageNode
+            <div
               key={chapter.id}
-              chapter={chapter}
-              index={index}
-              onSelect={() => handleSelectChapter(chapter.id)}
-            />
+              className="absolute"
+              style={{
+                top: index * STEP_Y,
+                left: '50%',
+                transform: `translateX(calc(-50% + ${getRoadmapOffset(index)}px))`,
+              }}
+            >
+              <StageNode
+                chapter={chapter}
+                index={index}
+                onSelect={() => handleSelectChapter(chapter.id)}
+              />
+            </div>
           ))}
         </div>
 
-        <div className="mt-12 pb-32 text-center">
+        <div className="mt-8 pb-32 text-center">
           <div className="inline-block rounded-xl border border-dashed border-slate-200 bg-slate-50 px-6 py-3 text-xs font-bold text-slate-300">
             다음 단계를 준비 중이에요
           </div>
