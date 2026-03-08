@@ -51,6 +51,8 @@ function HomePage() {
 
   // 최근 학습 데이터 (임시)
   const recentLearning = {
+    categoryId: 'real-estate',
+    chapterId: 'contract_step2',
     category: '부동산 · 주거',
     chapterTitle: '전세사기 예방 기초',
     progressPercent: 68,
@@ -81,28 +83,36 @@ function HomePage() {
                 chapterTitle={continueCardContent.chapterTitle}
                 meta={continueCardContent.meta}
                 progressPercent={continueCardContent.progressPercent}
-                onContinue={() => {}}
+                onContinue={() => {
+                  navigate(
+                    `/learning/${continueCardContent.categoryId}/${continueCardContent.chapterId}`
+                  );
+                }}
               />
             )}
 
             <DashboardCategoryList
               categories={DASHBOARD_CATEGORIES}
               onCategoryClick={(category) => {
-                console.log(category.name);
+                navigate(`/learning/${category.id}`);
               }}
             />
 
             <DashboardTodayRecommendation
               recommendations={DASHBOARD_RECOMMENDATIONS}
               onRecommendationClick={(recommendation) => {
-                console.log(recommendation.title);
+                navigate(
+                  `/learning/${recommendation.categoryId}/${recommendation.chapterId}`
+                );
               }}
             />
 
             <DashboardArticle
               articles={mockArticles}
-              onMoreClick={() => navigate('/article')}
-              onSelectArticle={(articleId) => navigate(`/article/${articleId}`)}
+              onMoreClick={() => navigate('/articles')}
+              onSelectArticle={(articleId) =>
+                navigate(`/articles/${articleId}`)
+              }
             />
           </div>
         </div>
