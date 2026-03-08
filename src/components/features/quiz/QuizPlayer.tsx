@@ -5,14 +5,9 @@ import QuizIndicator from '@/components/features/quiz/QuizIndicator';
 import QuizImage from '@/components/features/quiz/QuizImage';
 import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
 import type { QuizPhase, StepIndicatorInfo } from './quiz.types';
-import TextPassageView from './passage/TextPassageView';
-import MultipleChoiceView from './choices/MultipleChoiceView';
-import ChoiceResultView from './result/ChoiceResultView';
-import OXChoiceView from './choices/OXChoiceView';
-import ConversationPassageView from './passage/ConversationPassageView';
-import DocumentSelectView from './choices/DocumentSelectView';
-import DocumentPassageView from './passage/DocumentPassageView';
-import DocumentResultView from './result/DocumentResultView';
+import QuizPassagePhase from './phases/QuizPassagePhase';
+import QuizChoicesPhase from './phases/QuizChoicesPhase';
+import QuizResultPhase from './phases/QuizResultPhase';
 
 type QuizPlayerProps = {
   questions: ChoiceQuestionItem[];
@@ -125,101 +120,37 @@ export default function QuizPlayer({
         alt={currentQuestion.imageAlt}
       />
 
-      {phase === 'passage' &&
-        (currentQuestion.passageMode === 'conversation' ? (
-          <ConversationPassageView
-            question={currentQuestion}
-            onSolve={handleSolve}
-            skipAnimation={seenPassages.has(currentIndex)}
-          />
-        ) : currentQuestion.passageMode === 'document' ? (
-          <DocumentPassageView
-            question={currentQuestion}
-            onSolve={handleSolve}
-          />
-        ) : (
-          <TextPassageView question={currentQuestion} onSolve={handleSolve} />
-        ))}
+      {phase === 'passage' && (
+        <QuizPassagePhase
+          question={currentQuestion}
+          currentIndex={currentIndex}
+          skipConversationAnimation={seenPassages.has(currentIndex)}
+          onSolve={handleSolve}
+        />
+      )}
 
-      {(phase === 'choices' || phase === 'checking') &&
-        (currentQuestion.choiceMode === 'document_select' ? (
-          <DocumentSelectView
-            question={currentQuestion}
-            currentIndex={currentIndex}
-            selectedValue={selectedChoice}
-            isChecking={phase === 'checking'}
-            onSelectChoice={setSelectedChoice}
-            onCheckAnswer={() => handleCheckAnswer()}
-            onPrevious={handleGoPassage}
-          />
-        ) : currentQuestion.choiceMode === 'ox' ? (
-          <OXChoiceView
-            key={currentQuestion.questionNumber}
-            questionNumber={currentQuestion.questionNumber}
-            question={currentQuestion.question}
-            correctIndex={currentQuestion.correctIndex}
-            onCheckAnswer={handleCheckAnswer}
-            isChecking={phase === 'checking'}
-            onPrevious={handleGoPassage}
-          />
-        ) : (
-          <MultipleChoiceView
-            questionNumber={currentQuestion.questionNumber}
-            question={currentQuestion.question}
-            choices={currentQuestion.choices}
-            selectedValue={selectedChoice}
-            onSelectChoice={setSelectedChoice}
-            onCheckAnswer={handleCheckAnswer}
-            isChecking={phase === 'checking'}
-            correctIndex={currentQuestion.correctIndex}
-            onPrevious={handleGoPassage}
-          />
-        ))}
+      {(phase === 'choices' || phase === 'checking') && (
+        <QuizChoicesPhase
+          question={currentQuestion}
+          currentIndex={currentIndex}
+          selectedChoice={selectedChoice}
+          isChecking={phase === 'checking'}
+          onSelectChoice={setSelectedChoice}
+          onCheckAnswer={() => handleCheckAnswer()}
+          onCheckAnswerWithIndex={handleCheckAnswer}
+          onPrevious={handleGoPassage}
+        />
+      )}
 
-      {phase === 'result' &&
-        (currentQuestion.passageMode === 'document' ||
-        currentQuestion.choiceMode === 'document_select' ? (
-          <DocumentResultView
-            isCorrect={isCorrect}
-            explanation={currentQuestion.explanation}
-            documentCard={currentQuestion.documentCard!}
-            correctIndex={currentQuestion.correctIndex}
-            selectedAnswerIndex={
-              selectedChoice !== '' ? Number(selectedChoice) : undefined
-            }
-            characterImageUrl={
-              isCorrect
-                ? currentQuestion.characterCorrectImageUrl ||
-                  '/images/result/dog_perfect.png'
-                : currentQuestion.characterIncorrectImageUrl ||
-                  '/images/result/dog_fail.png'
-            }
-            isLastQuestion={isLastQuestion}
-            onNext={handleNext}
-          />
-        ) : (
-          <ChoiceResultView
-            isCorrect={isCorrect}
-            correctAnswerText={
-              currentQuestion.choices[currentQuestion.correctIndex] ?? ''
-            }
-            selectedAnswerText={
-              selectedIndex !== -1
-                ? (currentQuestion.choices[selectedIndex] ?? '')
-                : ''
-            }
-            explanation={currentQuestion.explanation}
-            characterImageUrl={
-              isCorrect
-                ? currentQuestion.characterCorrectImageUrl ||
-                  '/images/result/dog_perfect.png'
-                : currentQuestion.characterIncorrectImageUrl ||
-                  '/images/result/dog_fail.png'
-            }
-            isLastQuestion={isLastQuestion}
-            onNext={handleNext}
-          />
-        ))}
+      {phase === 'result' && (
+        <QuizResultPhase
+          question={currentQuestion}
+          selectedChoice={selectedChoice}
+          isCorrect={isCorrect}
+          isLastQuestion={isLastQuestion}
+          onNext={handleNext}
+        />
+      )}
     </main>
   );
 }

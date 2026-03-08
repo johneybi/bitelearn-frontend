@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 
 import QuizFooter from '@/components/common/QuizFooter';
 import DocumentCard from '../shared/DocumentCard';
@@ -53,6 +53,14 @@ export default function DocumentResultView({
         ) : (
           <div className="flex items-center justify-between pb-4 pt-4">
             <div className="flex flex-col gap-3">
+              <motion.div
+                initial={{ scale: 0.7, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-200"
+              >
+                <X className="text-slate-500" size={22} />
+              </motion.div>
               <h2 className="text-xl font-bold text-slate-900">
                 아쉬워요,
                 <br />

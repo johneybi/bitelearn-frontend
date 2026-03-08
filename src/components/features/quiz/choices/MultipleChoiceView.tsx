@@ -10,7 +10,7 @@ type MultipleChoiceViewProps = {
   choiceMode?: 'multiple' | 'ox' | 'document_select';
   selectedValue: string;
   onSelectChoice: (value: string) => void;
-  onCheckAnswer: (selectedIndex?: number) => void;
+  onCheckAnswer: (selectedIndex: number) => void;
   isChecking?: boolean;
   correctIndex?: number;
   onPrevious?: () => void;
