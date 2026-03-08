@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import QuizFooter from '@/components/common/QuizFooter';
-import QuizPassage from './QuizPassage';
+import QuizPassage from '../shared/QuizPassage';
 import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
 
 type ConversationPassageViewProps = {

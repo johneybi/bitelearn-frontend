@@ -1,6 +1,7 @@
 import QuizFooter from '@/components/common/QuizFooter';
 import DocumentCard from '../shared/DocumentCard';
 import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
+import QuizTitle from '../shared/QuizTitle';
 
 type DocumentSelectViewProps = {
   question: ChoiceQuestionItem;
@@ -25,13 +26,11 @@ export default function DocumentSelectView({
 
   return (
     <>
-      <section className="flex-1 overflow-y-auto px-5 pb-4">
-        <h2 className="mb-4 text-base font-bold leading-tight text-slate-900">
-          <span className="mr-1.5 text-sm font-normal text-slate-400">
-            Q{question.questionNumber ?? currentIndex + 1}.
-          </span>
-          {question.question}
-        </h2>
+      <section className="flex-1 overflow-y-auto px-6">
+        <QuizTitle
+          questionNumber={question.questionNumber ?? currentIndex + 1}
+          question={question.question}
+        />
 
         <DocumentCard
           data={question.documentCard}

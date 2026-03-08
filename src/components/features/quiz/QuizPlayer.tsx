@@ -115,18 +115,19 @@ export default function QuizPlayer({
 
       <QuizIndicator steps={indicatorSteps} />
 
-      <QuizImage
-        src={currentQuestion.imageUrl}
-        alt={currentQuestion.imageAlt}
-      />
-
       {phase === 'passage' && (
-        <QuizPassagePhase
-          question={currentQuestion}
-          currentIndex={currentIndex}
-          skipConversationAnimation={seenPassages.has(currentIndex)}
-          onSolve={handleSolve}
-        />
+        <>
+          <QuizImage
+            src={currentQuestion.imageUrl}
+            alt={currentQuestion.imageAlt}
+          />
+          <QuizPassagePhase
+            question={currentQuestion}
+            currentIndex={currentIndex}
+            skipConversationAnimation={seenPassages.has(currentIndex)}
+            onSolve={handleSolve}
+          />
+        </>
       )}
 
       {(phase === 'choices' || phase === 'checking') && (

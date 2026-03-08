@@ -1,6 +1,6 @@
 import QuizFooter from '@/components/common/QuizFooter';
 import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
-import QuizPassage from './QuizPassage';
+import QuizPassage from '../shared/QuizPassage';
 
 type Props = {
   question: ChoiceQuestionItem;

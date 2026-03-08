@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import QuizFooter from '@/components/common/QuizFooter';
 import { cn } from '@/lib/utils';
+import QuizTitle from '../shared/QuizTitle';
 
 type OXChoiceViewProps = {
   questionNumber: number;
@@ -109,9 +110,7 @@ export default function OXChoiceView({
   return (
     <>
       <section className="flex flex-1 flex-col overflow-hidden px-6">
-        <h2 className="mb-5 text-base font-semibold text-slate-700">
-          Q{questionNumber}. {question}
-        </h2>
+        <QuizTitle questionNumber={questionNumber} question={question} />
 
         <div className="flex flex-1 gap-4 pb-4">
           {renderButton(0, 'O')}

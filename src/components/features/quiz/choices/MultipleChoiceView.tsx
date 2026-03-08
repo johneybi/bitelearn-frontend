@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Check, X } from 'lucide-react';
 import QuizFooter from '@/components/common/QuizFooter';
+import QuizTitle from '../shared/QuizTitle';
 
 type MultipleChoiceViewProps = {
   questionNumber: number;
@@ -36,9 +37,7 @@ export default function MultipleChoiceView({
         className="flex-1 overflow-y-auto px-6"
         data-choice-mode={choiceMode}
       >
-        <h2 className="mb-4 text-base font-semibold text-slate-600">
-          Q{questionNumber}. {question}
-        </h2>
+        <QuizTitle questionNumber={questionNumber} question={question} />
 
         <RadioGroup
           value={selectedValue}

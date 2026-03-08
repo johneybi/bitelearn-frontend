@@ -21,8 +21,8 @@ export default function QuizResultPhase({
   const selectedIndex = selectedChoice !== '' ? Number(selectedChoice) : -1;
 
   const characterImageUrl = isCorrect
-    ? question.characterCorrectImageUrl || '/images/result/dog_perfect.png'
-    : question.characterIncorrectImageUrl || '/images/result/dog_fail.png';
+    ? question.characterCorrectImageUrl || '/images/character/dog_perfect.png'
+    : question.characterIncorrectImageUrl || '/images/character/dog_fail.png';
 
   const isDocumentResult =
     question.passageMode === 'document' ||
