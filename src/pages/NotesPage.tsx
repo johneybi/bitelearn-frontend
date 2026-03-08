@@ -4,6 +4,7 @@ import NoteHeader from '@/components/features/note/NoteHeader';
 import NoteTabNav from '@/components/features/note/NoteTabNav';
 import ReviewNoteSection from '@/components/features/note/ReviewNoteSection';
 import BookmarkSection from '@/components/features/note/BookmarkSection';
+import LearningHistorySection from '@/components/features/note/LearningHistorySection';
 
 import { MOCK_CATEGORY_CHAPTERS } from '@/mock/chapter';
 import { MISTAKE_ITEMS } from '@/mock/mistakeNote';
@@ -66,6 +67,10 @@ export default function NotesPage() {
 
           {activeTab === 'bookmark' && (
             <BookmarkSection articles={bookmarkedArticles} />
+          )}
+
+          {activeTab === 'history' && (
+            <LearningHistorySection categories={MOCK_CATEGORY_CHAPTERS} />
           )}
         </section>
       </div>
