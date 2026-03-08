@@ -4,7 +4,7 @@ import QuizHeader from '@/components/common/QuizHeader';
 import QuizIndicator from '@/components/features/quiz/QuizIndicator';
 import QuizImage from '@/components/features/quiz/QuizImage';
 import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
-import type { QuizPhase, StepIndicatorInfo } from './quiz.types';
+import type { QuizMetric, QuizPhase, StepIndicatorInfo } from './quiz.types';
 import QuizPassagePhase from './phases/QuizPassagePhase';
 import QuizChoicesPhase from './phases/QuizChoicesPhase';
 import QuizResultPhase from './phases/QuizResultPhase';
@@ -14,6 +14,9 @@ type QuizPlayerProps = {
   headerTitle?: string;
   onBack?: () => void;
   onComplete?: (total: number, correct: number) => void;
+  indicatorSteps?: StepIndicatorInfo[];
+  onCurrentIndexChange?: (index: number) => void;
+  onMetricsChange?: (metrics: QuizMetric[]) => void;
 };
 
 export default function QuizPlayer({
@@ -21,11 +24,14 @@ export default function QuizPlayer({
   headerTitle,
   onBack,
   onComplete,
+  indicatorSteps: externalIndicatorSteps,
+  onCurrentIndexChange,
+  onMetricsChange,
 }: QuizPlayerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [phase, setPhase] = useState<QuizPhase>('passage');
   const [selectedChoice, setSelectedChoice] = useState('');
-  const [metrics, setMetrics] = useState<('none' | 'correct' | 'incorrect')[]>(
+  const [metrics, setMetrics] = useState<QuizMetric[]>(
     Array(questions.length).fill('none')
   );
   const [seenPassages, setSeenPassages] = useState<Set<number>>(new Set());
@@ -44,7 +50,7 @@ export default function QuizPlayer({
     selectedIndex !== -1 && selectedIndex === currentQuestion.correctIndex;
   const isLastQuestion = currentIndex === questions.length - 1;
 
-  const indicatorSteps: StepIndicatorInfo[] = useMemo(
+  const localIndicatorSteps: StepIndicatorInfo[] = useMemo(
     () =>
       questions.map((question, index) => ({
         type: question.type ?? 'quiz',
@@ -53,6 +59,16 @@ export default function QuizPlayer({
       })),
     [questions, metrics, currentIndex]
   );
+
+  const indicatorSteps = externalIndicatorSteps ?? localIndicatorSteps;
+
+  useEffect(() => {
+    onCurrentIndexChange?.(currentIndex);
+  }, [currentIndex, onCurrentIndexChange]);
+
+  useEffect(() => {
+    onMetricsChange?.(metrics);
+  }, [metrics, onMetricsChange]);
 
   const handleSolve = () => {
     if (currentQuestion.passageMode === 'conversation') {
