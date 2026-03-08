@@ -8,6 +8,7 @@ import type { QuizPhase, StepIndicatorInfo } from './quiz.types';
 import TextPassageView from './passage/TextPassageView';
 import MultipleChoiceView from './choices/MultipleChoiceView';
 import ChoiceResultView from './result/ChoiceResultView';
+import OXChoiceView from './choices/OXChoiceView';
 
 type QuizPlayerProps = {
   questions: ChoiceQuestionItem[];
@@ -120,19 +121,30 @@ export default function QuizPlayer({
         <TextPassageView question={currentQuestion} onSolve={handleSolve} />
       )}
 
-      {(phase === 'choices' || phase === 'checking') && (
-        <MultipleChoiceView
-          questionNumber={currentQuestion.questionNumber}
-          question={currentQuestion.question}
-          choices={currentQuestion.choices}
-          selectedValue={selectedChoice}
-          onSelectChoice={setSelectedChoice}
-          onCheckAnswer={handleCheckAnswer}
-          isChecking={phase === 'checking'}
-          correctIndex={currentQuestion.correctIndex}
-          onPrevious={handleGoPassage}
-        />
-      )}
+      {(phase === 'choices' || phase === 'checking') &&
+        (currentQuestion.choiceMode === 'ox' ? (
+          <OXChoiceView
+            key={currentQuestion.questionNumber}
+            questionNumber={currentQuestion.questionNumber}
+            question={currentQuestion.question}
+            correctIndex={currentQuestion.correctIndex}
+            onCheckAnswer={handleCheckAnswer}
+            isChecking={phase === 'checking'}
+            onPrevious={handleGoPassage}
+          />
+        ) : (
+          <MultipleChoiceView
+            questionNumber={currentQuestion.questionNumber}
+            question={currentQuestion.question}
+            choices={currentQuestion.choices}
+            selectedValue={selectedChoice}
+            onSelectChoice={setSelectedChoice}
+            onCheckAnswer={handleCheckAnswer}
+            isChecking={phase === 'checking'}
+            correctIndex={currentQuestion.correctIndex}
+            onPrevious={handleGoPassage}
+          />
+        ))}
 
       {phase === 'result' && (
         <ChoiceResultView
