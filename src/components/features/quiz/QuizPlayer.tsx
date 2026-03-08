@@ -10,6 +10,7 @@ import MultipleChoiceView from './choices/MultipleChoiceView';
 import ChoiceResultView from './result/ChoiceResultView';
 import OXChoiceView from './choices/OXChoiceView';
 import ConversationPassageView from './passage/ConversationPassageView';
+import DocumentSelectView from './choices/DocumentSelectView';
 import DocumentPassageView from './passage/DocumentPassageView';
 
 type QuizPlayerProps = {
@@ -140,7 +141,17 @@ export default function QuizPlayer({
         ))}
 
       {(phase === 'choices' || phase === 'checking') &&
-        (currentQuestion.choiceMode === 'ox' ? (
+        (currentQuestion.choiceMode === 'document_select' ? (
+          <DocumentSelectView
+            question={currentQuestion}
+            currentIndex={currentIndex}
+            selectedValue={selectedChoice}
+            isChecking={phase === 'checking'}
+            onSelectChoice={setSelectedChoice}
+            onCheckAnswer={() => handleCheckAnswer()}
+            onPrevious={handleGoPassage}
+          />
+        ) : currentQuestion.choiceMode === 'ox' ? (
           <OXChoiceView
             key={currentQuestion.questionNumber}
             questionNumber={currentQuestion.questionNumber}
