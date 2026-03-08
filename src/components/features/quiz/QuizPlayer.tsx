@@ -9,6 +9,7 @@ import TextPassageView from './passage/TextPassageView';
 import MultipleChoiceView from './choices/MultipleChoiceView';
 import ChoiceResultView from './result/ChoiceResultView';
 import OXChoiceView from './choices/OXChoiceView';
+import ConversationPassageView from './passage/ConversationPassageView';
 
 type QuizPlayerProps = {
   questions: ChoiceQuestionItem[];
@@ -29,6 +30,7 @@ export default function QuizPlayer({
   const [metrics, setMetrics] = useState<('none' | 'correct' | 'incorrect')[]>(
     Array(questions.length).fill('none')
   );
+  const [seenPassages, setSeenPassages] = useState<Set<number>>(new Set());
 
   if (questions.length === 0) {
     return (
@@ -55,6 +57,9 @@ export default function QuizPlayer({
   );
 
   const handleSolve = () => {
+    if (currentQuestion.passageMode === 'conversation') {
+      setSeenPassages((prev) => new Set(prev).add(currentIndex));
+    }
     setPhase('choices');
   };
 
@@ -117,9 +122,16 @@ export default function QuizPlayer({
         alt={currentQuestion.imageAlt}
       />
 
-      {phase === 'passage' && (
-        <TextPassageView question={currentQuestion} onSolve={handleSolve} />
-      )}
+      {phase === 'passage' &&
+        (currentQuestion.passageMode === 'conversation' ? (
+          <ConversationPassageView
+            question={currentQuestion}
+            onSolve={handleSolve}
+            skipAnimation={seenPassages.has(currentIndex)}
+          />
+        ) : (
+          <TextPassageView question={currentQuestion} onSolve={handleSolve} />
+        ))}
 
       {(phase === 'choices' || phase === 'checking') &&
         (currentQuestion.choiceMode === 'ox' ? (
