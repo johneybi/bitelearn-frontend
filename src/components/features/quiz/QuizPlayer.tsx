@@ -12,6 +12,7 @@ import OXChoiceView from './choices/OXChoiceView';
 import ConversationPassageView from './passage/ConversationPassageView';
 import DocumentSelectView from './choices/DocumentSelectView';
 import DocumentPassageView from './passage/DocumentPassageView';
+import DocumentResultView from './result/DocumentResultView';
 
 type QuizPlayerProps = {
   questions: ChoiceQuestionItem[];
@@ -175,29 +176,50 @@ export default function QuizPlayer({
           />
         ))}
 
-      {phase === 'result' && (
-        <ChoiceResultView
-          isCorrect={isCorrect}
-          correctAnswerText={
-            currentQuestion.choices[currentQuestion.correctIndex] ?? ''
-          }
-          selectedAnswerText={
-            selectedIndex !== -1
-              ? (currentQuestion.choices[selectedIndex] ?? '')
-              : ''
-          }
-          explanation={currentQuestion.explanation}
-          characterImageUrl={
-            isCorrect
-              ? currentQuestion.characterCorrectImageUrl ||
-                '/images/result/dog_perfect.png'
-              : currentQuestion.characterIncorrectImageUrl ||
-                '/images/result/dog_fail.png'
-          }
-          isLastQuestion={isLastQuestion}
-          onNext={handleNext}
-        />
-      )}
+      {phase === 'result' &&
+        (currentQuestion.passageMode === 'document' ||
+        currentQuestion.choiceMode === 'document_select' ? (
+          <DocumentResultView
+            isCorrect={isCorrect}
+            explanation={currentQuestion.explanation}
+            documentCard={currentQuestion.documentCard!}
+            correctIndex={currentQuestion.correctIndex}
+            selectedAnswerIndex={
+              selectedChoice !== '' ? Number(selectedChoice) : undefined
+            }
+            characterImageUrl={
+              isCorrect
+                ? currentQuestion.characterCorrectImageUrl ||
+                  '/images/result/dog_perfect.png'
+                : currentQuestion.characterIncorrectImageUrl ||
+                  '/images/result/dog_fail.png'
+            }
+            isLastQuestion={isLastQuestion}
+            onNext={handleNext}
+          />
+        ) : (
+          <ChoiceResultView
+            isCorrect={isCorrect}
+            correctAnswerText={
+              currentQuestion.choices[currentQuestion.correctIndex] ?? ''
+            }
+            selectedAnswerText={
+              selectedIndex !== -1
+                ? (currentQuestion.choices[selectedIndex] ?? '')
+                : ''
+            }
+            explanation={currentQuestion.explanation}
+            characterImageUrl={
+              isCorrect
+                ? currentQuestion.characterCorrectImageUrl ||
+                  '/images/result/dog_perfect.png'
+                : currentQuestion.characterIncorrectImageUrl ||
+                  '/images/result/dog_fail.png'
+            }
+            isLastQuestion={isLastQuestion}
+            onNext={handleNext}
+          />
+        ))}
     </main>
   );
 }
