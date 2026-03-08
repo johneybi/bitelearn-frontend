@@ -9,7 +9,6 @@ import LoginPage from '@/pages/LoginPage';
 import SignupPage from '@/pages/SignupPage';
 import AuthCallbackPage from '@/pages/AuthCallbackPage';
 import NotFoundPage from '@/pages/NotFoundPage';
-import WordLearningRoute from '@/pages/wordLearning/WordLearningRoute';
 import LearningPage from '@/pages/learning/LearningPage';
 import NotesPage from '@/pages/NotesPage';
 import MyPage from '@/pages/MyPage';
@@ -17,6 +16,7 @@ import AccountInfoPage from '@/pages/AccountInfoPage';
 import ArticleListPage from '@/pages/article/ArticleListPage';
 import ArticleDetailPage from '@/pages/article/ArticleDetailPage';
 import LearningRoadmapPage from '@/pages/learning/LearningRoadmapPage';
+import LearningChapterPage from '@/pages/learning/LearningChapterPage';
 
 export default function Router() {
   return (
@@ -35,7 +35,10 @@ export default function Router() {
             <Route path="/mypage" element={<MyPage />} />
           </Route>
 
-          <Route path="/learning/word/:setId" element={<WordLearningRoute />} />
+          <Route
+            path="/learning/:categoryId/:chapterId"
+            element={<LearningChapterPage />}
+          />
           <Route path="/mypage/account" element={<AccountInfoPage />} />
           <Route path="/articles/:articleId" element={<ArticleDetailPage />} />
 

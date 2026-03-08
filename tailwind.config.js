@@ -57,6 +57,22 @@ export default {
           5: 'hsl(var(--chart-5))',
         },
       },
+      keyframes: {
+        shake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '20%, 60%': { transform: 'translateX(-4px)' },
+          '40%, 80%': { transform: 'translateX(4px)' },
+        },
+        pop: {
+          '0%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.02)' },
+          '100%': { transform: 'scale(1)' },
+        },
+      },
+      animation: {
+        shake: 'shake 0.4s ease-in-out',
+        pop: 'pop 0.3s ease-in-out',
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],
