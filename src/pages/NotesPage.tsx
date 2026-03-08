@@ -1,15 +1,18 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import NoteHeader from '@/components/features/note/NoteHeader';
 import NoteTabNav from '@/components/features/note/NoteTabNav';
+import ReviewNoteSection from '@/components/features/note/ReviewNoteSection';
 
 import { MOCK_CATEGORY_CHAPTERS } from '@/mock/chapter';
+import { MISTAKE_ITEMS } from '@/mock/mistakeNote';
 import { MOCK_USER } from '@/mock/user';
 
 export type NoteTab = 'review' | 'bookmark' | 'history';
 
 export default function NotesPage() {
   const [activeTab, setActiveTab] = useState<NoteTab>('review');
+  const [selectedCategoryId, setSelectedCategoryId] = useState('all');
 
   const totalCompleted = MOCK_CATEGORY_CHAPTERS.reduce(
     (acc, cat) => acc + cat.completedChapters,
@@ -20,6 +23,16 @@ export default function NotesPage() {
     (acc, cat) => acc + cat.totalChapters,
     0
   );
+
+  const filteredMistakes = useMemo(() => {
+    const sorted = [...MISTAKE_ITEMS].sort(
+      (a, b) => new Date(b.wrongAt).getTime() - new Date(a.wrongAt).getTime()
+    );
+
+    if (selectedCategoryId === 'all') return sorted;
+
+    return sorted.filter((item) => item.categoryId === selectedCategoryId);
+  }, [selectedCategoryId]);
 
   return (
     <div className="flex h-full flex-col overflow-hidden bg-white text-slate-900">
@@ -34,6 +47,17 @@ export default function NotesPage() {
         <div className="bg-white px-6 pt-6">
           <NoteTabNav activeTab={activeTab} onChangeTab={setActiveTab} />
         </div>
+
+        <section className="px-6 pb-32 pt-6">
+          {activeTab === 'review' && (
+            <ReviewNoteSection
+              selectedCategoryId={selectedCategoryId}
+              onChangeCategory={setSelectedCategoryId}
+              categories={MOCK_CATEGORY_CHAPTERS}
+              mistakes={filteredMistakes}
+            />
+          )}
+        </section>
       </div>
     </div>
   );
