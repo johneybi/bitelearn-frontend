@@ -10,6 +10,7 @@ import MultipleChoiceView from './choices/MultipleChoiceView';
 import ChoiceResultView from './result/ChoiceResultView';
 import OXChoiceView from './choices/OXChoiceView';
 import ConversationPassageView from './passage/ConversationPassageView';
+import DocumentPassageView from './passage/DocumentPassageView';
 
 type QuizPlayerProps = {
   questions: ChoiceQuestionItem[];
@@ -128,6 +129,11 @@ export default function QuizPlayer({
             question={currentQuestion}
             onSolve={handleSolve}
             skipAnimation={seenPassages.has(currentIndex)}
+          />
+        ) : currentQuestion.passageMode === 'document' ? (
+          <DocumentPassageView
+            question={currentQuestion}
+            onSolve={handleSolve}
           />
         ) : (
           <TextPassageView question={currentQuestion} onSolve={handleSolve} />
