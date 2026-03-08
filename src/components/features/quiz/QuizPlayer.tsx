@@ -1,28 +1,31 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import QuizHeader from '@/components/common/QuizHeader';
 import QuizIndicator from '@/components/features/quiz/QuizIndicator';
 import QuizImage from '@/components/features/quiz/QuizImage';
 import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
-import type { QuizMetric, QuizPhase, StepIndicatorInfo } from './quiz.types';
+import type { QuizPhase, StepIndicatorInfo } from './quiz.types';
 import TextPassageView from './passage/TextPassageView';
 import MultipleChoiceView from './choices/MultipleChoiceView';
+import ChoiceResultView from './result/ChoiceResultView';
 
 type QuizPlayerProps = {
   questions: ChoiceQuestionItem[];
   headerTitle?: string;
   onBack?: () => void;
+  onComplete?: (total: number, correct: number) => void;
 };
 
 export default function QuizPlayer({
   questions,
   headerTitle,
   onBack,
+  onComplete,
 }: QuizPlayerProps) {
-  const [currentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [phase, setPhase] = useState<QuizPhase>('passage');
   const [selectedChoice, setSelectedChoice] = useState('');
-  const [metrics] = useState<QuizMetric[]>(
+  const [metrics, setMetrics] = useState<('none' | 'correct' | 'incorrect')[]>(
     Array(questions.length).fill('none')
   );
 
@@ -35,6 +38,10 @@ export default function QuizPlayer({
   }
 
   const currentQuestion = questions[currentIndex];
+  const selectedIndex = selectedChoice === '' ? -1 : Number(selectedChoice);
+  const isCorrect =
+    selectedIndex !== -1 && selectedIndex === currentQuestion.correctIndex;
+  const isLastQuestion = currentIndex === questions.length - 1;
 
   const indicatorSteps: StepIndicatorInfo[] = useMemo(
     () =>
@@ -61,8 +68,37 @@ export default function QuizPlayer({
 
     if (Number.isNaN(resolvedIndex)) return;
 
+    const correct = resolvedIndex === currentQuestion.correctIndex;
+
     setSelectedChoice(String(resolvedIndex));
+    setMetrics((prev) => {
+      const next = [...prev];
+      next[currentIndex] = correct ? 'correct' : 'incorrect';
+      return next;
+    });
     setPhase('checking');
+  };
+
+  useEffect(() => {
+    if (phase !== 'checking') return;
+
+    const timer = window.setTimeout(() => {
+      setPhase('result');
+    }, 1400);
+
+    return () => window.clearTimeout(timer);
+  }, [phase]);
+
+  const handleNext = () => {
+    if (isLastQuestion) {
+      const correctCount = metrics.filter((m) => m === 'correct').length;
+      onComplete?.(questions.length, correctCount);
+      return;
+    }
+
+    setCurrentIndex((prev) => prev + 1);
+    setSelectedChoice('');
+    setPhase('passage');
   };
 
   return (
@@ -95,6 +131,30 @@ export default function QuizPlayer({
           isChecking={phase === 'checking'}
           correctIndex={currentQuestion.correctIndex}
           onPrevious={handleGoPassage}
+        />
+      )}
+
+      {phase === 'result' && (
+        <ChoiceResultView
+          isCorrect={isCorrect}
+          correctAnswerText={
+            currentQuestion.choices[currentQuestion.correctIndex] ?? ''
+          }
+          selectedAnswerText={
+            selectedIndex !== -1
+              ? (currentQuestion.choices[selectedIndex] ?? '')
+              : ''
+          }
+          explanation={currentQuestion.explanation}
+          characterImageUrl={
+            isCorrect
+              ? currentQuestion.characterCorrectImageUrl ||
+                '/images/result/dog_perfect.png'
+              : currentQuestion.characterIncorrectImageUrl ||
+                '/images/result/dog_fail.png'
+          }
+          isLastQuestion={isLastQuestion}
+          onNext={handleNext}
         />
       )}
     </main>
