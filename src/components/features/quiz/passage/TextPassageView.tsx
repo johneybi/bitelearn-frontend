@@ -1,6 +1,6 @@
 import QuizFooter from '@/components/common/QuizFooter';
 import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
-import QuestionPassage from './QuizPassage';
+import QuizPassage from './QuizPassage';
 
 type Props = {
   question: ChoiceQuestionItem;
@@ -11,7 +11,7 @@ export default function TextPassageView({ question, onSolve }: Props) {
   return (
     <>
       <section className="flex-1 overflow-y-auto px-6 py-4">
-        <QuestionPassage
+        <QuizPassage
           passage={question.passage}
           flavorText={question.flavorText}
         />

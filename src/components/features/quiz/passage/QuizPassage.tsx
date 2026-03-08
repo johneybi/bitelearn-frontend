@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-type QuestionPassageProps = {
+type QuizPassageProps = {
   questionText?: string;
   questionNumber?: number;
   passage?: string;
@@ -11,7 +11,7 @@ type QuestionPassageProps = {
   className?: string;
 };
 
-export default function QuestionPassage({
+export default function QuizPassage({
   questionText,
   questionNumber,
   passage,
@@ -20,7 +20,7 @@ export default function QuestionPassage({
   hidePassage = false,
   hideFlavorText = false,
   className = '',
-}: QuestionPassageProps) {
+}: QuizPassageProps) {
   return (
     <div className={`flex flex-col ${className}`}>
       {questionText && (
