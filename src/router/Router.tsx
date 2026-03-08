@@ -17,6 +17,7 @@ import AccountInfoPage from '@/pages/AccountInfoPage';
 import ArticleListPage from '@/pages/article/ArticleListPage';
 import ArticleDetailPage from '@/pages/article/ArticleDetailPage';
 import LearningRoadmapPage from '@/pages/learning/LearningRoadmapPage';
+import QuizPage from '@/pages/QuizPage';
 
 export default function Router() {
   return (
@@ -36,6 +37,10 @@ export default function Router() {
           </Route>
 
           <Route path="/learning/word/:setId" element={<WordLearningRoute />} />
+          <Route
+            path="/learning/:categoryId/:chapterId"
+            element={<QuizPage />}
+          />
           <Route path="/mypage/account" element={<AccountInfoPage />} />
           <Route path="/articles/:articleId" element={<ArticleDetailPage />} />
 
