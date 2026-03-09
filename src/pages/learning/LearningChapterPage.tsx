@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
-import ChapterPlayer from '@/components/features/learning/ChapterPlayer';
 import { MOCK_CHOICE_QUESTION_SET } from '@/mock/choiceQuestion';
+import ChapterPlayer from '@/components/features/learning/chapter/ChapterPlayer';
 
 export default function LearningChapterPage() {
   const navigate = useNavigate();

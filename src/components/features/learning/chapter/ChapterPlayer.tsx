@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import QuizPlayer from '@/components/features/quiz/QuizPlayer';
+import QuizPlayer from '@/components/features/learning/quiz/QuizPlayer';
 import WordCardsPlayer from './word/WordCardsPlayer';
 import ChapterDone from './ChapterDone';
 import ChapterResult from './ChapterResult';
@@ -9,7 +9,7 @@ import type { ChoiceQuestionSet } from '@/mock/choiceQuestion';
 import type {
   QuizMetric,
   StepIndicatorInfo,
-} from '@/components/features/quiz/quiz.types';
+} from '@/components/features/learning/quiz/quiz.types';
 
 type ChapterPhase = 'words' | 'quiz' | 'done' | 'final';
 
