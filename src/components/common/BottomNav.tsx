@@ -23,7 +23,7 @@ export default function BottomNav() {
                   <li key={tab.path} className="flex-1">
                     <NavLink
                       to={tab.path}
-                      className={`flex w-full flex-col items-center justify-center gap-1.5 rounded-[24px] py-3.5 transition-all active:scale-95 ${
+                      className={`flex w-full flex-col items-center justify-center gap-1.5 rounded-3xl py-3.5 transition-all active:scale-95 ${
                         isActive
                           ? 'bg-slate-900 text-white shadow-md shadow-slate-400/20'
                           : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'

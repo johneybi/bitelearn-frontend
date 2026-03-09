@@ -22,7 +22,7 @@ export function getDashboardHeaderContent({
   }
 
   return {
-    title: `반가워요, ${nickname ?? '사용자'}님! 👋`,
+    title: `반가워요, ${nickname ?? 'Bitelearn'}님! 👋`,
     subtitle: '오늘도 한 입 지식을 챙겨볼까요?',
     profileButtonLabel: '마이페이지로 이동',
   };

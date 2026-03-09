@@ -4,11 +4,11 @@ import { MousePointerClick } from 'lucide-react';
 
 import QuizHeader from '@/components/common/QuizHeader';
 import QuizFooter from '@/components/common/QuizFooter';
-import QuizIndicator from '@/components/features/quiz/QuizIndicator';
+import QuizIndicator from '@/components/features/learning/quiz/QuizIndicator';
 import WordCard from './WordCard';
 
 import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
-import type { StepIndicatorInfo } from '@/components/features/quiz/quiz.types';
+import type { StepIndicatorInfo } from '@/components/features/learning/quiz/quiz.types';
 
 type WordCardsPlayerProps = {
   words: ChoiceQuestionItem[];

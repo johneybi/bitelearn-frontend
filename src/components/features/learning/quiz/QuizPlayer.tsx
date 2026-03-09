@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import QuizHeader from '@/components/common/QuizHeader';
-import QuizIndicator from '@/components/features/quiz/QuizIndicator';
-import QuizImage from '@/components/features/quiz/QuizImage';
+import QuizIndicator from '@/components/features/learning/quiz/QuizIndicator';
+import QuizImage from '@/components/features/learning/quiz/QuizImage';
 import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
 import type { QuizMetric, QuizPhase, StepIndicatorInfo } from './quiz.types';
 import QuizPassagePhase from './phases/QuizPassagePhase';

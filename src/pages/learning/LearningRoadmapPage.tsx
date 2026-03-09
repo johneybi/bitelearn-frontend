@@ -2,16 +2,16 @@ import { motion } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import StageNode from '@/components/features/learning/StageNode';
+import StageNode from '@/components/features/learning/roadmap/StageNode';
 import { Button } from '@/components/ui/button';
 import { MOCK_CATEGORY_CHAPTERS } from '@/mock/chapter';
 import { cn } from '@/lib/utils';
-import RoadmapCurve from '@/components/features/learning/RoadmapCurve';
+import RoadmapCurve from '@/components/features/learning/roadmap/RoadmapCurve';
 import {
   getRoadmapLayoutHeight,
   getRoadmapOffset,
   STEP_Y,
-} from '@/components/features/learning/roadmap.utils';
+} from '@/components/features/learning/roadmap/roadmap.utils';
 
 export default function LearningRoadmapPage() {
   const navigate = useNavigate();
@@ -131,7 +131,7 @@ export default function LearningRoadmapPage() {
           ))}
         </div>
 
-        <div className="mt-8 pb-32 text-center">
+        <div className="mt-8 p-8 text-center">
           <div className="inline-block rounded-xl border border-dashed border-slate-200 bg-slate-50 px-6 py-3 text-xs font-bold text-slate-300">
             다음 단계를 준비 중이에요
           </div>

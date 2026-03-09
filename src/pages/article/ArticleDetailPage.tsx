@@ -40,11 +40,11 @@ export default function ArticleDetailPage() {
         </div>
 
         <section className="px-5 pb-5 pt-6">
-          <div className="mb-3 inline-block rounded border border-slate-200 bg-white px-2.5 py-1 text-[12px] font-semibold text-slate-600">
+          <div className="mb-3 inline-block rounded border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-600">
             {article.category}
           </div>
 
-          <h1 className="word-break-keep text-[26px] font-bold leading-[1.35] tracking-tight text-slate-900">
+          <h1 className="word-break-keep text-[26px] font-bold leading-snug tracking-tight text-slate-900">
             {article.title}
           </h1>
 
@@ -57,20 +57,20 @@ export default function ArticleDetailPage() {
               />
 
               <div className="flex flex-col">
-                <span className="text-[14px] font-bold text-slate-900">
+                <span className="text-sm font-bold text-slate-900">
                   {article.author.name}
                 </span>
-                <span className="text-[12px] text-slate-500">
+                <span className="text-xs text-slate-500">
                   {article.author.role}
                 </span>
               </div>
             </div>
 
             <div className="flex flex-col items-end gap-0.5">
-              <span className="text-[12px] text-slate-400">
+              <span className="text-xs text-slate-400">
                 {formatDate(article.publishedAt)}
               </span>
-              <span className="text-[12px] text-slate-400">
+              <span className="text-xs text-slate-400">
                 조회 {article.viewCount.toLocaleString()}
               </span>
             </div>

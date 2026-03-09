@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-import QuizPlayer from '@/components/features/quiz/QuizPlayer';
+import QuizPlayer from '@/components/features/learning/quiz/QuizPlayer';
 import { MOCK_CHOICE_QUESTION_SET } from '@/mock/choiceQuestion';
 
 export default function QuizPage() {

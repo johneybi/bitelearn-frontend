@@ -240,8 +240,8 @@ export const MOCK_CHOICE_QUESTION_SET: ChoiceQuestionSet = {
       correctIndex: 1,
       explanation:
         "집이 경매에 넘어가면 은행이 채권최고액(2억 4천) 전액을 1순위로 가져갑니다. 남은 6천만 원에서는 보증금 8천만 원을 다 받을 수 없어요. '집값 - 채권최고액 ≥ 보증금'이어야 최소한의 안전을 담보할 수 있습니다.",
-      characterCorrectImageUrl: '/images/result/dog_perfect.png',
-      characterIncorrectImageUrl: '/images/result/dog_fail.png',
+      characterCorrectImageUrl: '/images/character/dog_perfect.png',
+      characterIncorrectImageUrl: '/images/character/dog_fail.png',
     },
     {
       questionNumber: 9,
@@ -265,8 +265,8 @@ export const MOCK_CHOICE_QUESTION_SET: ChoiceQuestionSet = {
       correctIndex: 1,
       explanation:
         '이사 당일 잔금을 치르고, 같은 날 주민센터에서 전입신고와 확정일자를 모두 받아야 합니다. 하루라도 늦으면 그 사이 새 근저당이 잡히거나 다른 권리자가 먼저 순위를 취득할 수 있어요. 집들이는 도장 받고 나서!',
-      characterCorrectImageUrl: '/images/result/dog_perfect.png',
-      characterIncorrectImageUrl: '/images/result/dog_fail.png',
+      characterCorrectImageUrl: '/images/character/dog_perfect.png',
+      characterIncorrectImageUrl: '/images/character/dog_fail.png',
     },
 
     // ────────────────────────────────────────────────────────

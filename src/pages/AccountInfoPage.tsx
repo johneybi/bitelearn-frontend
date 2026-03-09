@@ -26,7 +26,7 @@ export default function AccountInfoPage() {
       </header>
 
       <div className="pt-14">
-        <AccountProfileSection nickname="사용자" />
+        <AccountProfileSection nickname="Bitelearn" />
 
         <section className="mx-5 my-5">
           <article className="px-4 py-6">

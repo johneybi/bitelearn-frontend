@@ -1,6 +1,13 @@
 import { RotateCcw } from 'lucide-react';
 
 import MistakeCard from '@/components/features/note/MistakeCard';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 type NoteCategory = {
   categoryId: string;
@@ -33,18 +40,19 @@ export default function ReviewNoteSection({
       <div className="mb-4 flex items-center justify-between px-1">
         <h3 className="text-sm font-bold text-slate-400">복습이 필요한 항목</h3>
 
-        <select
-          className="bg-transparent text-xs font-bold text-slate-900 focus:outline-none"
-          value={selectedCategoryId}
-          onChange={(e) => onChangeCategory(e.target.value)}
-        >
-          <option value="all">전체보기</option>
-          {categories.map((category) => (
-            <option key={category.categoryId} value={category.categoryId}>
-              {category.categoryName}
-            </option>
-          ))}
-        </select>
+        <Select value={selectedCategoryId} onValueChange={onChangeCategory}>
+          <SelectTrigger className="h-9 w-[132px] border-slate-200 text-sm font-bold text-slate-900">
+            <SelectValue placeholder="전체보기" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">전체보기</SelectItem>
+            {categories.map((category) => (
+              <SelectItem key={category.categoryId} value={category.categoryId}>
+                {category.categoryName}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="flex flex-col gap-6">
