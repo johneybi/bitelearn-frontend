@@ -26,15 +26,16 @@ export default function Router() {
           <Route element={<AppLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/learning" element={<LearningPage />} />
-            <Route
-              path="/learning/:categoryId"
-              element={<LearningRoadmapPage />}
-            />
+
             <Route path="/notes" element={<NotesPage />} />
             <Route path="/articles" element={<ArticleListPage />} />
             <Route path="/mypage" element={<MyPage />} />
           </Route>
 
+          <Route
+            path="/learning/:categoryId"
+            element={<LearningRoadmapPage />}
+          />
           <Route
             path="/learning/:categoryId/:chapterId"
             element={<LearningChapterPage />}

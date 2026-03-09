@@ -131,7 +131,7 @@ export default function LearningRoadmapPage() {
           ))}
         </div>
 
-        <div className="mt-8 pb-32 text-center">
+        <div className="mt-8 p-8 text-center">
           <div className="inline-block rounded-xl border border-dashed border-slate-200 bg-slate-50 px-6 py-3 text-xs font-bold text-slate-300">
             다음 단계를 준비 중이에요
           </div>
