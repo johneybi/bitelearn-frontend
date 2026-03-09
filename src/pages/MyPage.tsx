@@ -39,8 +39,8 @@ export default function MyPage() {
 
       <section className="hide-scrollbar flex-1 overflow-y-auto px-5 pb-24 pt-20">
         <MyProfileCard
-          nickname="사용자"
-          email="test@bitelearn.com"
+          nickname="Bitelearn"
+          email="bitelearn@bitelearn.com"
           onClick={() => navigate('/mypage/account')}
         />
         <MyPageMenuSection items={MENU_ITEMS} />
