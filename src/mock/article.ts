@@ -155,7 +155,7 @@ export const mockArticles: ArticleDetail[] = [
     articleId: 'article-2026-002',
     category: '부동산·주거',
     title: '등기부등본 혼자 읽는 법 – 갑구·을구·표제부 완전 해석',
-    thumbnailUrl: '',
+    thumbnailUrl: '/images/article/article_thumbnail.png',
     author: {
       name: '에디터 샐리',
       role: '주거 안전 어드바이저',
