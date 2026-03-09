@@ -35,7 +35,7 @@ export default function DashboardTodayRecommendation({
         <Button
           type="button"
           variant="outline"
-          className="group mt-5 flex h-auto w-full items-center justify-between rounded-[24px] border-2 border-dashed border-slate-200 bg-white px-6 py-5 shadow-sm hover:border-slate-300"
+          className="group mt-5 flex h-auto w-full items-center justify-between rounded-3xl border-2 border-dashed border-slate-200 bg-white px-6 py-5 shadow-sm hover:border-slate-300"
           onClick={() => onRecommendationClick(secondRec)}
         >
           <span className="text-sm font-bold text-slate-500 transition-colors group-hover:text-slate-900">

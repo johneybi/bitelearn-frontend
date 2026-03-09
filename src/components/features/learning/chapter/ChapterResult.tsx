@@ -217,7 +217,7 @@ export default function ChapterResult({
       <footer className="relative z-20 shrink-0 border-t border-slate-100 bg-white px-5 pb-8 pt-4">
         <div className="flex flex-col gap-2">
           <Button
-            className="h-14 w-full rounded-2xl bg-slate-900 text-[16px] font-bold text-white shadow-none hover:bg-slate-700"
+            className="h-14 w-full rounded-2xl bg-slate-900 text-base font-bold text-white shadow-none hover:bg-slate-700"
             onClick={onFinish}
           >
             {cfg.primaryBtn}
@@ -226,7 +226,7 @@ export default function ChapterResult({
           {cfg.secondaryBtn && (
             <Button
               variant="outline"
-              className="h-14 w-full rounded-2xl border-slate-200 text-[16px] font-bold text-slate-700 shadow-none hover:bg-slate-50"
+              className="h-14 w-full rounded-2xl border-slate-200 text-base font-bold text-slate-700 shadow-none hover:bg-slate-50"
               onClick={onRetryWrongAnswers}
             >
               {cfg.secondaryBtn}
