@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { getMe } from '@/api/auth/auth.api';
+import type { MeResponse } from '@/api/auth/auth.types';
 
 import OnboardingModal from '@/components/features/onboarding/OnboardingModal';
 import DashboardHeader from '@/components/features/dashboard/DashboardHeader';
@@ -20,22 +21,24 @@ import { mockArticles } from '@/mock/article';
 function HomePage() {
   const navigate = useNavigate();
 
-  const [isLoadingMe, setIsLoadingMe] = useState(true);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
+  const [user, setUser] = useState<MeResponse | null>(null);
 
   useEffect(() => {
-    const fetchMe = async () => {
+    const fetchUser = async () => {
       try {
         const me = await getMe();
         setIsOnboardingOpen(!me.isOnboardingCompleted);
+        setUser(me);
       } catch (error) {
         console.error('내 정보 조회 실패', error);
       } finally {
-        setIsLoadingMe(false);
+        setIsLoadingUser(false);
       }
     };
 
-    fetchMe();
+    fetchUser();
   }, []);
 
   const handleOnboardingClose = () => {
@@ -43,17 +46,13 @@ function HomePage() {
     setIsOnboardingOpen(false);
   };
 
-  // 임시 상태
-  const isLoggedIn = true;
-  const nickname = null;
-
   const headerContent = getDashboardHeaderContent({
-    isLoggedIn,
-    nickname,
+    isLoggedIn: !!user,
+    nickname: user?.nickname ?? null,
   });
 
   const handleProfileClick = () => {
-    navigate(isLoggedIn ? '/mypage' : '/login');
+    navigate(user ? '/mypage' : '/login');
   };
 
   // 최근 학습 데이터 (임시)
@@ -72,7 +71,7 @@ function HomePage() {
     ? getDashboardContinueCardContent(recentLearning)
     : null;
 
-  if (isLoadingMe) {
+  if (isLoadingUser) {
     return (
       <div className="flex h-full items-center justify-center">
         <p className="text-sm text-slate-500">홈 정보를 불러오는 중...</p>
