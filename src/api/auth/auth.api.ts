@@ -21,3 +21,7 @@ export async function refreshAccessToken() {
   const response = await apiClient.post<RefreshResponse>('/auth/refresh');
   return response.data;
 }
+
+export async function logout() {
+  await apiClient.post('/auth/logout');
+}
