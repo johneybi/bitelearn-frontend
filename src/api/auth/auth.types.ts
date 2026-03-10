@@ -1,3 +1,4 @@
+// 회원가입
 export type SignupRequest = {
   email: string;
   password: string;
@@ -10,6 +11,7 @@ export type SignupResponse = {
   nickname: string;
 };
 
+// 로그인
 export type LoginRequest = {
   email: string;
   password: string;
@@ -20,9 +22,18 @@ export type LoginResponse = {
   expiresIn: number;
 };
 
+// 토큰 재발급
 export type RefreshResponse = {
   accessToken: string;
   expiresIn: number;
+};
+
+// 사용자 정보 조회
+export type MeResponse = {
+  userId: number;
+  email: string;
+  nickname: string;
+  isOnboardingCompleted: boolean;
 };
 
 export type AuthErrorCode =
