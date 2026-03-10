@@ -7,7 +7,7 @@ import AuthLayout from '@/layouts/AuthLayout';
 import HomePage from '@/pages/HomePage';
 import LoginPage from '@/pages/LoginPage';
 import SignupPage from '@/pages/SignupPage';
-import AuthCallbackPage from '@/pages/AuthCallbackPage';
+import OAuthCallbackPage from '@/pages/OAuthCallbackPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 import LearningPage from '@/pages/learning/LearningPage';
 import NotesPage from '@/pages/NotesPage';
@@ -46,10 +46,7 @@ export default function Router() {
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
-            <Route
-              path="/oauth/callback/:provider"
-              element={<AuthCallbackPage />}
-            />
+            <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
           </Route>
 
           <Route path="*" element={<NotFoundPage />} />
