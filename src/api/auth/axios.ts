@@ -1,5 +1,10 @@
-import axios from 'axios';
-import { getAccessToken } from './tokenStore';
+import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
+import { getAccessToken, setAccessToken, clearAccessToken } from './tokenStore';
+
+// 인터셉터에서 사용할 수 있도록 요청 구성 타입 확장
+type RetryableRequestConfig = InternalAxiosRequestConfig & {
+  _retry?: boolean;
+};
 
 // 공통 인스턴스 생성
 const apiClient = axios.create({
@@ -25,13 +30,47 @@ apiClient.interceptors.request.use((config) => {
 // 응답 인터셉터 설정
 apiClient.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      console.warn('인증이 만료되었습니다. 다시 로그인해주세요.');
-      window.location.href = '/login';
+  async (error: AxiosError) => {
+    const originalRequest = error.config as RetryableRequestConfig | undefined;
+
+    if (!originalRequest || !error.response) {
+      return Promise.reject(error);
     }
 
-    return Promise.reject(error);
+    const isRefreshRequest = originalRequest.url?.includes('/auth/refresh');
+
+    if (
+      error.response.status === 401 &&
+      !originalRequest._retry &&
+      !isRefreshRequest
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        const refreshResponse = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/auth/refresh`,
+          {},
+          {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        const { accessToken } = refreshResponse.data as { accessToken: string };
+
+        setAccessToken(accessToken);
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+
+        return apiClient(originalRequest);
+      } catch (refreshError) {
+        clearAccessToken();
+        window.location.href = '/login';
+
+        return Promise.reject(refreshError);
+      }
+    }
   }
 );
 
