@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getAccessToken } from './tokenStore';
 
 // 공통 인스턴스 생성
 const apiClient = axios.create({
@@ -8,6 +9,17 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
   withCredentials: true, // 쿠키 전송 허용
+});
+
+// 요청 인터셉터 설정
+apiClient.interceptors.request.use((config) => {
+  const accessToken = getAccessToken();
+
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+
+  return config;
 });
 
 // 응답 인터셉터 설정
