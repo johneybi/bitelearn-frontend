@@ -2,9 +2,25 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import AccountProfileSection from '@/components/features/mypage/AccountProfileSection';
+import { useAuthStore } from '@/stores/auth.store';
+import { logout } from '@/api/auth/auth.api';
+import { clearAccessToken } from '@/api/auth/tokenStore';
 
 export default function AccountInfoPage() {
   const navigate = useNavigate();
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('로그아웃 요청 실패:', error);
+    } finally {
+      clearAccessToken();
+      clearAuth();
+      navigate('/login', { replace: true });
+    }
+  };
 
   return (
     <div className="relative flex min-h-dvh flex-col overflow-y-auto bg-white pb-24 text-slate-900">
@@ -62,6 +78,7 @@ export default function AccountInfoPage() {
             <div className="mt-4 flex flex-col gap-3 pb-4">
               <button
                 type="button"
+                onClick={handleLogout}
                 className="w-full rounded-full px-1 py-1 text-left text-xs text-slate-700"
               >
                 로그아웃
