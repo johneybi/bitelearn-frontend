@@ -1,5 +1,7 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { getAccessToken, setAccessToken, clearAccessToken } from './tokenStore';
+import { useAuthStore } from '@/stores/auth.store';
+import type { RefreshResponse } from './auth.types';
 
 // 인터셉터에서 사용할 수 있도록 요청 구성 타입 확장
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
@@ -47,8 +49,8 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshResponse = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/auth/refresh`,
+        const refreshResponse = await axios.post<RefreshResponse>(
+          `${import.meta.env.VITE_API_BASE_URL}/api/auth/refresh`,
           {},
           {
             withCredentials: true,
@@ -58,7 +60,7 @@ apiClient.interceptors.response.use(
           }
         );
 
-        const { accessToken } = refreshResponse.data as { accessToken: string };
+        const { accessToken } = refreshResponse.data;
 
         setAccessToken(accessToken);
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
@@ -66,11 +68,13 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (refreshError) {
         clearAccessToken();
+        useAuthStore.getState().clearAuth();
         window.location.href = '/login';
 
         return Promise.reject(refreshError);
       }
     }
+    return Promise.reject(error);
   }
 );
 
