@@ -17,6 +17,7 @@ import ArticleListPage from '@/pages/article/ArticleListPage';
 import ArticleDetailPage from '@/pages/article/ArticleDetailPage';
 import LearningRoadmapPage from '@/pages/learning/LearningRoadmapPage';
 import LearningChapterPage from '@/pages/learning/LearningChapterPage';
+import ProtectedRoute from '@/components/features/auth/ProtectedRoute';
 
 export default function Router() {
   return (
@@ -26,10 +27,8 @@ export default function Router() {
           <Route element={<AppLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/learning" element={<LearningPage />} />
-
             <Route path="/notes" element={<NotesPage />} />
             <Route path="/articles" element={<ArticleListPage />} />
-            <Route path="/mypage" element={<MyPage />} />
           </Route>
 
           <Route
@@ -40,8 +39,14 @@ export default function Router() {
             path="/learning/:categoryId/:chapterId"
             element={<LearningChapterPage />}
           />
-          <Route path="/mypage/account" element={<AccountInfoPage />} />
           <Route path="/articles/:articleId" element={<ArticleDetailPage />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route element={<AppLayout />}>
+              <Route path="/mypage" element={<MyPage />} />
+            </Route>
+            <Route path="/mypage/account" element={<AccountInfoPage />} />
+          </Route>
 
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<LoginPage />} />
