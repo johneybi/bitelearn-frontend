@@ -5,30 +5,41 @@ type AuthState = {
   user: MeResponse | null;
   isAuthenticated: boolean;
   isInitializing: boolean;
+  isOnboardingOpen: boolean;
+
   setUser: (user: MeResponse | null) => void;
   clearAuth: () => void;
   setIsInitializing: (value: boolean) => void;
+  setIsOnboardingOpen: (open: boolean) => void;
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
   isInitializing: true,
+  isOnboardingOpen: false,
 
   setUser: (user) =>
     set({
       user,
       isAuthenticated: !!user,
+      isOnboardingOpen: !!user && !user.isOnboardingCompleted,
     }),
 
   clearAuth: () =>
     set({
       user: null,
       isAuthenticated: false,
+      isOnboardingOpen: false,
     }),
 
   setIsInitializing: (value) =>
     set({
       isInitializing: value,
+    }),
+
+  setIsOnboardingOpen: (open) =>
+    set({
+      isOnboardingOpen: open,
     }),
 }));
