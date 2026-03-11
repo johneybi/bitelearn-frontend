@@ -4,6 +4,9 @@ import RootLayout from '@/layouts/RootLayout';
 import AppLayout from '@/layouts/AppLayout';
 import AuthLayout from '@/layouts/AuthLayout';
 
+import ProtectedRoute from '@/components/features/auth/ProtectedRoute';
+import PublicRoute from '@/components/features/auth/PublicRoute';
+
 import HomePage from '@/pages/HomePage';
 import LoginPage from '@/pages/LoginPage';
 import SignupPage from '@/pages/SignupPage';
@@ -17,7 +20,6 @@ import ArticleListPage from '@/pages/article/ArticleListPage';
 import ArticleDetailPage from '@/pages/article/ArticleDetailPage';
 import LearningRoadmapPage from '@/pages/learning/LearningRoadmapPage';
 import LearningChapterPage from '@/pages/learning/LearningChapterPage';
-import ProtectedRoute from '@/components/features/auth/ProtectedRoute';
 
 export default function Router() {
   return (
@@ -48,11 +50,14 @@ export default function Router() {
             <Route path="/mypage/account" element={<AccountInfoPage />} />
           </Route>
 
-          <Route element={<AuthLayout />}>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
+          <Route element={<PublicRoute />}>
+            <Route element={<AuthLayout />}>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+            </Route>
           </Route>
+
+          <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Route>
