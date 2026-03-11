@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth.store';
 
-import OnboardingModal from '@/components/features/onboarding/OnboardingModal';
 import DashboardHeader from '@/components/features/dashboard/DashboardHeader';
 import { getDashboardHeaderContent } from '@/components/features/dashboard/getDashboardHeaderContent';
 import DashboardContinueCard from '@/components/features/dashboard/DashboardContinueCard';
@@ -20,15 +19,6 @@ function HomePage() {
 
   const user = useAuthStore((state) => state.user);
   const isInitializing = useAuthStore((state) => state.isInitializing);
-  const isOnboardingOpen = useAuthStore((state) => state.isOnboardingOpen);
-  const setIsOnboardingOpen = useAuthStore(
-    (state) => state.setIsOnboardingOpen
-  );
-
-  const handleOnboardingClose = () => {
-    // 온보딩 완료 처리 API 호출
-    setIsOnboardingOpen(false);
-  };
 
   const headerContent = getDashboardHeaderContent({
     isLoggedIn: !!user,
@@ -115,10 +105,6 @@ function HomePage() {
           </div>
         </div>
       </section>
-      <OnboardingModal
-        isOpen={isOnboardingOpen}
-        onClose={handleOnboardingClose}
-      />
     </div>
   );
 }
