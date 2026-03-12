@@ -28,7 +28,7 @@ export type RefreshResponse = {
   expiresIn: number;
 };
 
-export type ProviderType = 'LOCAL' | 'KAKAO' | 'GOOGLE';
+export type ProviderType = 'LOCAL' | 'NAVER' | 'GOOGLE';
 
 // 사용자 정보 조회
 export type MeResponse = {
