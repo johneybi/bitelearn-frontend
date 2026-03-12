@@ -9,8 +9,8 @@ import LoginForm from '@/components/features/auth/LoginForm';
 type SocialProvider = 'GOOGLE' | 'NAVER';
 
 const SOCIAL_LOGIN_URL: Record<SocialProvider, string> = {
-  GOOGLE: `${import.meta.env.VITE_API_BASE_URL}/auth/oauth/google`,
-  NAVER: `${import.meta.env.VITE_API_BASE_URL}/auth/oauth/naver`,
+  GOOGLE: `${import.meta.env.VITE_API_BASE_URL}/oauth/login/google`,
+  NAVER: `${import.meta.env.VITE_API_BASE_URL}/oauth/login/naver`,
 };
 
 export default function LoginPage() {
