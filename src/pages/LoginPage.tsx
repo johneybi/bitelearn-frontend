@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-
-import { login } from '@/api/auth/auth.api';
+import { login, getMe } from '@/api/auth/auth.api';
 import { setAccessToken } from '@/api/auth/tokenStore';
+import { useAuthStore } from '@/stores/auth.store';
+
 import type { LoginFormValues } from '@/schemas/loginSchema';
 import LoginForm from '@/components/features/auth/LoginForm';
 
@@ -14,12 +15,16 @@ const SOCIAL_LOGIN_URL: Record<SocialProvider, string> = {
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const setUser = useAuthStore((state) => state.setUser);
 
   // 로컬 로그인 핸들러
   const handleLocalLogin = async (data: LoginFormValues) => {
     try {
       const response = await login(data);
       setAccessToken(response.accessToken);
+
+      const me = await getMe();
+      setUser(me);
 
       navigate('/');
     } catch (error) {

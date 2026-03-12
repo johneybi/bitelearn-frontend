@@ -9,7 +9,7 @@ export default function RootLayout() {
   const user = useAuthStore((state) => state.user);
   const setUser = useAuthStore((state) => state.setUser);
 
-  const handleOnboardingClose = async () => {
+  const handleCompleteOnboarding = async () => {
     try {
       await completeOnboarding();
 
@@ -31,7 +31,7 @@ export default function RootLayout() {
 
         <OnboardingModal
           isOpen={isOnboardingOpen}
-          onClose={handleOnboardingClose}
+          onClose={handleCompleteOnboarding}
         />
       </div>
     </div>
