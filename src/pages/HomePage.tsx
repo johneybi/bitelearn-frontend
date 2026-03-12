@@ -13,6 +13,7 @@ import {
   DASHBOARD_RECOMMENDATIONS,
 } from '@/mock/dashboard';
 import { mockArticles } from '@/mock/article';
+import { formatDisplayName } from '@/utils/formatUser';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ function HomePage() {
 
   const headerContent = getDashboardHeaderContent({
     isLoggedIn: !!user,
-    nickname: user?.nickname ?? null,
+    nickname: user?.nickname ? formatDisplayName(user.nickname) : null,
   });
 
   const handleProfileClick = () => {

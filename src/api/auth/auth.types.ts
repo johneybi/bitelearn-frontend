@@ -28,7 +28,7 @@ export type RefreshResponse = {
   expiresIn: number;
 };
 
-export type ProviderType = 'LOCAL' | 'KAKAO' | 'GOOGLE';
+export type ProviderType = 'LOCAL' | 'NAVER' | 'GOOGLE';
 
 // 사용자 정보 조회
 export type MeResponse = {
@@ -37,6 +37,11 @@ export type MeResponse = {
   nickname: string;
   providerType: ProviderType;
   isOnboardingCompleted: boolean;
+};
+
+// 사용자 닉네임 수정
+export type UpdateNicknameRequest = {
+  nickname: string;
 };
 
 export type AuthErrorCode =

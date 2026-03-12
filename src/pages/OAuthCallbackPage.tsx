@@ -1,27 +1,41 @@
 import { setAccessToken } from '@/api/auth/tokenStore';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getMe } from '@/api/auth/auth.api';
+import { useAuthStore } from '@/stores/auth.store';
 
 export default function OAuthCallbackPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const setUser = useAuthStore((state) => state.setUser);
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const accessToken = params.get('accessToken');
+    const processOAuthLogin = async () => {
+      const params = new URLSearchParams(location.search);
+      const accessToken = params.get('accessToken');
 
-    if (!accessToken) {
-      navigate('/login', { replace: true });
-      return;
-    }
+      if (!accessToken) {
+        navigate('/login', { replace: true });
+        return;
+      }
 
-    setAccessToken(accessToken);
+      // 액세스 토큰 저장 및 주소창 정리
+      setAccessToken(accessToken);
+      window.history.replaceState({}, '', location.pathname);
 
-    // 주소창에서 accessToken 제거
-    window.history.replaceState({}, '', location.pathname);
+      try {
+        const me = await getMe();
+        setUser(me);
 
-    navigate('/', { replace: true });
-  }, [location.pathname, location.search, navigate]);
+        navigate('/', { replace: true });
+      } catch (error) {
+        console.error('소셜 로그인 유저 정보 가져오기 실패:', error);
+        navigate('/login', { replace: true });
+      }
+    };
+
+    processOAuthLogin();
+  }, [location.pathname, location.search, navigate, setUser]);
 
   return (
     <div className="flex min-h-dvh items-center justify-center">
