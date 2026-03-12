@@ -4,10 +4,13 @@ import RootLayout from '@/layouts/RootLayout';
 import AppLayout from '@/layouts/AppLayout';
 import AuthLayout from '@/layouts/AuthLayout';
 
+import ProtectedRoute from '@/components/features/auth/ProtectedRoute';
+import PublicRoute from '@/components/features/auth/PublicRoute';
+
 import HomePage from '@/pages/HomePage';
 import LoginPage from '@/pages/LoginPage';
 import SignupPage from '@/pages/SignupPage';
-import AuthCallbackPage from '@/pages/AuthCallbackPage';
+import OAuthCallbackPage from '@/pages/OAuthCallbackPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 import LearningPage from '@/pages/learning/LearningPage';
 import NotesPage from '@/pages/NotesPage';
@@ -26,10 +29,8 @@ export default function Router() {
           <Route element={<AppLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/learning" element={<LearningPage />} />
-
             <Route path="/notes" element={<NotesPage />} />
             <Route path="/articles" element={<ArticleListPage />} />
-            <Route path="/mypage" element={<MyPage />} />
           </Route>
 
           <Route
@@ -40,17 +41,23 @@ export default function Router() {
             path="/learning/:categoryId/:chapterId"
             element={<LearningChapterPage />}
           />
-          <Route path="/mypage/account" element={<AccountInfoPage />} />
           <Route path="/articles/:articleId" element={<ArticleDetailPage />} />
 
-          <Route element={<AuthLayout />}>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route
-              path="/oauth/callback/:provider"
-              element={<AuthCallbackPage />}
-            />
+          <Route element={<ProtectedRoute />}>
+            <Route element={<AppLayout />}>
+              <Route path="/mypage" element={<MyPage />} />
+            </Route>
+            <Route path="/mypage/account" element={<AccountInfoPage />} />
           </Route>
+
+          <Route element={<PublicRoute />}>
+            <Route element={<AuthLayout />}>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+            </Route>
+          </Route>
+
+          <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Route>

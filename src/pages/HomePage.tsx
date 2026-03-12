@@ -1,52 +1,32 @@
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/stores/auth.store';
 
-import OnboardingModal from '@/components/features/onboarding/OnboardingModal';
 import DashboardHeader from '@/components/features/dashboard/DashboardHeader';
 import { getDashboardHeaderContent } from '@/components/features/dashboard/getDashboardHeaderContent';
 import DashboardContinueCard from '@/components/features/dashboard/DashboardContinueCard';
 import { getDashboardContinueCardContent } from '@/components/features/dashboard/getDashboardContinueCardContent';
 import DashboardCategoryList from '@/components/features/dashboard/DashboardCategoryList';
+import DashboardTodayRecommendation from '@/components/features/dashboard/DashboardTodayRecommendation';
+import DashboardArticle from '@/components/features/dashboard/DashboardArticle';
 import {
   DASHBOARD_CATEGORIES,
   DASHBOARD_RECOMMENDATIONS,
 } from '@/mock/dashboard';
-import DashboardTodayRecommendation from '@/components/features/dashboard/DashboardTodayRecommendation';
-import DashboardArticle from '@/components/features/dashboard/DashboardArticle';
 import { mockArticles } from '@/mock/article';
 
 function HomePage() {
   const navigate = useNavigate();
 
-  const DONE_KEY = 'onboarding:done';
-  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
-
-  // 온보딩 완료 여부 체크
-  useEffect(() => {
-    const done = localStorage.getItem(DONE_KEY) === '1';
-
-    if (!done) {
-      setIsOnboardingOpen(true);
-    }
-  }, []);
-
-  // 온보딩 완료 처리
-  const handleOnboardingClose = () => {
-    localStorage.setItem(DONE_KEY, '1');
-    setIsOnboardingOpen(false);
-  };
-
-  // 임시 상태
-  const isLoggedIn = true;
-  const nickname = null;
+  const user = useAuthStore((state) => state.user);
+  const isInitializing = useAuthStore((state) => state.isInitializing);
 
   const headerContent = getDashboardHeaderContent({
-    isLoggedIn,
-    nickname,
+    isLoggedIn: !!user,
+    nickname: user?.nickname ?? null,
   });
 
   const handleProfileClick = () => {
-    navigate(isLoggedIn ? '/mypage' : '/login');
+    navigate(user ? '/mypage' : '/login');
   };
 
   // 최근 학습 데이터 (임시)
@@ -64,6 +44,14 @@ function HomePage() {
   const continueCardContent = shouldShowContinueCard
     ? getDashboardContinueCardContent(recentLearning)
     : null;
+
+  if (isInitializing) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-sm text-slate-500">홈 정보를 불러오는 중...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
@@ -117,10 +105,6 @@ function HomePage() {
           </div>
         </div>
       </section>
-      <OnboardingModal
-        isOpen={isOnboardingOpen}
-        onClose={handleOnboardingClose}
-      />
     </div>
   );
 }
