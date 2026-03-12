@@ -39,6 +39,11 @@ export type MeResponse = {
   isOnboardingCompleted: boolean;
 };
 
+// 사용자 닉네임 수정
+export type UpdateNicknameRequest = {
+  nickname: string;
+};
+
 export type AuthErrorCode =
   | 'INVALID_INPUT'
   | 'DUPLICATE_EMAIL'

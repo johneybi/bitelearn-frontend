@@ -6,6 +6,7 @@ import type {
   LoginResponse,
   RefreshResponse,
   MeResponse,
+  UpdateNicknameRequest,
 } from './auth.types';
 
 // 회원가입
@@ -35,6 +36,11 @@ export async function logout() {
 export async function getMe() {
   const response = await apiClient.get<MeResponse>('/users/me');
   return response.data;
+}
+
+// 사용자 닉네임 수정
+export async function updateNickname(data: UpdateNicknameRequest) {
+  await apiClient.patch('/users/me/nickname', data);
 }
 
 // 온보딩 완료 처리
