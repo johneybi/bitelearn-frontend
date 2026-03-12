@@ -1,3 +1,4 @@
+import { formatDisplayName } from '@/utils/formatUser';
 import { Camera, Pencil } from 'lucide-react';
 
 type AccountProfileSectionProps = {
@@ -36,7 +37,9 @@ export default function AccountProfileSection({
           {/* 닉네임 영역 */}
           {!isEditing ? (
             <div className="flex items-center gap-1">
-              <p className="text-base text-slate-700">{nickname}</p>
+              <p className="text-base text-slate-700">
+                {formatDisplayName(nickname)}
+              </p>
 
               <button
                 type="button"
