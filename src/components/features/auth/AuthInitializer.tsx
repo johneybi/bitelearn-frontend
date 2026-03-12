@@ -2,6 +2,7 @@ import { getMe, refreshAccessToken } from '@/api/auth/auth.api';
 import { useAuthStore } from '@/stores/auth.store';
 import { clearAccessToken, setAccessToken } from '@/api/auth/tokenStore';
 import { useEffect } from 'react';
+import axios from 'axios';
 
 type AuthInitializeProps = {
   children: React.ReactNode;
@@ -28,7 +29,13 @@ export default function AuthInitializer({ children }: AuthInitializeProps) {
         const me = await getMe();
         setUser(me);
       } catch (error) {
-        console.error('인증 초기화 중 오류 발생', error);
+        // 비로그인 상태에서 refresh 401은 정상 흐름으로 처리
+        const isUnauthorized =
+          axios.isAxiosError(error) && error.response?.status === 401;
+
+        if (!isUnauthorized) {
+          console.error('인증 초기화 중 오류 발생', error);
+        }
 
         clearAccessToken();
         clearAuth();
