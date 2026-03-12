@@ -28,11 +28,14 @@ export type RefreshResponse = {
   expiresIn: number;
 };
 
+export type ProviderType = 'LOCAL' | 'KAKAO' | 'GOOGLE';
+
 // 사용자 정보 조회
 export type MeResponse = {
-  userId: number;
+  id: number;
   email: string;
   nickname: string;
+  providerType: ProviderType;
   isOnboardingCompleted: boolean;
 };
 

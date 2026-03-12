@@ -10,7 +10,6 @@ type AuthState = {
   setUser: (user: MeResponse | null) => void;
   clearAuth: () => void;
   setIsInitializing: (value: boolean) => void;
-  setIsOnboardingOpen: (open: boolean) => void;
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -36,10 +35,5 @@ export const useAuthStore = create<AuthState>((set) => ({
   setIsInitializing: (value) =>
     set({
       isInitializing: value,
-    }),
-
-  setIsOnboardingOpen: (open) =>
-    set({
-      isOnboardingOpen: open,
     }),
 }));

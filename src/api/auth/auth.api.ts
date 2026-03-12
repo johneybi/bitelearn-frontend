@@ -36,3 +36,8 @@ export async function getMe() {
   const response = await apiClient.get<MeResponse>('/users/me');
   return response.data;
 }
+
+// 온보딩 완료 처리
+export async function completeOnboarding() {
+  await apiClient.patch('/users/me/onboarding');
+}

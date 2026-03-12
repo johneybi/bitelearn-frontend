@@ -2,16 +2,26 @@ import { Outlet } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth.store';
 
 import OnboardingModal from '@/components/features/onboarding/OnboardingModal';
+import { completeOnboarding } from '@/api/auth/auth.api';
 
 export default function RootLayout() {
   const isOnboardingOpen = useAuthStore((state) => state.isOnboardingOpen);
-  const setIsOnboardingOpen = useAuthStore(
-    (state) => state.setIsOnboardingOpen
-  );
+  const user = useAuthStore((state) => state.user);
+  const setUser = useAuthStore((state) => state.setUser);
 
-  const handleOnboardingClose = () => {
-    // 온보딩 완료 처리 API 호출
-    setIsOnboardingOpen(false);
+  const handleOnboardingClose = async () => {
+    try {
+      await completeOnboarding();
+
+      if (!user) return;
+
+      setUser({
+        ...user,
+        isOnboardingCompleted: true,
+      });
+    } catch (error) {
+      console.error('온보딩 완료 처리 실패', error);
+    }
   };
 
   return (
