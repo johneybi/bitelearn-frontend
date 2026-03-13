@@ -1,5 +1,5 @@
 import { getMe } from '@/api/auth/auth.api';
-import { refreshAccessToken } from '@/api/auth/authRefresh';
+import { ensureValidAccessToken } from '@/api/auth/authRefresh';
 import { useAuthStore } from '@/stores/auth.store';
 import { clearAccessToken } from '@/api/auth/tokenStore';
 import { useEffect } from 'react';
@@ -24,8 +24,17 @@ export default function AuthInitializer({ children }: AuthInitializeProps) {
       }
 
       try {
-        await refreshAccessToken();
+        const accessToken = await ensureValidAccessToken();
+
+        // 유효한 토큰 확보 실패 → 비로그인 상태
+        if (!accessToken) {
+          clearAccessToken();
+          clearAuth();
+          return;
+        }
+
         const me = await getMe();
+
         setUser(me);
       } catch (error) {
         // 비로그인 상태에서 refresh 401은 정상 흐름으로 처리
@@ -35,7 +44,6 @@ export default function AuthInitializer({ children }: AuthInitializeProps) {
         if (!isUnauthorized) {
           console.error('인증 초기화 중 오류 발생', error);
         }
-
         clearAccessToken();
         clearAuth();
       } finally {
