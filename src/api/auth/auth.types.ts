@@ -18,14 +18,16 @@ export type LoginRequest = {
 };
 
 export type LoginResponse = {
+  grantType: string;
   accessToken: string;
-  expiresIn: number;
+  accessTokenExpiresIn: number;
 };
 
 // 토큰 재발급
 export type RefreshResponse = {
+  grantType: string;
   accessToken: string;
-  expiresIn: number;
+  accessTokenExpiresIn: number;
 };
 
 export type ProviderType = 'LOCAL' | 'NAVER' | 'GOOGLE';
