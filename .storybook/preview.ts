@@ -4,6 +4,7 @@ import '../src/index.css';
 
 const preview: Preview = {
   parameters: {
+    layout: 'fullscreen',
     controls: {
       matchers: {
         color: /(background|color)$/i,
@@ -12,10 +13,10 @@ const preview: Preview = {
     },
     viewport: {
       viewports: INITIAL_VIEWPORTS,
-      defaultViewport: 'iphone14',
+      defaultViewport: 'iphone12mini',
     },
     chromatic: {
-      viewports: [390],
+      viewports: [375],
     },
     a11y: {
       // 'todo' - show a11y violations in the test UI only
