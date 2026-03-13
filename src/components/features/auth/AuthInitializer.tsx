@@ -1,6 +1,7 @@
-import { getMe, refreshAccessToken } from '@/api/auth/auth.api';
+import { getMe } from '@/api/auth/auth.api';
+import { refreshAccessToken } from '@/api/auth/authRefresh';
 import { useAuthStore } from '@/stores/auth.store';
-import { clearAccessToken, setAccessToken } from '@/api/auth/tokenStore';
+import { clearAccessToken } from '@/api/auth/tokenStore';
 import { useEffect } from 'react';
 import axios from 'axios';
 
@@ -23,9 +24,7 @@ export default function AuthInitializer({ children }: AuthInitializeProps) {
       }
 
       try {
-        const refreshData = await refreshAccessToken();
-        setAccessToken(refreshData.accessToken);
-
+        await refreshAccessToken();
         const me = await getMe();
         setUser(me);
       } catch (error) {

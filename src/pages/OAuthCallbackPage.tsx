@@ -35,7 +35,8 @@ export default function OAuthCallbackPage() {
     };
 
     processOAuthLogin();
-  }, [location.pathname, location.search, navigate, setUser]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname, location.search]);
 
   return (
     <div className="flex min-h-dvh items-center justify-center">
