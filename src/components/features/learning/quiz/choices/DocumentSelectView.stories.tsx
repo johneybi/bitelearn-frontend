@@ -37,26 +37,10 @@ export const IdleUnselected: Story = {
   args: { ...baseArgs },
 };
 
-export const FieldSelectedReadyToSubmit: Story = {
+export const FieldSelected: Story = {
   args: {
     ...baseArgs,
     selectedValue: '1',
     isChecking: false,
-  },
-};
-
-export const ScanningAfterCorrectSelection: Story = {
-  args: {
-    ...baseArgs,
-    selectedValue: String(documentSelectQuestion.correctIndex),
-    isChecking: true,
-  },
-};
-
-export const ScanningAfterIncorrectSelection: Story = {
-  args: {
-    ...baseArgs,
-    selectedValue: '0',
-    isChecking: true,
   },
 };

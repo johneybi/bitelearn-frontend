@@ -51,26 +51,11 @@ export const InteractiveIdle: Story = {
   args: { ...interactiveArgs },
 };
 
-export const CheckingCorrectFieldSelected: Story = {
+export const FieldSelected: Story = {
   args: {
     ...interactiveArgs,
     selectedValue: String(correctIndex),
-    isChecking: true,
-  },
-};
-
-export const CheckingIncorrectFieldSelected: Story = {
-  args: {
-    ...interactiveArgs,
-    selectedValue: '0',
-    isChecking: true,
-  },
-};
-
-export const ReadOnlyNonSelectable: Story = {
-  args: {
-    ...interactiveArgs,
-    choiceMode: 'multiple',
+    isChecking: false,
   },
 };
 
