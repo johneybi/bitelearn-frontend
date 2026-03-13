@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { login, getMe } from '@/api/auth/auth.api';
-import { setAccessToken } from '@/api/auth/tokenStore';
-import { useAuthStore } from '@/stores/auth.store';
 
-import type { LoginFormValues } from '@/schemas/loginSchema';
+import { getMe, login } from '@/api/auth/auth.api';
+import { setAccessToken } from '@/api/auth/tokenStore';
+import { toExpiresAt } from '@/api/auth/token.util';
 import LoginForm from '@/components/features/auth/LoginForm';
+import type { LoginFormValues } from '@/schemas/loginSchema';
+import { useAuthStore } from '@/stores/auth.store';
 
 type SocialProvider = 'GOOGLE' | 'NAVER';
 
@@ -21,7 +22,9 @@ export default function LoginPage() {
   const handleLocalLogin = async (data: LoginFormValues) => {
     try {
       const response = await login(data);
-      setAccessToken(response.accessToken);
+      const expiresAt = toExpiresAt(response.accessTokenExpiresIn);
+
+      setAccessToken(response.accessToken, expiresAt);
 
       const me = await getMe();
       setUser(me);
