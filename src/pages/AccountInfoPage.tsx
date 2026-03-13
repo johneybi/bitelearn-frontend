@@ -1,10 +1,60 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import AccountProfileSection from '@/components/features/mypage/AccountProfileSection';
+import { useAuthStore } from '@/stores/auth.store';
+import { getMe, logout, updateNickname } from '@/api/auth/auth.api';
+import { clearAccessToken } from '@/api/auth/tokenStore';
 
 export default function AccountInfoPage() {
   const navigate = useNavigate();
+
+  const user = useAuthStore((state) => state.user);
+  const setUser = useAuthStore((state) => state.setUser);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+
+  const [nickname, setNickname] = useState(user?.nickname ?? '');
+  const [isEditingNickname, setIsEditingNickname] = useState(false);
+
+  useEffect(() => {
+    setNickname(user?.nickname ?? '');
+  }, [user?.nickname]);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('로그아웃 요청 실패:', error);
+    } finally {
+      clearAccessToken();
+      clearAuth();
+      navigate('/login', { replace: true });
+    }
+  };
+
+  const handleSubmitNickname = async () => {
+    if (!user) return;
+
+    const trimmed = nickname.trim();
+    if (!trimmed) return;
+
+    if (trimmed === user.nickname) {
+      setIsEditingNickname(false);
+      return;
+    }
+
+    try {
+      await updateNickname({ nickname: trimmed });
+
+      const updatedUser = await getMe();
+      setUser(updatedUser);
+
+      setIsEditingNickname(false);
+    } catch (error) {
+      console.error('닉네임 수정 실패', error);
+    }
+  };
 
   return (
     <div className="relative flex min-h-dvh flex-col overflow-y-auto bg-white pb-24 text-slate-900">
@@ -26,7 +76,13 @@ export default function AccountInfoPage() {
       </header>
 
       <div className="pt-14">
-        <AccountProfileSection nickname="Bitelearn" />
+        <AccountProfileSection
+          nickname={nickname}
+          isEditing={isEditingNickname}
+          onEdit={() => setIsEditingNickname(true)}
+          onChange={setNickname}
+          onSubmit={handleSubmitNickname}
+        />
 
         <section className="mx-5 my-5">
           <article className="px-4 py-6">
@@ -38,7 +94,7 @@ export default function AccountInfoPage() {
                   이메일
                 </p>
                 <p className="cursor-not-allowed rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-500">
-                  test@bitelearn.com
+                  {user?.email ?? ''}
                 </p>
               </div>
 
@@ -62,6 +118,7 @@ export default function AccountInfoPage() {
             <div className="mt-4 flex flex-col gap-3 pb-4">
               <button
                 type="button"
+                onClick={handleLogout}
                 className="w-full rounded-full px-1 py-1 text-left text-xs text-slate-700"
               >
                 로그아웃

@@ -1,19 +1,31 @@
 import { useNavigate } from 'react-router-dom';
+import { login, getMe } from '@/api/auth/auth.api';
+import { setAccessToken } from '@/api/auth/tokenStore';
+import { useAuthStore } from '@/stores/auth.store';
 
 import type { LoginFormValues } from '@/schemas/loginSchema';
 import LoginForm from '@/components/features/auth/LoginForm';
 
+type SocialProvider = 'GOOGLE' | 'NAVER';
+
+const SOCIAL_LOGIN_URL: Record<SocialProvider, string> = {
+  GOOGLE: `${import.meta.env.VITE_API_BASE_URL}/login/oauth2/code/google`,
+  NAVER: `${import.meta.env.VITE_API_BASE_URL}/login/oauth2/code/naver`,
+};
+
 export default function LoginPage() {
   const navigate = useNavigate();
+  const setUser = useAuthStore((state) => state.setUser);
 
-  // 로그인 제출 핸들러
-  const handleLoginSubmit = async (data: LoginFormValues) => {
+  // 로컬 로그인 핸들러
+  const handleLocalLogin = async (data: LoginFormValues) => {
     try {
-      console.log('API 요청 데이터:', data);
-      // 백엔드 API 명세가 확정된 후 axios 통신 로직 추가
-      // await apiClient.post('/api/auth/login', data);
+      const response = await login(data);
+      setAccessToken(response.accessToken);
 
-      alert('로그인이 완료되었습니다! 홈 페이지로 이동합니다.');
+      const me = await getMe();
+      setUser(me);
+
       navigate('/');
     } catch (error) {
       console.error('로그인 실패', error);
@@ -21,5 +33,12 @@ export default function LoginPage() {
     }
   };
 
-  return <LoginForm onSubmit={handleLoginSubmit} />;
+  // 소셜 로그인 핸들러
+  const handleSocialLogin = (provider: SocialProvider) => {
+    window.location.replace(SOCIAL_LOGIN_URL[provider]);
+  };
+
+  return (
+    <LoginForm onSubmit={handleLocalLogin} onSocialLogin={handleSocialLogin} />
+  );
 }

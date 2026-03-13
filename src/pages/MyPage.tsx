@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import type { MenuItem } from '@/components/features/mypage/mypage.types';
 import MyProfileCard from '@/components/features/mypage/MyProfileCard';
 import MyPageMenuSection from '@/components/features/mypage/MyPageMenuSection';
+import { useAuthStore } from '@/stores/auth.store';
+import { formatDisplayName } from '@/utils/formatUser';
 
 const MENU_ITEMS: MenuItem[] = [
   {
@@ -24,6 +26,7 @@ const MENU_ITEMS: MenuItem[] = [
 
 export default function MyPage() {
   const navigate = useNavigate();
+  const user = useAuthStore((state) => state.user);
 
   return (
     <div className="relative flex min-h-dvh flex-col overflow-hidden text-slate-900">
@@ -39,8 +42,8 @@ export default function MyPage() {
 
       <section className="hide-scrollbar flex-1 overflow-y-auto px-5 pb-24 pt-20">
         <MyProfileCard
-          nickname="Bitelearn"
-          email="bitelearn@bitelearn.com"
+          nickname={formatDisplayName(user?.nickname)}
+          email={user?.email ?? ''}
           onClick={() => navigate('/mypage/account')}
         />
         <MyPageMenuSection items={MENU_ITEMS} />

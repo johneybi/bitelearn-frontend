@@ -14,11 +14,14 @@ import {
 } from '@/components/ui/form';
 import { loginSchema, type LoginFormValues } from '@/schemas/loginSchema';
 
+type SocialProvider = 'GOOGLE' | 'NAVER';
+
 type LoginFormProps = {
   onSubmit: (data: LoginFormValues) => Promise<void> | void;
+  onSocialLogin?: (provider: SocialProvider) => void;
 };
 
-export default function LoginForm({ onSubmit }: LoginFormProps) {
+export default function LoginForm({ onSubmit, onSocialLogin }: LoginFormProps) {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -88,10 +91,19 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
 
       {/* 소셜 로그인 버튼 영역 */}
       <div className="flex flex-col gap-2">
-        <Button variant="outline" className="w-full text-gray-700">
+        <Button
+          variant="outline"
+          className="w-full text-gray-700"
+          type="button"
+          onClick={() => onSocialLogin?.('GOOGLE')}
+        >
           구글로 시작하기
         </Button>
-        <Button className="w-full bg-[#03C75A] text-white hover:bg-[#02b350]">
+        <Button
+          type="button"
+          className="w-full bg-[#03C75A] text-white hover:bg-[#02b350]"
+          onClick={() => onSocialLogin?.('NAVER')}
+        >
           네이버로 시작하기
         </Button>
       </div>
