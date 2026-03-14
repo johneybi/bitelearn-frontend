@@ -45,17 +45,3 @@ export type MeResponse = {
 export type UpdateNicknameRequest = {
   nickname: string;
 };
-
-export type AuthErrorCode =
-  | 'INVALID_INPUT'
-  | 'DUPLICATE_EMAIL'
-  | 'DUPLICATE_NICKNAME'
-  | 'INVALID_CREDENTIALS'
-  | 'USER_BLOCKED'
-  | 'INVALID_REFRESH_TOKEN'
-  | 'EXPIRED_REFRESH_TOKEN';
-
-export type ErrorResponse = {
-  code?: AuthErrorCode;
-  message?: string;
-};
