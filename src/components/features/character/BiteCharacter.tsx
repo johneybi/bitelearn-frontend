@@ -5,9 +5,13 @@ import { CHARACTER_STATES } from './character.constants';
 
 interface BiteCharacterProps {
   exp: number;
+  messageOverride?: string;
 }
 
-export default function BiteCharacter({ exp }: BiteCharacterProps) {
+export default function BiteCharacter({
+  exp,
+  messageOverride,
+}: BiteCharacterProps) {
   const state = useMemo(() => {
     if (exp < CHARACTER_STATES.POOR.threshold) return CHARACTER_STATES.POOR;
     if (exp < CHARACTER_STATES.MIDDLE.threshold) return CHARACTER_STATES.MIDDLE;
@@ -39,7 +43,7 @@ export default function BiteCharacter({ exp }: BiteCharacterProps) {
       <div className="relative flex-1">
         <div className="relative rounded-2xl border border-slate-100 bg-white p-3 shadow-sm">
           <p className="whitespace-pre-line text-[13px] font-bold leading-tight text-slate-700">
-            {state.message}
+            {messageOverride ?? state.message}
           </p>
 
           <div className="absolute -left-2 top-1/2 h-3 w-3 -translate-y-1/2 rotate-45 border-b border-l border-slate-100 bg-white" />
