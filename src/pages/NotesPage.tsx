@@ -1,10 +1,8 @@
 import { useMemo, useState } from 'react';
 
-import NoteHeader from '@/components/features/note/NoteHeader';
-import NoteTabNav from '@/components/features/note/NoteTabNav';
+import NoteTopNav from '@/components/features/note/NoteTopNav';
 import ReviewNoteSection from '@/components/features/note/ReviewNoteSection';
 import BookmarkSection from '@/components/features/note/BookmarkSection';
-import LearningHistorySection from '@/components/features/note/LearningHistorySection';
 
 import { MOCK_CATEGORY_CHAPTERS } from '@/mock/chapter';
 import { MISTAKE_ITEMS } from '@/mock/mistakeNote';
@@ -16,16 +14,6 @@ export type NoteTab = 'review' | 'bookmark' | 'history';
 export default function NotesPage() {
   const [activeTab, setActiveTab] = useState<NoteTab>('review');
   const [selectedCategoryId, setSelectedCategoryId] = useState('all');
-
-  const totalCompleted = MOCK_CATEGORY_CHAPTERS.reduce(
-    (acc, cat) => acc + cat.completedChapters,
-    0
-  );
-
-  const totalChapters = MOCK_CATEGORY_CHAPTERS.reduce(
-    (acc, cat) => acc + cat.totalChapters,
-    0
-  );
 
   const filteredMistakes = useMemo(() => {
     const sorted = [...MISTAKE_ITEMS].sort(
@@ -44,33 +32,23 @@ export default function NotesPage() {
   return (
     <div className="flex h-full flex-col overflow-hidden bg-white text-slate-900">
       <div className="hide-scrollbar flex-1 overflow-y-auto pb-8">
-        <NoteHeader
-          totalCompleted={totalCompleted}
-          totalChapters={totalChapters}
-          consecutiveDays={MOCK_USER.consecutiveDays}
-          totalExp={MOCK_USER.totalExp}
-        />
+        <NoteTopNav activeTab={activeTab} onChangeTab={setActiveTab} />
 
-        <div className="bg-white px-6 pt-6">
-          <NoteTabNav activeTab={activeTab} onChangeTab={setActiveTab} />
-        </div>
-
-        <section className="px-6 pb-32 pt-6">
+        <section className="pb-32 pt-6">
           {activeTab === 'review' && (
             <ReviewNoteSection
               selectedCategoryId={selectedCategoryId}
               onChangeCategory={setSelectedCategoryId}
               categories={MOCK_CATEGORY_CHAPTERS}
               mistakes={filteredMistakes}
+              totalExp={MOCK_USER.totalExp}
             />
           )}
 
           {activeTab === 'bookmark' && (
-            <BookmarkSection articles={bookmarkedArticles} />
-          )}
-
-          {activeTab === 'history' && (
-            <LearningHistorySection categories={MOCK_CATEGORY_CHAPTERS} />
+            <div className="px-6">
+              <BookmarkSection articles={bookmarkedArticles} />
+            </div>
           )}
         </section>
       </div>
