@@ -14,9 +14,6 @@ export default function AuthInitializer({ children }: AuthInitializeProps) {
   const setUser = useAuthStore((state) => state.setUser);
   const clearAuth = useAuthStore((state) => state.clearAuth);
   const setIsInitializing = useAuthStore((state) => state.setIsInitializing);
-  const setIsOnboardingOpen = useAuthStore(
-    (state) => state.setIsOnboardingOpen
-  );
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -33,7 +30,6 @@ export default function AuthInitializer({ children }: AuthInitializeProps) {
         if (!accessToken) {
           clearAccessToken();
           clearAuth();
-          setIsOnboardingOpen(true);
           return;
         }
 
@@ -50,7 +46,6 @@ export default function AuthInitializer({ children }: AuthInitializeProps) {
         }
         clearAccessToken();
         clearAuth();
-        setIsOnboardingOpen(true);
       } finally {
         setIsInitializing(false);
       }
