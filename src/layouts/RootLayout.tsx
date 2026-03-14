@@ -1,19 +1,31 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
+import { getAccessToken } from '@/api/auth/tokenStore';
 import { useAuthStore } from '@/stores/auth.store';
 
 import OnboardingModal from '@/components/features/onboarding/OnboardingModal';
 import { completeOnboarding } from '@/api/auth/auth.api';
 
 export default function RootLayout() {
+  const location = useLocation();
   const isOnboardingOpen = useAuthStore((state) => state.isOnboardingOpen);
-  const user = useAuthStore((state) => state.user);
   const setUser = useAuthStore((state) => state.setUser);
+  const setIsOnboardingOpen = useAuthStore(
+    (state) => state.setIsOnboardingOpen
+  );
+  const isAuthPage =
+    location.pathname === '/login' || location.pathname === '/signup';
 
   const handleCompleteOnboarding = async () => {
+    const { user, isAuthenticated } = useAuthStore.getState();
+    const accessToken = getAccessToken();
+
+    if (!isAuthenticated || !user || !accessToken) {
+      setIsOnboardingOpen(false);
+      return;
+    }
+
     try {
       await completeOnboarding();
-
-      if (!user) return;
 
       setUser({
         ...user,
@@ -30,7 +42,7 @@ export default function RootLayout() {
         <Outlet />
 
         <OnboardingModal
-          isOpen={isOnboardingOpen}
+          isOpen={isOnboardingOpen && !isAuthPage}
           onClose={handleCompleteOnboarding}
         />
       </div>
