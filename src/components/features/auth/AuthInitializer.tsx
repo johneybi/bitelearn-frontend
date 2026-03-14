@@ -57,7 +57,8 @@ export default function AuthInitializer({ children }: AuthInitializeProps) {
     };
 
     initializeAuth();
-  }, [setUser, clearAuth, setIsInitializing, setIsOnboardingOpen]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isInitializing) {
     return <div>로딩 중...</div>;
