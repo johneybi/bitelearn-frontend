@@ -1,7 +1,6 @@
 import ReviewSummary from '@/components/features/note/ReviewSummary';
 import ReviewMistakeList from '@/components/features/note/ReviewMistakeList';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import ReviewCategoryChip from '@/components/features/note/ReviewCategoryChip';
 
 type NoteCategory = {
   categoryId: string;
@@ -45,20 +44,12 @@ export default function ReviewNoteSection({
             const isActive = selectedCategoryId === category.categoryId;
 
             return (
-              <Button
+              <ReviewCategoryChip
                 key={category.categoryId}
-                type="button"
-                variant={isActive ? 'default' : 'secondary'}
+                label={category.categoryName}
+                isActive={isActive}
                 onClick={() => onChangeCategory(category.categoryId)}
-                className={cn(
-                  'h-9 whitespace-nowrap rounded-full px-5 text-xs font-bold transition-all',
-                  isActive
-                    ? 'bg-slate-900 text-white shadow-md'
-                    : 'border-none bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600'
-                )}
-              >
-                {category.categoryName}
-              </Button>
+              />
             );
           })}
         </div>
