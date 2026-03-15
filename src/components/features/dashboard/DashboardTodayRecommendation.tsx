@@ -6,32 +6,42 @@ import DashboardTodayRecommendationHeroCard from './DashboardTodayRecommendation
 type DashboardTodayRecommendationProps = {
   recommendations: DashboardRecommendation[];
   onRecommendationClick: (recommendation: DashboardRecommendation) => void;
+  showHeader?: boolean;
+  showHeroCard?: boolean;
+  showAlternative?: boolean;
 };
 
 export default function DashboardTodayRecommendation({
   recommendations,
   onRecommendationClick,
+  showHeader = true,
+  showHeroCard = true,
+  showAlternative = true,
 }: DashboardTodayRecommendationProps) {
   const firstRec = recommendations[0];
   const secondRec = recommendations[1];
 
-  if (!firstRec) return null;
+  if (!firstRec && !secondRec) return null;
 
   return (
     <section className="mb-8 mt-12">
-      <div className="mb-6 flex items-center gap-2 px-1">
-        <Sparkles className="h-5 w-5 fill-slate-900 text-slate-900" />
-        <h3 className="text-lg font-bold tracking-tight text-slate-900">
-          오늘의 추천 학습👇
-        </h3>
-      </div>
+      {showHeader && (
+        <div className="mb-6 flex items-center gap-2 px-1">
+          <Sparkles className="h-5 w-5 fill-slate-900 text-slate-900" />
+          <h3 className="text-lg font-bold tracking-tight text-slate-900">
+            오늘의 추천 학습👇
+          </h3>
+        </div>
+      )}
 
-      <DashboardTodayRecommendationHeroCard
-        recommendation={firstRec}
-        onClick={() => onRecommendationClick(firstRec)}
-      />
+      {showHeroCard && firstRec && (
+        <DashboardTodayRecommendationHeroCard
+          recommendation={firstRec}
+          onClick={() => onRecommendationClick(firstRec)}
+        />
+      )}
 
-      {secondRec && (
+      {showAlternative && secondRec && (
         <Button
           type="button"
           variant="outline"

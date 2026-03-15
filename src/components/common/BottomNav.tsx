@@ -1,11 +1,19 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { BOTTOM_NAV_TABS } from '@/constants/bottomNavTabs';
 
-export default function BottomNav() {
+type BottomNavProps = {
+  isFixed?: boolean;
+};
+
+export default function BottomNav({ isFixed = true }: BottomNavProps) {
   const location = useLocation();
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center">
+    <div
+      className={`pointer-events-none inset-x-0 bottom-0 z-30 flex justify-center ${
+        isFixed ? 'fixed' : 'absolute'
+      }`}
+    >
       <div
         className="relative w-full max-w-app"
         style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
