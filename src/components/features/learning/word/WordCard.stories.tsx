@@ -1,3 +1,4 @@
+import type { ComponentProps } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { MOCK_CHOICE_QUESTION_SET } from '@/mock/choiceQuestion';
@@ -7,6 +8,10 @@ import WordCard from './WordCard';
 const sampleWord = MOCK_CHOICE_QUESTION_SET.questions.find(
   (question) => question.type === 'word'
 );
+
+if (!sampleWord) {
+  throw new Error('Word card story fixture not found');
+}
 
 const meta = {
   title: 'Learning/Word/WordCard',
@@ -24,8 +29,9 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+type WordCardProps = ComponentProps<typeof WordCard>;
 
-function renderCard(args: Story['args']) {
+function renderCard(args: WordCardProps) {
   return (
     <div className="mx-auto h-[480px] w-full max-w-[320px]">
       <WordCard {...args} />

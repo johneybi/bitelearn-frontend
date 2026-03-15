@@ -1,3 +1,4 @@
+import type { ComponentProps } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import type { ArticleDetail } from '@/mock/article';
@@ -50,8 +51,9 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+type ArticleCardProps = ComponentProps<typeof ArticleCard>;
 
-function renderInWidth(widthClassName: string, args: Story['args']) {
+function renderInWidth(widthClassName: string, args: ArticleCardProps) {
   return (
     <div className={`mx-auto w-full ${widthClassName}`}>
       <ArticleCard {...args} />

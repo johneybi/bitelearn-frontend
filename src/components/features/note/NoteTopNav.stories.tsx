@@ -1,3 +1,4 @@
+import type { ComponentProps } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import NoteTopNav from './NoteTopNav';
@@ -17,8 +18,9 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+type NoteTopNavProps = ComponentProps<typeof NoteTopNav>;
 
-function renderTopNav(args: Story['args']) {
+function renderTopNav(args: NoteTopNavProps) {
   return (
     <div className="min-h-[140px] bg-white">
       <NoteTopNav {...args} />
