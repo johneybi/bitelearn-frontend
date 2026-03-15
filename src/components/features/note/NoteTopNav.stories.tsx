@@ -1,0 +1,38 @@
+import type { Meta, StoryObj } from '@storybook/react-vite';
+
+import NoteTopNav from './NoteTopNav';
+
+const meta = {
+  title: 'Note/NoteTopNav',
+  component: NoteTopNav,
+  tags: ['autodocs'],
+  parameters: {
+    layout: 'fullscreen',
+  },
+  args: {
+    activeTab: 'review',
+    onChangeTab: () => {},
+  },
+} satisfies Meta<typeof NoteTopNav>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+function renderTopNav(args: Story['args']) {
+  return (
+    <div className="min-h-[140px] bg-white">
+      <NoteTopNav {...args} />
+    </div>
+  );
+}
+
+export const ReviewActive: Story = {
+  render: (args) => renderTopNav(args),
+};
+
+export const BookmarkActive: Story = {
+  render: (args) => renderTopNav(args),
+  args: {
+    activeTab: 'bookmark',
+  },
+};
