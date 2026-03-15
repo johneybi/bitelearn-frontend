@@ -6,13 +6,15 @@ import { X } from 'lucide-react';
 type OnboardingModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  initialStep?: number;
 };
 
 export default function OnboardingModal({
   isOpen,
   onClose,
+  initialStep = 0,
 }: OnboardingModalProps) {
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(initialStep);
 
   if (!isOpen) return null;
 
