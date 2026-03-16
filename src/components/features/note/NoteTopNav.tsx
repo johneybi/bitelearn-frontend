@@ -18,7 +18,7 @@ export default function NoteTopNav({
   return (
     <Tabs
       value={activeTab}
-      onValueChange={(value) => onChangeTab(value as NoteTab)}
+      onValueChange={(value: string) => onChangeTab(value as NoteTab)}
       className="sticky top-0 z-20 w-full border-b border-slate-100 bg-white"
     >
       <TabsList className="flex w-full items-stretch justify-start rounded-none bg-white p-0 pt-12">

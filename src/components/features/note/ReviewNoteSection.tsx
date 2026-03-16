@@ -1,3 +1,4 @@
+import type { RefCallback } from 'react';
 import ReviewSummary from '@/components/features/note/ReviewSummary';
 import ReviewMistakeList from '@/components/features/note/ReviewMistakeList';
 import ReviewCategoryChip from '@/components/features/note/ReviewCategoryChip';
@@ -21,6 +22,11 @@ type ReviewNoteSectionProps = {
   categories: NoteCategory[];
   mistakes: NoteMistake[];
   totalExp: number;
+  totalMistakeCount: number;
+  isLoading?: boolean;
+  isLoadingMore?: boolean;
+  hasNext?: boolean;
+  sentinelRef?: RefCallback<HTMLDivElement>;
 };
 
 export default function ReviewNoteSection({
@@ -29,6 +35,11 @@ export default function ReviewNoteSection({
   categories,
   mistakes,
   totalExp,
+  totalMistakeCount,
+  isLoading = false,
+  isLoadingMore = false,
+  hasNext = false,
+  sentinelRef,
 }: ReviewNoteSectionProps) {
   const reviewCategories = [
     { categoryId: 'all', categoryName: '전체' },
@@ -37,7 +48,10 @@ export default function ReviewNoteSection({
 
   return (
     <>
-      <ReviewSummary pendingReviewCount={mistakes.length} totalExp={totalExp} />
+      <ReviewSummary
+        pendingReviewCount={totalMistakeCount}
+        totalExp={totalExp}
+      />
       <div className="px-6 py-3">
         <div className="hide-scrollbar -mx-2 flex gap-2 overflow-x-auto px-2">
           {reviewCategories.map((category) => {
@@ -56,7 +70,14 @@ export default function ReviewNoteSection({
       </div>
 
       <div className="px-6 pb-6 pt-4">
-        <ReviewMistakeList categories={categories} mistakes={mistakes} />
+        <ReviewMistakeList
+          categories={categories}
+          mistakes={mistakes}
+          isLoading={isLoading}
+          isLoadingMore={isLoadingMore}
+          hasNext={hasNext}
+          sentinelRef={sentinelRef}
+        />
       </div>
     </>
   );
