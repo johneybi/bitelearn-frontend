@@ -21,10 +21,12 @@ const meta = {
   ],
   args: {
     articles: mockArticles.slice(0, 2).map((article) => ({
+      id: `bookmark-story-${article.articleId}`,
       articleId: article.articleId,
       category: article.category,
       title: article.title,
       thumbnailUrl: article.thumbnailUrl,
+      bookmarkedAt: article.publishedAt,
     })),
   },
 } satisfies Meta<typeof BookmarkSection>;

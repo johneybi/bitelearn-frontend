@@ -1,21 +1,42 @@
+import type { RefCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Bookmark } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-type BookmarkArticle = {
-  articleId: string;
-  category: string;
-  title: string;
-  thumbnailUrl: string;
-};
+import type { BookmarkedArticleCardItem } from '@/mock/fetchBookmarkedArticlePage';
 
 type BookmarkSectionProps = {
-  articles: BookmarkArticle[];
+  articles: BookmarkedArticleCardItem[];
+  isLoading?: boolean;
+  isLoadingMore?: boolean;
+  hasNext?: boolean;
+  sentinelRef?: RefCallback<HTMLDivElement>;
 };
 
-export default function BookmarkSection({ articles }: BookmarkSectionProps) {
+export default function BookmarkSection({
+  articles,
+  isLoading = false,
+  isLoadingMore = false,
+  hasNext = false,
+  sentinelRef,
+}: BookmarkSectionProps) {
   const navigate = useNavigate();
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <h3 className="mb-4 px-1 text-sm font-bold text-slate-400">
+          저장한 아티클
+        </h3>
+
+        <div className="rounded-[32px] border-2 border-dashed border-slate-100 py-20 text-center">
+          <p className="text-sm font-bold text-slate-400">
+            저장한 글을 불러오는 중이에요
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (articles.length === 0) {
     return (
@@ -78,6 +99,22 @@ export default function BookmarkSection({ articles }: BookmarkSectionProps) {
             </div>
           </Button>
         ))}
+      </div>
+
+      <div className="pt-2 text-center">
+        {isLoadingMore && (
+          <p className="text-xs font-bold text-slate-300">
+            저장한 글을 더 불러오는 중이에요
+          </p>
+        )}
+
+        {!hasNext && articles.length > 0 && (
+          <p className="text-xs font-bold text-slate-300">
+            저장한 글을 모두 확인했어요
+          </p>
+        )}
+
+        {hasNext && <div ref={sentinelRef} className="h-4 w-full" />}
       </div>
     </div>
   );

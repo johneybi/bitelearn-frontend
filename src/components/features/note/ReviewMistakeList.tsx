@@ -1,3 +1,4 @@
+import type { RefCallback } from 'react';
 import { RotateCcw } from 'lucide-react';
 
 import MistakeCard from '@/components/features/note/MistakeCard';
@@ -18,12 +19,30 @@ type NoteMistake = {
 type ReviewMistakeListProps = {
   categories: NoteCategory[];
   mistakes: NoteMistake[];
+  isLoading?: boolean;
+  isLoadingMore?: boolean;
+  hasNext?: boolean;
+  sentinelRef?: RefCallback<HTMLDivElement>;
 };
 
 export default function ReviewMistakeList({
   categories,
   mistakes,
+  isLoading = false,
+  isLoadingMore = false,
+  hasNext = false,
+  sentinelRef,
 }: ReviewMistakeListProps) {
+  if (isLoading) {
+    return (
+      <div className="rounded-[32px] border-2 border-dashed border-slate-100 py-20 text-center">
+        <p className="text-sm font-bold text-slate-400">
+          오답노트를 불러오는 중이에요
+        </p>
+      </div>
+    );
+  }
+
   if (mistakes.length === 0) {
     return (
       <div className="rounded-[32px] border-2 border-dashed border-slate-100 py-20 text-center">
@@ -53,6 +72,22 @@ export default function ReviewMistakeList({
           })}
         />
       ))}
+
+      <div className="pt-2 text-center">
+        {isLoadingMore && (
+          <p className="text-xs font-bold text-slate-300">
+            오답노트를 더 불러오는 중이에요
+          </p>
+        )}
+
+        {!hasNext && mistakes.length > 0 && (
+          <p className="text-xs font-bold text-slate-300">
+            오답노트를 모두 확인했어요
+          </p>
+        )}
+
+        {hasNext && <div ref={sentinelRef} className="h-4 w-full" />}
+      </div>
     </div>
   );
 }
