@@ -88,7 +88,7 @@ export type ArticleCategory = (typeof ARTICLE_CATEGORIES)[number];
 export const mockArticles: ArticleDetail[] = [
   {
     articleId: 'article-2026-001',
-    category: '부동산/주거',
+    category: '부동산·주거',
     title:
       '전세사기 방지 필수 체크리스트 | 계약 전 확인, 특약 작성, 보증보험까지',
     thumbnailUrl: '/images/article/article_thumbnail.png',
