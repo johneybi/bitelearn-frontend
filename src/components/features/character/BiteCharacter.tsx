@@ -6,11 +6,13 @@ import { CHARACTER_STATES } from './character.constants';
 interface BiteCharacterProps {
   exp: number;
   messageOverride?: string;
+  animate?: boolean;
 }
 
 export default function BiteCharacter({
   exp,
   messageOverride,
+  animate = true,
 }: BiteCharacterProps) {
   const state = useMemo(() => {
     if (exp < CHARACTER_STATES.POOR.threshold) return CHARACTER_STATES.POOR;
@@ -20,17 +22,22 @@ export default function BiteCharacter({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={animate ? { opacity: 0, y: 10 } : false}
       animate={{ opacity: 1, y: 0 }}
+      transition={animate ? undefined : { duration: 0 }}
       className={`relative mb-8 flex items-center gap-4 rounded-[32px] border pb-4 pl-4 pr-6 pt-4 shadow-sm transition-colors duration-500 ${state.bgColor} ${state.borderColor}`}
     >
       <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
+        animate={animate ? { y: [0, -6, 0] } : { y: 0 }}
+        transition={
+          animate
+            ? {
+                duration: 3,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }
+            : { duration: 0 }
+        }
         className="h-24 w-24 shrink-0"
       >
         <img

@@ -3,11 +3,13 @@ import BiteCharacter from '@/components/features/character/BiteCharacter';
 type ReviewSummaryProps = {
   pendingReviewCount: number;
   totalExp: number;
+  animateCharacter?: boolean;
 };
 
 export default function ReviewSummary({
   pendingReviewCount,
   totalExp,
+  animateCharacter = true,
 }: ReviewSummaryProps) {
   const reviewMessage =
     pendingReviewCount === 0
@@ -20,7 +22,11 @@ export default function ReviewSummary({
 
   return (
     <div className="mt-6 bg-white px-6 pb-4 pt-6">
-      <BiteCharacter exp={totalExp} messageOverride={reviewMessage} />
+      <BiteCharacter
+        exp={totalExp}
+        messageOverride={reviewMessage}
+        animate={animateCharacter}
+      />
 
       <div className="grid grid-cols-2 gap-2">
         <div className="rounded-2xl border-2 border-slate-100 bg-slate-50/50 p-3">
