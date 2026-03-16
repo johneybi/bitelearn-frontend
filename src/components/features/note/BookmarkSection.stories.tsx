@@ -34,12 +34,15 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const WithArticles: Story = {
+export const Default: Story = {
   render: (args) => (
     <div className="px-6">
       <BookmarkSection {...args} />
     </div>
   ),
+  args: {
+    hasNext: true,
+  },
 };
 
 export const Empty: Story = {
@@ -50,5 +53,40 @@ export const Empty: Story = {
   ),
   args: {
     articles: [],
+  },
+};
+
+export const Loading: Story = {
+  render: (args) => (
+    <div className="px-6">
+      <BookmarkSection {...args} />
+    </div>
+  ),
+  args: {
+    isLoading: true,
+    articles: [],
+  },
+};
+
+export const LoadingMore: Story = {
+  render: (args) => (
+    <div className="px-6">
+      <BookmarkSection {...args} />
+    </div>
+  ),
+  args: {
+    isLoadingMore: true,
+    hasNext: true,
+  },
+};
+
+export const EndOfList: Story = {
+  render: (args) => (
+    <div className="px-6">
+      <BookmarkSection {...args} />
+    </div>
+  ),
+  args: {
+    hasNext: false,
   },
 };
