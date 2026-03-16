@@ -1,9 +1,10 @@
 import { ChevronRight, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { ArticleDetail } from '@/mock/article';
+import type { ArticleListItem } from '@/types/article';
 
 type ArticleCardProps = {
-  article: ArticleDetail;
+  article: ArticleListItem | ArticleDetail;
   onSelect: (articleId: string) => void;
   variant?: 'relaxed' | 'compact';
 };

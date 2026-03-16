@@ -3,11 +3,16 @@ import { ArrowRight, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ArticleThumb from '@/components/features/article/ArticleThumb';
 import type { ArticleDetail } from '@/mock/article';
+import type { ArticleListItem } from '@/types/article';
 
 type ArticleHeroCardProps = {
-  article: ArticleDetail;
+  article: ArticleListItem | ArticleDetail;
   onSelect: () => void;
 };
+
+function getAuthorName(article: ArticleListItem | ArticleDetail) {
+  return 'authorName' in article ? article.authorName : article.author.name;
+}
 
 export default function ArticleHeroCard({
   article,
@@ -45,7 +50,7 @@ export default function ArticleHeroCard({
         {/* 하단 */}
         <div className="mt-6 flex items-center justify-between border-t border-slate-50 pt-6">
           <p className="text-sm font-medium text-slate-500">
-            {article.author.name} 에디터
+            {getAuthorName(article)} 에디터
           </p>
 
           <Button
