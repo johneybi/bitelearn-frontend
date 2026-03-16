@@ -1,8 +1,6 @@
 // 액세스 토큰의 만료 시간 계산
-export const toExpiresAt = (expiresIn: number) => {
-  const expiresAt = Date.now() + expiresIn * 10000;
-
-  return expiresAt;
+export const toExpiresAt = (expiresInMs: number) => {
+  return Date.now() + expiresInMs;
 };
 
 // 액세스 토큰의 만료 여부 확인
