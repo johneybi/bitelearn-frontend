@@ -20,7 +20,7 @@ export const signupSchema = z
 
     passwordConfirm: z
       .string()
-      .min(1, { message: '비밀번호 확인을 입력해 주세요.' }),
+      .min(1, { message: '비밀번호 확인은 필수 입력값입니다.' }),
   })
   .refine((data) => data.password === data.passwordConfirm, {
     path: ['passwordConfirm'],
