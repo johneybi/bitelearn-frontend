@@ -39,6 +39,7 @@ export default function OnboardingModal({
       >
         {/* 닫기 버튼 */}
         <button
+          type="button"
           onClick={onClose}
           className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/5 text-slate-500 transition-colors hover:bg-black/10"
         >
@@ -91,6 +92,7 @@ export default function OnboardingModal({
           </div>
 
           <Button
+            type="button"
             onClick={handleNext}
             className={`h-14 w-full rounded-2xl text-lg font-bold shadow-md transition-all duration-300 ${
               step === ONBOARDING_DATA.length - 1

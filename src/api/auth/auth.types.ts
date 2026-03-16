@@ -18,14 +18,16 @@ export type LoginRequest = {
 };
 
 export type LoginResponse = {
+  grantType: string;
   accessToken: string;
-  expiresIn: number;
+  accessTokenExpiresIn: number;
 };
 
 // 토큰 재발급
 export type RefreshResponse = {
+  grantType: string;
   accessToken: string;
-  expiresIn: number;
+  accessTokenExpiresIn: number;
 };
 
 export type ProviderType = 'LOCAL' | 'NAVER' | 'GOOGLE';
@@ -42,18 +44,4 @@ export type MeResponse = {
 // 사용자 닉네임 수정
 export type UpdateNicknameRequest = {
   nickname: string;
-};
-
-export type AuthErrorCode =
-  | 'INVALID_INPUT'
-  | 'DUPLICATE_EMAIL'
-  | 'DUPLICATE_NICKNAME'
-  | 'INVALID_CREDENTIALS'
-  | 'USER_BLOCKED'
-  | 'INVALID_REFRESH_TOKEN'
-  | 'EXPIRED_REFRESH_TOKEN';
-
-export type ErrorResponse = {
-  code?: AuthErrorCode;
-  message?: string;
 };
