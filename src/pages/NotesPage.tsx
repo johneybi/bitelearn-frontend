@@ -1,33 +1,51 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import NoteTopNav from '@/components/features/note/NoteTopNav';
 import ReviewNoteSection from '@/components/features/note/ReviewNoteSection';
 import BookmarkSection from '@/components/features/note/BookmarkSection';
+import useCursorInfiniteQuery from '@/hooks/useCursorInfiniteQuery';
 
 import { MOCK_CATEGORY_CHAPTERS } from '@/mock/chapter';
+import { fetchBookmarkedArticlePage } from '@/mock/fetchBookmarkedArticlePage';
+import { fetchMistakeReviewPage } from '@/mock/fetchMistakeReviewPage';
 import { MISTAKE_ITEMS } from '@/mock/mistakeNote';
-import { mockArticles } from '@/mock/article';
-import { MOCK_USER } from '@/mock/user';
 
-export type NoteTab = 'review' | 'bookmark' | 'history';
+export type NoteTab = 'review' | 'bookmark';
 
 export default function NotesPage() {
   const [activeTab, setActiveTab] = useState<NoteTab>('review');
   const [selectedCategoryId, setSelectedCategoryId] = useState('all');
 
-  const filteredMistakes = useMemo(() => {
-    const sorted = [...MISTAKE_ITEMS].sort(
-      (a, b) => new Date(b.wrongAt).getTime() - new Date(a.wrongAt).getTime()
-    );
+  const fetchReviewPage = useCallback(
+    (cursor?: string | null) =>
+      fetchMistakeReviewPage({
+        cursor,
+        categoryId: selectedCategoryId,
+      }),
+    [selectedCategoryId]
+  );
 
-    if (selectedCategoryId === 'all') return sorted;
+  const fetchBookmarkPage = useCallback(
+    (cursor?: string | null) =>
+      fetchBookmarkedArticlePage({
+        cursor,
+      }),
+    []
+  );
 
-    return sorted.filter((item) => item.categoryId === selectedCategoryId);
-  }, [selectedCategoryId]);
+  const reviewFeed = useCursorInfiniteQuery({
+    queryKey: ['notes', 'review', selectedCategoryId],
+    queryFn: fetchReviewPage,
+    enabled: activeTab === 'review',
+  });
 
-  const bookmarkedArticles = useMemo(() => {
-    return mockArticles.slice(0, 2);
-  }, []);
+  const bookmarkFeed = useCursorInfiniteQuery({
+    queryKey: ['notes', 'bookmark'],
+    queryFn: fetchBookmarkPage,
+    enabled: activeTab === 'bookmark',
+  });
+
+  const totalMistakeCount = MISTAKE_ITEMS.length;
 
   return (
     <div className="flex h-full flex-col overflow-hidden bg-white text-slate-900">
@@ -40,14 +58,25 @@ export default function NotesPage() {
               selectedCategoryId={selectedCategoryId}
               onChangeCategory={setSelectedCategoryId}
               categories={MOCK_CATEGORY_CHAPTERS}
-              mistakes={filteredMistakes}
-              totalExp={MOCK_USER.totalExp}
+              mistakes={reviewFeed.items}
+              totalExp={1250}
+              totalMistakeCount={totalMistakeCount}
+              isLoading={reviewFeed.isPending}
+              isLoadingMore={reviewFeed.isFetchingNextPage}
+              hasNext={Boolean(reviewFeed.hasNextPage)}
+              sentinelRef={reviewFeed.sentinelRef}
             />
           )}
 
           {activeTab === 'bookmark' && (
             <div className="px-6">
-              <BookmarkSection articles={bookmarkedArticles} />
+              <BookmarkSection
+                articles={bookmarkFeed.items}
+                isLoading={bookmarkFeed.isPending}
+                isLoadingMore={bookmarkFeed.isFetchingNextPage}
+                hasNext={Boolean(bookmarkFeed.hasNextPage)}
+                sentinelRef={bookmarkFeed.sentinelRef}
+              />
             </div>
           )}
         </section>

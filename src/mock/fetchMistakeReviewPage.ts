@@ -5,17 +5,17 @@ import { paginateByCursor } from './paginateByCursor';
 
 const DEFAULT_SIZE = 10;
 
-type FetchMistakeItemsParams = {
+type FetchMistakeReviewPageParams = {
   cursor?: string | null; // 현재 페이지의 cursor
   categoryId?: string; // 선택된 카테고리 필터
   pageSize?: number; // 한 번에 가져올 아이템 수
 };
 
-export async function fetchMistakeItems({
+export async function fetchMistakeReviewPage({
   cursor,
   categoryId,
   pageSize = DEFAULT_SIZE,
-}: FetchMistakeItemsParams) {
+}: FetchMistakeReviewPageParams) {
   // 최신 오답이 먼저 보이도록 wrongAt 기준 내림차순 정렬
   const sortedMistakes = [...MISTAKE_ITEMS].sort(
     (a, b) => new Date(b.wrongAt).getTime() - new Date(a.wrongAt).getTime()

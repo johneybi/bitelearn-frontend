@@ -15,15 +15,15 @@ export type BookmarkedArticleCardItem = {
   bookmarkedAt: string;
 };
 
-type FetchBookmarkedArticlesParams = {
+type FetchBookmarkedArticlePageParams = {
   cursor?: string | null; // 현재 페이지의 cursor
   pageSize?: number; // 한 번에 가져올 아이템 수
 };
 
-export async function fetchBookmarkedArticles({
+export async function fetchBookmarkedArticlePage({
   cursor,
   pageSize = DEFAULT_SIZE,
-}: FetchBookmarkedArticlesParams): Promise<
+}: FetchBookmarkedArticlePageParams): Promise<
   CursorResponse<BookmarkedArticleCardItem>
 > {
   // 최신 북마크가 먼저 보이도록 bookmarkedAt 기준 내림차순 정렬

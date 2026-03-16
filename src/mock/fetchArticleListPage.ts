@@ -6,17 +6,17 @@ import type { ArticleListItem } from '@/types/article';
 
 const DEFAULT_SIZE = 10;
 
-type FetchArticleListParams = {
+type FetchArticleListPageParams = {
   cursor?: string | null;
   category?: ArticleCategory;
   pageSize?: number;
 };
 
-export async function fetchArticleList({
+export async function fetchArticleListPage({
   cursor,
   category,
   pageSize = DEFAULT_SIZE,
-}: FetchArticleListParams): Promise<CursorResponse<ArticleListItem>> {
+}: FetchArticleListPageParams): Promise<CursorResponse<ArticleListItem>> {
   // 최신 아티클이 먼저 보이도록 publishedAt 기준 내림차순 정렬
   const sortedArticles = [...mockArticles].sort(
     (a, b) =>
