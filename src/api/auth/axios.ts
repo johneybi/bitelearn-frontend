@@ -2,6 +2,7 @@ import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { clearAccessToken } from './tokenStore';
 import { useAuthStore } from '@/stores/auth.store';
 import { ensureValidAccessToken, refreshAccessToken } from './authRefresh';
+import { toAppError } from '@/api/error/toAppError';
 
 // 인터셉터에서 사용할 수 있도록 요청 구성 타입 확장
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
@@ -39,7 +40,7 @@ apiClient.interceptors.request.use(
 
     return requestConfig;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(toAppError(error))
 );
 
 // 응답 인터셉터 설정
@@ -50,13 +51,13 @@ apiClient.interceptors.response.use(
 
     // 원래 요청이 없거나 이미 재시도한 경우 에러 반환
     if (!originalRequest || !error.response) {
-      return Promise.reject(error);
+      return Promise.reject(toAppError(error));
     }
 
     const isRefreshRequest = originalRequest.url?.includes('/auth/refresh');
     // refresh 요청 자체에서 401이 발생하면 무한 루프 방지 위해 에러 반환
     if (originalRequest.skipAuthRefresh || isRefreshRequest) {
-      return Promise.reject(error);
+      return Promise.reject(toAppError(error));
     }
 
     // 401 fallback
@@ -69,7 +70,7 @@ apiClient.interceptors.response.use(
       if (!newAccessToken) {
         clearAccessToken();
         useAuthStore.getState().clearAuth();
-        return Promise.reject(error);
+        return Promise.reject(toAppError(error));
       }
 
       // 헤더가 없는 경우 초기화
@@ -81,7 +82,7 @@ apiClient.interceptors.response.use(
       // 실패했던 원래 요청 재시도
       return apiClient(originalRequest);
     }
-    return Promise.reject(error);
+    return Promise.reject(toAppError(error));
   }
 );
 
