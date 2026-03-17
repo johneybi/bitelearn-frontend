@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, type UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router-dom';
 
@@ -16,8 +16,16 @@ import { loginSchema, type LoginFormValues } from '@/schemas/loginSchema';
 
 type SocialProvider = 'GOOGLE' | 'NAVER';
 
+export type LoginFormSubmitHelpers = Pick<
+  UseFormReturn<LoginFormValues>,
+  'setError' | 'clearErrors'
+>;
+
 type LoginFormProps = {
-  onSubmit: (data: LoginFormValues) => Promise<void> | void;
+  onSubmit: (
+    data: LoginFormValues,
+    helpers: LoginFormSubmitHelpers
+  ) => Promise<void> | void;
   onSocialLogin?: (provider: SocialProvider) => void;
 };
 
@@ -35,7 +43,15 @@ export default function LoginForm({ onSubmit, onSocialLogin }: LoginFormProps) {
       <h2 className="mb-6 text-center text-2xl font-bold">로그인</h2>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={form.handleSubmit((data) =>
+            onSubmit(data, {
+              setError: form.setError,
+              clearErrors: form.clearErrors,
+            })
+          )}
+          className="space-y-4"
+        >
           <FormField
             control={form.control}
             name="email"
