@@ -1,6 +1,14 @@
+@import url('https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .tossface {
+    font-family: 'Tossface';
+  }
+}
 
 /* Custom animation utilities */
 @layer utilities {
