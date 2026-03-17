@@ -1,9 +1,12 @@
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 import { getMe, login } from '@/api/auth/auth.api';
+import { isAppError } from '@/api/error/appError';
 import { setAccessToken } from '@/api/auth/tokenStore';
 import { toExpiresAt } from '@/api/auth/token.util';
 import LoginForm from '@/components/features/auth/LoginForm';
+import { logError } from '@/lib/logError';
 import type { LoginFormValues } from '@/schemas/loginSchema';
 import { useAuthStore } from '@/stores/auth.store';
 
@@ -33,8 +36,13 @@ export default function LoginPage() {
 
       navigate('/');
     } catch (error) {
-      console.error('로그인 실패', error);
-      alert('로그인에 실패했습니다. 다시 시도해주세요.');
+      logError('LoginPage', '로그인 실패', error);
+      if (isAppError(error)) {
+        toast.error(error.message);
+        return;
+      }
+
+      toast.error('로그인에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
