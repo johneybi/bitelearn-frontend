@@ -1,13 +1,21 @@
 import { getMe } from '@/api/auth/auth.api';
+import { isAppError } from '@/api/error/appError';
+import { API_ERROR_MESSAGE } from '@/api/error/errorMessages';
 import { ensureValidAccessToken } from '@/api/auth/authRefresh';
 import { useAuthStore } from '@/stores/auth.store';
 import { clearAccessToken } from '@/api/auth/tokenStore';
+import { logError } from '@/lib/logError';
 import { useEffect } from 'react';
-import axios from 'axios';
 
 type AuthInitializeProps = {
   children: React.ReactNode;
 };
+
+const SILENT_AUTH_ERROR_MESSAGES = new Set<string>([
+  API_ERROR_MESSAGE.INVALID_REFRESH_TOKEN,
+  API_ERROR_MESSAGE.EXPIRED_REFRESH_TOKEN,
+  API_ERROR_MESSAGE.USER_NOT_FOUND,
+]);
 
 export default function AuthInitializer({ children }: AuthInitializeProps) {
   const isInitializing = useAuthStore((state) => state.isInitializing);
@@ -37,12 +45,13 @@ export default function AuthInitializer({ children }: AuthInitializeProps) {
 
         setUser(me);
       } catch (error) {
-        // 비로그인 상태에서 refresh 401은 정상 흐름으로 처리
-        const isUnauthorized =
-          axios.isAxiosError(error) && error.response?.status === 401;
+        const isSilentAuthError =
+          isAppError(error) &&
+          (error.status === 401 ||
+            SILENT_AUTH_ERROR_MESSAGES.has(error.message));
 
-        if (!isUnauthorized) {
-          console.error('인증 초기화 중 오류 발생', error);
+        if (!isSilentAuthError) {
+          logError('AuthInitializer', '인증 초기화 중 오류 발생', error);
         }
         clearAccessToken();
         clearAuth();

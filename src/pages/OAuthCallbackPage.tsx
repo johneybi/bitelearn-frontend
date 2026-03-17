@@ -1,9 +1,15 @@
 import { setAccessToken, clearAccessToken } from '@/api/auth/tokenStore';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { getMe } from '@/api/auth/auth.api';
+import { isAppError } from '@/api/error/appError';
 import { useAuthStore } from '@/stores/auth.store';
 import { toExpiresAt } from '@/api/auth/token.util';
+import { logError } from '@/lib/logError';
+
+const OAUTH_CALLBACK_ERROR_FALLBACK_MESSAGE =
+  '소셜 로그인 처리에 실패했습니다. 다시 시도해주세요.';
 
 export default function OAuthCallbackPage() {
   const location = useLocation();
@@ -33,7 +39,18 @@ export default function OAuthCallbackPage() {
 
         navigate('/', { replace: true });
       } catch (error) {
-        console.error('소셜 로그인 유저 정보 가져오기 실패:', error);
+        logError(
+          'OAuthCallbackPage',
+          '소셜 로그인 유저 정보 가져오기 실패',
+          error
+        );
+
+        toast.error(
+          isAppError(error)
+            ? error.message
+            : OAUTH_CALLBACK_ERROR_FALLBACK_MESSAGE
+        );
+
         clearAccessToken();
         clearAuth();
         navigate('/login', { replace: true });
