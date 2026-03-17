@@ -11,6 +11,8 @@ const meta = {
   },
   args: {
     onBack: () => {},
+    title: '전세사기 방지 필수 체크리스트',
+    articleId: 'article-2026-001',
   },
 } satisfies Meta<typeof ArticleDetailHeader>;
 
@@ -18,3 +20,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const SharePopoverOpen: Story = {
+  args: {
+    sharePopoverOpen: true,
+  },
+};

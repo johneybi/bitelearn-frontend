@@ -28,7 +28,11 @@ export default function ArticleDetailPage() {
 
   return (
     <main className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-white text-slate-900">
-      <ArticleDetailHeader onBack={handleBack} />
+      <ArticleDetailHeader
+        onBack={handleBack}
+        title={article.title}
+        articleId={article.articleId}
+      />
 
       <section className="hide-scrollbar min-h-0 flex-1 overflow-y-auto">
         <div className="relative aspect-[4/3] w-full bg-slate-100">

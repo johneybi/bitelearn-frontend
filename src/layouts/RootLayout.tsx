@@ -3,6 +3,7 @@ import { useAuthStore } from '@/stores/auth.store';
 
 import OnboardingModal from '@/components/features/onboarding/OnboardingModal';
 import { completeOnboarding } from '@/api/auth/auth.api';
+import { Toaster } from '@/components/ui/sonner';
 
 export default function RootLayout() {
   const isOnboardingOpen = useAuthStore((state) => state.isOnboardingOpen);
@@ -33,6 +34,8 @@ export default function RootLayout() {
           isOpen={isOnboardingOpen}
           onClose={handleCompleteOnboarding}
         />
+
+        <Toaster position="top-center" />
       </div>
     </div>
   );
