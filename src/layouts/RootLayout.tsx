@@ -35,7 +35,7 @@ export default function RootLayout() {
           onClose={handleCompleteOnboarding}
         />
 
-        <Toaster />
+        <Toaster position="top-center" />
       </div>
     </div>
   );
