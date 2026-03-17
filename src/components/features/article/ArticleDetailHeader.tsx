@@ -1,12 +1,24 @@
+import useShareArticle from '@/hooks/useShareArticle';
 import { Bookmark, ChevronLeft, Share2 } from 'lucide-react';
 
 type ArticleDetailHeaderProps = {
   onBack: () => void;
+  title: string;
+  articleId: string;
 };
 
 export default function ArticleDetailHeader({
   onBack,
+  title,
+  articleId,
 }: ArticleDetailHeaderProps) {
+  const shareUrl = `${window.location.origin}/articles/${articleId}`;
+
+  const { handleShare } = useShareArticle({
+    title,
+    url: shareUrl,
+  });
+
   return (
     <header className="z-10 flex h-14 shrink-0 items-center justify-between border-b border-slate-100 bg-white/90 px-2 backdrop-blur-md">
       <button
@@ -27,6 +39,8 @@ export default function ArticleDetailHeader({
 
         <button
           type="button"
+          onClick={handleShare}
+          aria-label="아티클 공유"
           className="flex h-10 w-10 items-center justify-center rounded-full text-slate-600 transition-colors hover:bg-slate-100"
         >
           <Share2 className="h-5 w-5" />
