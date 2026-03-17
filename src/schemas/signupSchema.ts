@@ -5,22 +5,22 @@ export const signupSchema = z
     email: z
       .string()
       .trim()
-      .min(1, '이메일은 필수 입력값입니다.')
+      .min(1, '이메일 주소를 입력해주세요.')
       .email('올바른 이메일 형식이 아닙니다.'),
 
-    password: z.string().min(1, '비밀번호는 필수 입력값입니다.'),
+    password: z.string().min(1, '비밀번호를 입력해주세요.'),
 
     nickname: z
       .string()
       .trim()
-      .min(1, '닉네임은 필수 입력값입니다.')
+      .min(1, '닉네임을 입력해주세요.')
       .regex(/^[a-zA-Z0-9가-힣]{2,10}$/, {
         message: '닉네임은 특수문자 제외 2~10자리여야 합니다.',
       }),
 
     passwordConfirm: z
       .string()
-      .min(1, { message: '비밀번호 확인은 필수 입력값입니다.' }),
+      .min(1, { message: '비밀번호 확인을 입력해주세요.' }),
   })
   .refine((data) => data.password === data.passwordConfirm, {
     path: ['passwordConfirm'],
