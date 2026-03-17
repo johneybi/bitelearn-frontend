@@ -181,7 +181,7 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
                   </FormControl>
                   <FormMessage className="text-xs text-destructive" />
                   {!fieldState.error && (
-                    <p className="text-sm leading-normal text-placeholder">
+                    <p className="text-placeholder text-sm leading-normal">
                       특수문자 제외 2~10자리 이내
                     </p>
                   )}
@@ -196,7 +196,7 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
               disabled={isSubmitDisabled}
               className="relative h-14 w-full rounded-2xl text-base font-medium text-foreground disabled:opacity-25"
             >
-              {form.formState.isSubmitting ? '가입 처리 중...' : '가입하기'}
+              가입하기
               <ChevronRight className="absolute right-4 h-6 w-6" />
             </Button>
           </div>

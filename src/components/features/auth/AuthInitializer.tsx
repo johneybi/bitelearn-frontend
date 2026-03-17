@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/auth.store';
 import { clearAccessToken } from '@/api/auth/tokenStore';
 import { logError } from '@/lib/logError';
 import { useEffect } from 'react';
+import AppLoading from '@/components/common/AppLoading';
 
 type AuthInitializeProps = {
   children: React.ReactNode;
@@ -65,7 +66,7 @@ export default function AuthInitializer({ children }: AuthInitializeProps) {
   }, []);
 
   if (isInitializing) {
-    return <div>로딩 중...</div>;
+    return <AppLoading message="인증 정보를 확인하는 중..." />;
   }
 
   return <>{children}</>;

@@ -19,7 +19,6 @@ function HomePage() {
   const navigate = useNavigate();
 
   const user = useAuthStore((state) => state.user);
-  const isInitializing = useAuthStore((state) => state.isInitializing);
 
   const headerContent = getDashboardHeaderContent({
     isLoggedIn: !!user,
@@ -45,14 +44,6 @@ function HomePage() {
   const continueCardContent = shouldShowContinueCard
     ? getDashboardContinueCardContent(recentLearning)
     : null;
-
-  if (isInitializing) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <p className="text-sm text-slate-500">홈 정보를 불러오는 중...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="flex h-full flex-col overflow-hidden">

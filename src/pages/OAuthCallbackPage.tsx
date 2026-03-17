@@ -7,6 +7,7 @@ import { isAppError } from '@/api/error/appError';
 import { useAuthStore } from '@/stores/auth.store';
 import { toExpiresAt } from '@/api/auth/token.util';
 import { logError } from '@/lib/logError';
+import AppLoading from '@/components/common/AppLoading';
 
 const OAUTH_CALLBACK_ERROR_FALLBACK_MESSAGE =
   '소셜 로그인 처리에 실패했습니다. 다시 시도해주세요.';
@@ -61,9 +62,5 @@ export default function OAuthCallbackPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname, location.search]);
 
-  return (
-    <div className="flex min-h-dvh items-center justify-center">
-      <p className="text-sm text-slate-500">로그인 처리 중...</p>
-    </div>
-  );
+  return <AppLoading message="로그인 처리 중..." />;
 }
