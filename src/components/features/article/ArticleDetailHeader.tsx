@@ -10,12 +10,14 @@ type ArticleDetailHeaderProps = {
   onBack: () => void;
   title: string;
   articleId: string;
+  sharePopoverOpen?: boolean;
 };
 
 export default function ArticleDetailHeader({
   onBack,
   title,
   articleId,
+  sharePopoverOpen,
 }: ArticleDetailHeaderProps) {
   const shareUrl = `${window.location.origin}/articles/${articleId}`;
 
@@ -44,7 +46,7 @@ export default function ArticleDetailHeader({
           <Bookmark className="h-5 w-5" />
         </button>
 
-        <Popover>
+        <Popover open={sharePopoverOpen}>
           <PopoverTrigger asChild>
             <button
               type="button"
