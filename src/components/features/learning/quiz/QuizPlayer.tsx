@@ -9,7 +9,6 @@ import QuizPassagePhase from './phases/QuizPassagePhase';
 import QuizChoicesPhase from './phases/QuizChoicesPhase';
 import QuizResultPhase from './phases/QuizResultPhase';
 import type { QuizSubmitResponse } from '@/api/learning/learning.types';
-import { getQuizChoices, getQuizPassageMode } from './learningQuiz.utils';
 
 type QuizPlayerProps = {
   questions: QuizInfo[];
@@ -70,7 +69,7 @@ export default function QuizPlayer({
   }
 
   const currentQuestion = questions[currentIndex];
-  const currentChoices = getQuizChoices(currentQuestion);
+  const currentChoices = currentQuestion.specificData?.options ?? [];
   const selectedIndex = selectedChoice === '' ? -1 : Number(selectedChoice);
   const currentResult = resultByIndex[currentIndex];
   const isShowingEvaluation = phase === 'checking' && !isEvaluating;
@@ -103,7 +102,10 @@ export default function QuizPlayer({
   }, [metrics, onMetricsChange]);
 
   const handleSolve = () => {
-    if (getQuizPassageMode(currentQuestion) === 'conversation') {
+    if (
+      currentQuestion.type === 'DIALOGUE_MCQ' ||
+      currentQuestion.type === 'DIALOGUE_OX'
+    ) {
       setSeenPassages((prev) => new Set(prev).add(currentIndex));
     }
     setPhase('choices');

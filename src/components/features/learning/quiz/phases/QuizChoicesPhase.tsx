@@ -1,5 +1,4 @@
 import type { QuizInfo } from '@/api/learning/learning.types';
-import { getQuizChoiceMode, getQuizChoices } from '../learningQuiz.utils';
 
 import MultipleChoiceView from '../choices/MultipleChoiceView';
 import DocumentSelectView from '../choices/DocumentSelectView';
@@ -28,17 +27,23 @@ export default function QuizChoicesPhase({
   onCheckAnswerWithIndex,
   onPrevious,
 }: Props) {
-  const choiceMode = getQuizChoiceMode(question);
+  const choiceMode =
+    question.type === 'DIALOGUE_OX'
+      ? 'ox'
+      : question.type === 'DOC_SELECT'
+        ? 'document_select'
+        : 'multiple';
+  const choices = question.specificData?.options ?? [];
 
   if (choiceMode === 'document_select') {
     return (
       <DocumentSelectView
         question={question}
-          currentIndex={currentIndex}
-          correctIndex={correctIndex}
-          selectedValue={selectedChoice}
-          isChecking={isChecking}
-          onSelectChoice={onSelectChoice}
+        currentIndex={currentIndex}
+        correctIndex={correctIndex}
+        selectedValue={selectedChoice}
+        isChecking={isChecking}
+        onSelectChoice={onSelectChoice}
         onCheckAnswer={onCheckAnswer}
         onPrevious={onPrevious}
       />
@@ -63,7 +68,7 @@ export default function QuizChoicesPhase({
     <MultipleChoiceView
       questionNumber={question.sequence ?? currentIndex + 1}
       questionTitle={question.questionTitle}
-      choices={getQuizChoices(question)}
+      choices={choices}
       selectedValue={selectedChoice}
       onSelectChoice={onSelectChoice}
       onCheckAnswer={onCheckAnswerWithIndex}

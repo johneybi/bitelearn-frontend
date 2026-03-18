@@ -1,10 +1,5 @@
 import type { QuizInfo } from '@/api/learning/learning.types';
-import {
-  getQuizChoiceMode,
-  getQuizChoices,
-  getQuizPassageMode,
-  toDocumentCardData,
-} from '../learningQuiz.utils';
+import { toDocumentCardData } from '../learningQuiz.utils';
 
 import ChoiceResultView from '../result/ChoiceResultView';
 import DocumentResultView from '../result/DocumentResultView';
@@ -31,21 +26,24 @@ export default function QuizResultPhase({
   isLastQuestion,
   onNext,
 }: Props) {
-  const choices = getQuizChoices(question);
+  const choices = question.specificData?.options ?? [];
   const selectedIndex = selectedChoice !== '' ? Number(selectedChoice) : -1;
   const resolvedExplanation = overrideResult?.explanation ?? '';
-  const resolvedCorrectAnswer =
-    overrideResult?.correctAnswer ?? '';
+  const resolvedCorrectAnswer = overrideResult?.correctAnswer ?? '';
   const resolvedCorrectIndex = overrideResult?.correctAnswerIndex ?? -1;
   const documentCard = toDocumentCardData(question);
+  const hasDocumentElements = Boolean(
+    question.specificData?.documentElements?.length
+  );
 
   const characterImageUrl = isCorrect
     ? '/images/character/dog_perfect.png'
     : '/images/character/dog_fail.png';
 
   const isDocumentResult =
-    getQuizPassageMode(question) === 'document' ||
-    getQuizChoiceMode(question) === 'document_select';
+    ((question.type === 'DOC_SELECT' || question.type === 'DOC_MULTI') &&
+      hasDocumentElements) ||
+    question.type === 'DOC_SELECT';
 
   if (isDocumentResult && documentCard) {
     return (

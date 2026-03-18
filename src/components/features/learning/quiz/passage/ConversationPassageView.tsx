@@ -1,12 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import QuizFooter from '@/components/common/QuizFooter';
 import QuizPassage from '../shared/QuizPassage';
 import type { QuizInfo } from '@/api/learning/learning.types';
-import {
-  getConversationMessages,
-  getConversationSpeakers,
-} from '../learningQuiz.utils';
 
 type ConversationPassageViewProps = {
   question: QuizInfo;
@@ -21,8 +17,28 @@ export default function ConversationPassageView({
   skipAnimation = false,
 }: ConversationPassageViewProps) {
   const dialogues = question.specificData?.dialogues ?? [];
-  const conversations = getConversationMessages(question.quizId, dialogues);
-  const conversationSpeakers = getConversationSpeakers(dialogues);
+  const conversations = useMemo(
+    () =>
+      dialogues.map((line, dialogueIndex) => ({
+        id: `d-${question.quizId}-${dialogueIndex}`,
+        speakerId: line.speaker,
+        message: line.message,
+      })),
+    [dialogues, question.quizId]
+  );
+  const conversationSpeakers = useMemo(
+    () =>
+      Array.from(new Set(dialogues.map((line) => line.speaker))).map(
+        (speaker, speakerIndex) => ({
+          id: speaker,
+          name: speaker,
+          profileImageUrl: undefined,
+          position:
+            speakerIndex % 2 === 0 ? ('left' as const) : ('right' as const),
+        })
+      ),
+    [dialogues]
+  );
 
   const [visibleCount, setVisibleCount] = useState(() =>
     skipAnimation ? conversations.length : 0
