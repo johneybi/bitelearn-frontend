@@ -14,10 +14,12 @@ export type DocumentCardData = {
 
 /** 객관식 퀴즈 문제 하나의 데이터 타입 */
 export interface ChoiceQuestionItem {
+  /** 서버 퀴즈 고유 ID */
+  quizId?: number;
   /** 문제 번호 (1-based) */
   questionNumber: number;
   /** 단계 타입 (단어장/학습 vs 퀴즈) */
-  type?: 'word' | 'quiz';
+  type?: 'vocab' | 'quiz';
   /**
    * 지문 표시 모드
    * - "text" : 일반 텍스트 카드 (기본값)
@@ -91,7 +93,7 @@ export const MOCK_CHOICE_QUESTION_SET: ChoiceQuestionSet = {
     // ────────────────────────────────────────────────────────
     {
       questionNumber: 1,
-      type: 'word',
+      type: 'vocab',
       passageMode: 'text',
       passage:
         "[1부: 생존 단어장]\n계약 전 5가지만 기억하세요! 첫 번째는 '등기사항전부증명서(등기부등본)'입니다.",
@@ -108,7 +110,7 @@ export const MOCK_CHOICE_QUESTION_SET: ChoiceQuestionSet = {
     },
     {
       questionNumber: 2,
-      type: 'word',
+      type: 'vocab',
       passageMode: 'text',
       passage:
         "[1부: 생존 단어장]\n두 번째, '근저당권'와 '채권최고액'입니다. 근저당권은 집을 담보로 은행에 진 빚이에요.",
@@ -125,7 +127,7 @@ export const MOCK_CHOICE_QUESTION_SET: ChoiceQuestionSet = {
     },
     {
       questionNumber: 3,
-      type: 'word',
+      type: 'vocab',
       passageMode: 'text',
       passage:
         "[1부: 생존 단어장]\n세 번째, 무시무시한 빨간불 삼총사! 바로 '가압류', '가처분', '신탁' 입니다.",
@@ -142,7 +144,7 @@ export const MOCK_CHOICE_QUESTION_SET: ChoiceQuestionSet = {
     },
     {
       questionNumber: 4,
-      type: 'word',
+      type: 'vocab',
       passageMode: 'text',
       passage:
         '[1부: 생존 단어장]\n네 번째, 대리인 계약 필수 서류. 주인이 바빠서 다른 사람이 대신 나왔다면 주인이 직접 떼어준 서류가 필요해요.',
@@ -159,7 +161,7 @@ export const MOCK_CHOICE_QUESTION_SET: ChoiceQuestionSet = {
     },
     {
       questionNumber: 5,
-      type: 'word',
+      type: 'vocab',
       passageMode: 'text',
       passage:
         "[1부: 생존 단어장]\n마지막, 나를 지켜주는 마법의 방패인 '특약'입니다. 계약서 맨 밑에 쓰는 특별한 약속이에요.",
