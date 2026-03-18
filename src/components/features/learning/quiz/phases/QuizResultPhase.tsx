@@ -7,6 +7,10 @@ type Props = {
   question: ChoiceQuestionItem;
   selectedChoice: string;
   isCorrect: boolean;
+  overrideResult?: {
+    explanation: string;
+    correctAnswer: string;
+  };
   isLastQuestion: boolean;
   onNext: () => void;
 };
@@ -15,10 +19,18 @@ export default function QuizResultPhase({
   question,
   selectedChoice,
   isCorrect,
+  overrideResult,
   isLastQuestion,
   onNext,
 }: Props) {
   const selectedIndex = selectedChoice !== '' ? Number(selectedChoice) : -1;
+  const resolvedExplanation = overrideResult?.explanation ?? question.explanation;
+  const resolvedCorrectAnswer =
+    overrideResult?.correctAnswer ??
+    (question.choices[question.correctIndex] ?? '');
+  const resolvedCorrectIndex = question.choices.findIndex(
+    (choice) => choice === resolvedCorrectAnswer
+  );
 
   const characterImageUrl = isCorrect
     ? question.characterCorrectImageUrl || '/images/character/dog_perfect.png'
@@ -32,9 +44,9 @@ export default function QuizResultPhase({
     return (
       <DocumentResultView
         isCorrect={isCorrect}
-        explanation={question.explanation}
+        explanation={resolvedExplanation}
         documentCard={question.documentCard}
-        correctIndex={question.correctIndex}
+        correctIndex={resolvedCorrectIndex >= 0 ? resolvedCorrectIndex : question.correctIndex}
         selectedAnswerIndex={selectedIndex !== -1 ? selectedIndex : undefined}
         characterImageUrl={characterImageUrl}
         isLastQuestion={isLastQuestion}
@@ -46,11 +58,11 @@ export default function QuizResultPhase({
   return (
     <ChoiceResultView
       isCorrect={isCorrect}
-      correctAnswerText={question.choices[question.correctIndex] ?? ''}
+      correctAnswerText={resolvedCorrectAnswer}
       selectedAnswerText={
         selectedIndex !== -1 ? (question.choices[selectedIndex] ?? '') : ''
       }
-      explanation={question.explanation}
+      explanation={resolvedExplanation}
       characterImageUrl={characterImageUrl}
       isLastQuestion={isLastQuestion}
       onNext={onNext}

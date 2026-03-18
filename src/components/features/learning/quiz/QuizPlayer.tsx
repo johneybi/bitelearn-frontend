@@ -8,33 +8,49 @@ import type { QuizMetric, QuizPhase, StepIndicatorInfo } from './quiz.types';
 import QuizPassagePhase from './phases/QuizPassagePhase';
 import QuizChoicesPhase from './phases/QuizChoicesPhase';
 import QuizResultPhase from './phases/QuizResultPhase';
+import type { SubmitLearningQuizResponse } from '@/api/learning/learning.types';
 
 type QuizPlayerProps = {
   questions: ChoiceQuestionItem[];
+  initialIndex?: number;
   headerTitle?: string;
   onBack?: () => void;
   onComplete?: (total: number, correct: number) => void;
   indicatorSteps?: StepIndicatorInfo[];
   onCurrentIndexChange?: (index: number) => void;
   onMetricsChange?: (metrics: QuizMetric[]) => void;
+  onSubmitAnswer?: (
+    question: ChoiceQuestionItem,
+    selectedAnswerIndex: number
+  ) => Promise<SubmitLearningQuizResponse>;
 };
 
 export default function QuizPlayer({
   questions,
+  initialIndex = 0,
   headerTitle,
   onBack,
   onComplete,
   indicatorSteps: externalIndicatorSteps,
   onCurrentIndexChange,
   onMetricsChange,
+  onSubmitAnswer,
 }: QuizPlayerProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const safeInitialIndex =
+    questions.length > 0
+      ? Math.max(0, Math.min(initialIndex, questions.length - 1))
+      : 0;
+  const [currentIndex, setCurrentIndex] = useState(safeInitialIndex);
   const [phase, setPhase] = useState<QuizPhase>('passage');
   const [selectedChoice, setSelectedChoice] = useState('');
   const [metrics, setMetrics] = useState<QuizMetric[]>(
     Array(questions.length).fill('none')
   );
   const [seenPassages, setSeenPassages] = useState<Set<number>>(new Set());
+  const [isEvaluating, setIsEvaluating] = useState(false);
+  const [resultByIndex, setResultByIndex] = useState<
+    Record<number, { explanation: string; correctAnswer: string }>
+  >({});
 
   if (questions.length === 0) {
     return (
@@ -82,32 +98,55 @@ export default function QuizPlayer({
     setSelectedChoice('');
   };
 
-  const handleCheckAnswer = (selectedIndex?: number) => {
+  const handleCheckAnswer = async (selectedIndex?: number) => {
     const resolvedIndex =
       selectedIndex !== undefined ? selectedIndex : Number(selectedChoice);
 
     if (Number.isNaN(resolvedIndex)) return;
 
-    const correct = resolvedIndex === currentQuestion.correctIndex;
-
     setSelectedChoice(String(resolvedIndex));
+    setPhase('checking');
+    setIsEvaluating(true);
+
+    let correct = resolvedIndex === currentQuestion.correctIndex;
+    let explanation = currentQuestion.explanation;
+    let correctAnswer = currentQuestion.choices[currentQuestion.correctIndex] ?? '';
+
+    if (onSubmitAnswer) {
+      try {
+        const submitResult = await onSubmitAnswer(currentQuestion, resolvedIndex);
+        correct = submitResult.isCorrect;
+        explanation = submitResult.explanation;
+        correctAnswer = submitResult.correctAnswer;
+      } catch {
+        correct = resolvedIndex === currentQuestion.correctIndex;
+      }
+    }
+
     setMetrics((prev) => {
       const next = [...prev];
       next[currentIndex] = correct ? 'correct' : 'incorrect';
       return next;
     });
-    setPhase('checking');
+    setResultByIndex((prev) => ({
+      ...prev,
+      [currentIndex]: {
+        explanation,
+        correctAnswer,
+      },
+    }));
+    setIsEvaluating(false);
   };
 
   useEffect(() => {
-    if (phase !== 'checking') return;
+    if (phase !== 'checking' || isEvaluating) return;
 
     const timer = window.setTimeout(() => {
       setPhase('result');
     }, 1400);
 
     return () => window.clearTimeout(timer);
-  }, [phase]);
+  }, [phase, isEvaluating]);
 
   const handleNext = () => {
     if (isLastQuestion) {
@@ -164,6 +203,7 @@ export default function QuizPlayer({
           question={currentQuestion}
           selectedChoice={selectedChoice}
           isCorrect={isCorrect}
+          overrideResult={resultByIndex[currentIndex]}
           isLastQuestion={isLastQuestion}
           onNext={handleNext}
         />
