@@ -20,7 +20,7 @@ type VocabCardsPlayerProps = {
   vocabs: ChoiceQuestionItem[];
   vocabIdx: number;
   onVocabIdxChange: (idx: number) => void;
-  onComplete: () => void;
+  onComplete: () => Promise<void> | void;
   onBack: () => void;
   indicatorSteps?: StepIndicatorInfo[];
 };
@@ -35,6 +35,7 @@ export default function VocabCardsPlayer({
 }: VocabCardsPlayerProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [direction, setDirection] = useState(1);
+  const [isCompleting, setIsCompleting] = useState(false);
   const dragX = useMotionValue(0);
   const cardRotate = useTransform(dragX, [-150, 0, 150], [-8, 0, 8]);
 
@@ -85,9 +86,16 @@ export default function VocabCardsPlayer({
     }),
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    if (isCompleting) return;
+
     if (isLastVocab) {
-      onComplete();
+      setIsCompleting(true);
+      try {
+        await onComplete();
+      } finally {
+        setIsCompleting(false);
+      }
       return;
     }
 
@@ -212,6 +220,7 @@ export default function VocabCardsPlayer({
               className="absolute inset-0"
             >
               <QuizFooter
+                disabled={isCompleting}
                 onPrevious={isFirstVocab ? undefined : handlePrev}
                 onClick={handleNext}
               >

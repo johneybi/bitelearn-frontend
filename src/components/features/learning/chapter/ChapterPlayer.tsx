@@ -17,6 +17,7 @@ import type {
   ChapterStatus,
   QuizSubmitResponse,
 } from '@/api/learning/learning.types';
+import { toast } from 'sonner';
 
 type ChapterPhase =
   | 'intro'
@@ -206,16 +207,7 @@ export default function ChapterPlayer({
         chapterTitle={questionSet.title}
         vocabCount={vocabQuestions.length}
         onClose={onBack}
-        onStartQuiz={() => {
-          if (onVocabComplete) {
-            onVocabComplete()
-              .catch(() => undefined)
-              .finally(() => setChapterPhase('quiz'));
-            return;
-          }
-
-          setChapterPhase('quiz');
-        }}
+        onStartQuiz={() => setChapterPhase('quiz')}
       />
     );
   }
@@ -225,7 +217,22 @@ export default function ChapterPlayer({
       vocabs={vocabQuestions}
       vocabIdx={vocabIdx}
       onVocabIdxChange={setVocabIdx}
-      onComplete={() => setChapterPhase('vocab_done')}
+      onComplete={async () => {
+        if (onVocabComplete) {
+          try {
+            await onVocabComplete();
+          } catch (error) {
+            const message =
+              error instanceof Error
+                ? error.message
+                : '단어 학습 완료 처리에 실패했습니다.';
+            toast.error(message);
+            return;
+          }
+        }
+
+        setChapterPhase('vocab_done');
+      }}
       onBack={onBack}
       indicatorSteps={combinedSteps}
     />
