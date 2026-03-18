@@ -71,6 +71,7 @@ export default function QuizPlayer({
   const currentQuestion = questions[currentIndex];
   const selectedIndex = selectedChoice === '' ? -1 : Number(selectedChoice);
   const currentResult = resultByIndex[currentIndex];
+  const isShowingEvaluation = phase === 'checking' && !isEvaluating;
   const isCorrect =
     currentResult?.correct ??
     (selectedIndex !== -1 && selectedIndex === currentQuestion.correctIndex);
@@ -209,7 +210,7 @@ export default function QuizPlayer({
           currentIndex={currentIndex}
           correctIndex={resolvedCorrectIndex}
           selectedChoice={selectedChoice}
-          isChecking={phase === 'checking'}
+          isChecking={isShowingEvaluation}
           onSelectChoice={setSelectedChoice}
           onCheckAnswer={() => handleCheckAnswer()}
           onCheckAnswerWithIndex={handleCheckAnswer}
