@@ -2,20 +2,25 @@ import { motion } from 'framer-motion';
 import { BookCheck } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import QuizHeader from '@/components/common/QuizHeader';
 
 type VocabDoneProps = {
   chapterTitle: string;
   vocabCount: number;
+  onClose: () => void;
   onStartQuiz: () => void;
 };
 
 export default function VocabDone({
   chapterTitle,
   vocabCount,
+  onClose,
   onStartQuiz,
 }: VocabDoneProps) {
   return (
     <main className="flex h-full min-h-0 flex-col bg-white text-slate-900">
+      <QuizHeader title="단어 학습 완료" showCloseButton onCloseClick={onClose} />
+
       <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -56,4 +61,3 @@ export default function VocabDone({
     </main>
   );
 }
-

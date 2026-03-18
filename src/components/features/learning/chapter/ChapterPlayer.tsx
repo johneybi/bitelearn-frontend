@@ -205,6 +205,7 @@ export default function ChapterPlayer({
       <VocabDone
         chapterTitle={questionSet.title}
         vocabCount={vocabQuestions.length}
+        onClose={onBack}
         onStartQuiz={() => {
           if (onVocabComplete) {
             onVocabComplete()
