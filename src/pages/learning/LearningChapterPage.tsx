@@ -46,7 +46,7 @@ function mapLearningDataToQuestionSet(
     const isDialogueType = quiz.type === 'DIALOGUE_MCQ' || quiz.type === 'DIALOGUE_OX';
 
     return {
-      questionNumber: vocabQuestions.length + index + 1,
+      questionNumber: index + 1,
       type: 'quiz' as const,
       passageMode: isDialogueType ? ('conversation' as const) : ('text' as const),
       choiceMode:
