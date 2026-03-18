@@ -82,10 +82,9 @@ export type DocumentElementInfo = {
 
 // 퀴즈 추가 데이터
 export type SpecificDataInfo = {
-  // FE 기존 문서 선택형 UI 호환을 위해 객체 옵션 허용
-  options?: Array<string | { docId: string; docText: string }>;
-  dialogues?: DialogueInfo[];
-  documentElements?: DocumentElementInfo[];
+  options: string[];
+  dialogues: DialogueInfo[];
+  documentElements: DocumentElementInfo[];
 };
 
 // 퀴즈 정답 제출
