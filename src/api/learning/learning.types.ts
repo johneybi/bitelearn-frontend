@@ -1,41 +1,40 @@
-export type LearningProgressStatus =
-  | 'READY'
-  | 'QUIZ_IN_PROGRESS'
-  | 'COMPLETED';
+// 챕터 학습 진행 상태
+export type ChapterStatus = 'READY' | 'QUIZ_IN_PROGRESS' | 'COMPLETED';
 
-export type LearningQuizType =
+// 퀴즈 유형
+export type QuizType =
   | 'TEXT_MCQ'
   | 'DOC_SELECT'
   | 'DOC_MULTI'
   | 'DIALOGUE_MCQ'
   | 'DIALOGUE_OX';
 
-export type LearningCategoryCode =
-  | 'REAL_ESTATE'
-  | 'FINANCE'
-  | 'CAREER'
-  | 'INVESTMENT';
+// 카테고리 / 토픽
+export type Category = 'REAL_ESTATE' | 'FINANCE' | 'LAW';
+export type Topic = 'JEONSE' | 'MONTHLY_RENT' | 'BUYING';
 
-export type LearningTopicCode = string;
+// 챕터 목록 조회
+export type ChapterListRequest = {
+  category: Category;
+  topic: Topic;
+};
 
-export type LearningChapterListItem = {
+export type ChapterListResponse = {
+  chapters: ChapterSummaryDto[];
+};
+
+// 챕터 목록 아이템
+export type ChapterSummaryDto = {
   chapterId: number;
   title: string;
-  status: LearningProgressStatus;
   sequence: number;
+  status: ChapterStatus;
+  // FE 로드맵 UI 확장 필드 (백엔드 응답에는 없음)
   isLocked?: boolean;
 };
 
-export type GetLearningChaptersRequest = {
-  category: LearningCategoryCode;
-  topic: LearningTopicCode;
-};
-
-export type GetLearningChaptersResponse = {
-  chapters: LearningChapterListItem[];
-};
-
-export type LearningVocab = {
+// 단어 정보
+export type VocabInfo = {
   id: number;
   frontMain: string;
   frontSub?: string;
@@ -44,51 +43,65 @@ export type LearningVocab = {
   backSub?: string;
 };
 
-export type DialogueLine = {
-  speaker: string;
-  message: string;
-};
-
-export type LearningQuizSpecificData = {
-  options?: Array<string | { docId: string; docText: string }>;
-  dialogues?: DialogueLine[];
-};
-
-export type LearningQuiz = {
+// 퀴즈 정보
+export type QuizInfo = {
   quizId: number;
   sequence: number;
-  type: LearningQuizType;
+  type: QuizType;
   passageTitle?: string | null;
   passageContent?: string | null;
   questionImageUrl?: string | null;
   questionTitle: string;
-  specificData?: LearningQuizSpecificData | null;
+  specificData?: SpecificDataInfo | null;
 };
 
-export type GetLearningChapterResponse = {
+// 단일 챕터 학습 데이터
+export type ChapterLearningResponse = {
   chapterTitle: string;
   prologueSubtitle: string;
   prologueContent: string;
   currentGoal: string;
   coreKeywords: string[];
-  currentStatus: LearningProgressStatus;
+  currentStatus: ChapterStatus;
   resumeQuizSequence: number | null;
-  vocabs: LearningVocab[];
-  quizzes: LearningQuiz[];
+  vocabs: VocabInfo[];
+  quizzes: QuizInfo[];
 };
 
-export type SubmitLearningQuizRequest = {
+// 대화형 지문 정보
+export type DialogueInfo = {
+  speaker: string;
+  message: string;
+};
+
+// 문서 다지선다형 보기 요소
+export type DocumentElementInfo = {
+  key: string;
+  value: string;
+};
+
+// 퀴즈 추가 데이터
+export type SpecificDataInfo = {
+  // FE 기존 문서 선택형 UI 호환을 위해 객체 옵션 허용
+  options?: Array<string | { docId: string; docText: string }>;
+  dialogues?: DialogueInfo[];
+  documentElements?: DocumentElementInfo[];
+};
+
+// 퀴즈 정답 제출
+export type QuizSubmitRequest = {
   selectedAnswer: string;
 };
 
-export type SubmitLearningQuizResponse = {
-  isCorrect: boolean;
+export type QuizSubmitResponse = {
+  correct: boolean;
   correctAnswer: string;
   explanation: string;
-  newStatus: LearningProgressStatus;
+  newStatus: ChapterStatus;
 };
 
-export type GetLearningChapterResultResponse = {
+// 챕터 최종 결과
+export type ChapterResultResponse = {
   correctCount: number;
   totalCount: number;
   accuracyRate: number;
