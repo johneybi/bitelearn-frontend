@@ -13,11 +13,11 @@ import QuizFooter from '@/components/common/QuizFooter';
 import QuizIndicator from '@/components/features/learning/quiz/QuizIndicator';
 import VocabCard from './VocabCard';
 
-import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
+import type { VocabInfo } from '@/api/learning/learning.types';
 import type { StepIndicatorInfo } from '@/components/features/learning/quiz/quiz.types';
 
 type VocabCardsPlayerProps = {
-  vocabs: ChoiceQuestionItem[];
+  vocabs: VocabInfo[];
   vocabIdx: number;
   onVocabIdxChange: (idx: number) => void;
   onComplete: () => Promise<void> | void;

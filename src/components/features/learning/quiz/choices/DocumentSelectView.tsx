@@ -1,10 +1,11 @@
 import QuizFooter from '@/components/common/QuizFooter';
 import DocumentCard from '../shared/DocumentCard';
-import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
+import type { QuizInfo } from '@/api/learning/learning.types';
+import { toDocumentCardData } from '../learningQuiz.utils';
 import QuizTitle from '../shared/QuizTitle';
 
 type DocumentSelectViewProps = {
-  question: ChoiceQuestionItem;
+  question: QuizInfo;
   currentIndex: number;
   correctIndex?: number;
   selectedValue: string;
@@ -24,24 +25,26 @@ export default function DocumentSelectView({
   onCheckAnswer,
   onPrevious,
 }: DocumentSelectViewProps) {
-  if (!question.documentCard) return null;
+  const documentCard = toDocumentCardData(question);
+
+  if (!documentCard) return null;
 
   return (
     <>
       <section className="flex-1 overflow-y-auto px-6">
         <QuizTitle
-          questionNumber={question.questionNumber ?? currentIndex + 1}
-          question={question.question}
+          questionNumber={question.sequence ?? currentIndex + 1}
+          questionTitle={question.questionTitle}
         />
 
         <DocumentCard
-          data={question.documentCard}
+          data={documentCard}
           mode="interactive"
           choiceMode="document_select"
           selectedValue={selectedValue}
           onSelectField={onSelectChoice}
           isChecking={isChecking}
-          correctIndex={correctIndex ?? question.correctIndex}
+          correctIndex={correctIndex}
         />
       </section>
 

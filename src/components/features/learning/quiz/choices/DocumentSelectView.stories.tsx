@@ -1,20 +1,28 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { QuizInfo } from '@/api/learning/learning.types';
 import DocumentSelectView from './DocumentSelectView';
-import {
-  MOCK_CHOICE_QUESTION_SET,
-  type ChoiceQuestionItem,
-} from '@/mock/choiceQuestion';
-
-const documentSelectQuestion = MOCK_CHOICE_QUESTION_SET.questions.find(
-  (q) => q.choiceMode === 'document_select' && !!q.documentCard
-);
-
-if (!documentSelectQuestion) {
-  throw new Error('Document select story fixture not found');
-}
+const documentSelectQuestion: QuizInfo = {
+  quizId: 4,
+  sequence: 4,
+  type: 'DOC_SELECT',
+  passageTitle: '계약서 항목 확인',
+  passageContent: '아래 항목 중 보증금 보호와 가장 직접적으로 연결되는 항목을 고르세요.',
+  questionImageUrl: '',
+  questionTitle: '가장 중요한 항목은?',
+  specificData: {
+    options: ['소유자', '보증보험 특약', '도배 상태', '입주 가능일'],
+    dialogues: [],
+    documentElements: [
+      { key: '소유자', value: '불독' },
+      { key: '특약', value: '보증보험 가입 불가 시 계약 무효' },
+      { key: '도배', value: '세입자 부담' },
+      { key: '입주일', value: '2026-03-20' },
+    ],
+  },
+};
 
 const baseArgs = {
-  question: documentSelectQuestion as ChoiceQuestionItem,
+  question: documentSelectQuestion,
   currentIndex: 0,
   selectedValue: '',
   onSelectChoice: () => {},

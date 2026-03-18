@@ -1,11 +1,12 @@
-import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
+import type { QuizInfo } from '@/api/learning/learning.types';
+import { getQuizChoiceMode, getQuizChoices } from '../learningQuiz.utils';
 
 import MultipleChoiceView from '../choices/MultipleChoiceView';
 import DocumentSelectView from '../choices/DocumentSelectView';
 import OXChoiceView from '../choices/OXChoiceView';
 
 type Props = {
-  question: ChoiceQuestionItem;
+  question: QuizInfo;
   currentIndex: number;
   correctIndex?: number;
   selectedChoice: string;
@@ -27,10 +28,12 @@ export default function QuizChoicesPhase({
   onCheckAnswerWithIndex,
   onPrevious,
 }: Props) {
-  if (question.choiceMode === 'document_select') {
+  const choiceMode = getQuizChoiceMode(question);
+
+  if (choiceMode === 'document_select') {
     return (
-        <DocumentSelectView
-          question={question}
+      <DocumentSelectView
+        question={question}
           currentIndex={currentIndex}
           correctIndex={correctIndex}
           selectedValue={selectedChoice}
@@ -42,13 +45,13 @@ export default function QuizChoicesPhase({
     );
   }
 
-  if (question.choiceMode === 'ox') {
+  if (choiceMode === 'ox') {
     return (
       <OXChoiceView
-        key={question.questionNumber ?? currentIndex}
-        questionNumber={question.questionNumber ?? currentIndex + 1}
-        question={question.question}
-        correctIndex={correctIndex ?? question.correctIndex}
+        key={question.sequence ?? currentIndex}
+        questionNumber={question.sequence ?? currentIndex + 1}
+        questionTitle={question.questionTitle}
+        correctIndex={correctIndex}
         onCheckAnswer={onCheckAnswerWithIndex}
         isChecking={isChecking}
         onPrevious={onPrevious}
@@ -58,14 +61,14 @@ export default function QuizChoicesPhase({
 
   return (
     <MultipleChoiceView
-      questionNumber={question.questionNumber ?? currentIndex + 1}
-      question={question.question}
-      choices={question.choices}
+      questionNumber={question.sequence ?? currentIndex + 1}
+      questionTitle={question.questionTitle}
+      choices={getQuizChoices(question)}
       selectedValue={selectedChoice}
       onSelectChoice={onSelectChoice}
       onCheckAnswer={onCheckAnswerWithIndex}
       isChecking={isChecking}
-      correctIndex={correctIndex ?? question.correctIndex}
+      correctIndex={correctIndex}
       onPrevious={onPrevious}
     />
   );

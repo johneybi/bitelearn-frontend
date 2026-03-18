@@ -2,10 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 
 import QuizFooter from '@/components/common/QuizFooter';
 import QuizPassage from '../shared/QuizPassage';
-import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
+import type { QuizInfo } from '@/api/learning/learning.types';
+import {
+  getConversationMessages,
+  getConversationSpeakers,
+} from '../learningQuiz.utils';
 
 type ConversationPassageViewProps = {
-  question: ChoiceQuestionItem;
+  question: QuizInfo;
   onSolve: () => void;
   /** true면 말풍선 애니메이션 없이 전체 대화를 바로 표시 */
   skipAnimation?: boolean;
@@ -16,9 +20,9 @@ export default function ConversationPassageView({
   onSolve,
   skipAnimation = false,
 }: ConversationPassageViewProps) {
-  const conversations = question.conversations || [];
-  const conversationSpeakers = question.conversationSpeakers || [];
-  const conversationInfoBox = question.conversationInfoBox;
+  const dialogues = question.specificData?.dialogues ?? [];
+  const conversations = getConversationMessages(question.quizId, dialogues);
+  const conversationSpeakers = getConversationSpeakers(dialogues);
 
   const [visibleCount, setVisibleCount] = useState(() =>
     skipAnimation ? conversations.length : 0
@@ -91,8 +95,10 @@ export default function ConversationPassageView({
         data-mode="conversation"
       >
         <QuizPassage
-          passage={question.passage}
-          flavorText={question.flavorText}
+          questionTitle={question.questionTitle}
+          questionNumber={question.sequence}
+          passageContent={question.passageContent ?? ''}
+          passageTitle={question.passageTitle ?? ''}
         >
           <div className="flex flex-col gap-3 py-5">
             {conversations.slice(0, visibleCount).map((conversation) => {
@@ -223,17 +229,6 @@ export default function ConversationPassageView({
               </div>
             )}
 
-            {allVisible && conversationInfoBox && (
-              <div className="animate-bubble-in mt-4 rounded-2xl border border-amber-100 bg-amber-50 p-5 shadow-sm">
-                <h4 className="mb-2 flex items-center gap-2 text-sm font-bold text-amber-900">
-                  <span className="text-lg">💡</span>
-                  {conversationInfoBox.title}
-                </h4>
-                <p className="text-sm leading-relaxed text-amber-800 opacity-90">
-                  {conversationInfoBox.content}
-                </p>
-              </div>
-            )}
           </div>
         </QuizPassage>
       </section>

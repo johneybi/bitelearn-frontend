@@ -2,13 +2,12 @@ import { motion } from 'framer-motion';
 import { Check, X } from 'lucide-react';
 
 import QuizFooter from '@/components/common/QuizFooter';
-import DocumentCard from '../shared/DocumentCard';
-import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
+import DocumentCard, { type DocumentCardData } from '../shared/DocumentCard';
 
 type DocumentResultViewProps = {
   isCorrect: boolean;
   explanation: string;
-  documentCard: NonNullable<ChoiceQuestionItem['documentCard']>;
+  documentCard: DocumentCardData;
   correctIndex: number;
   selectedAnswerIndex?: number;
   characterImageUrl?: string;

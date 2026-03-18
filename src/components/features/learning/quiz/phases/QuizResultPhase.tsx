@@ -1,15 +1,23 @@
-import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
+import type { QuizInfo } from '@/api/learning/learning.types';
+import {
+  getQuizChoiceMode,
+  getQuizChoices,
+  getQuizPassageMode,
+  toDocumentCardData,
+} from '../learningQuiz.utils';
 
 import ChoiceResultView from '../result/ChoiceResultView';
 import DocumentResultView from '../result/DocumentResultView';
 
 type Props = {
-  question: ChoiceQuestionItem;
+  question: QuizInfo;
   selectedChoice: string;
   isCorrect: boolean;
   overrideResult?: {
+    correct: boolean;
     explanation: string;
     correctAnswer: string;
+    correctAnswerIndex: number;
   };
   isLastQuestion: boolean;
   onNext: () => void;
@@ -23,30 +31,29 @@ export default function QuizResultPhase({
   isLastQuestion,
   onNext,
 }: Props) {
+  const choices = getQuizChoices(question);
   const selectedIndex = selectedChoice !== '' ? Number(selectedChoice) : -1;
-  const resolvedExplanation = overrideResult?.explanation ?? question.explanation;
+  const resolvedExplanation = overrideResult?.explanation ?? '';
   const resolvedCorrectAnswer =
-    overrideResult?.correctAnswer ??
-    (question.choices[question.correctIndex] ?? '');
-  const resolvedCorrectIndex = question.choices.findIndex(
-    (choice) => choice === resolvedCorrectAnswer
-  );
+    overrideResult?.correctAnswer ?? '';
+  const resolvedCorrectIndex = overrideResult?.correctAnswerIndex ?? -1;
+  const documentCard = toDocumentCardData(question);
 
   const characterImageUrl = isCorrect
-    ? question.characterCorrectImageUrl || '/images/character/dog_perfect.png'
-    : question.characterIncorrectImageUrl || '/images/character/dog_fail.png';
+    ? '/images/character/dog_perfect.png'
+    : '/images/character/dog_fail.png';
 
   const isDocumentResult =
-    question.passageMode === 'document' ||
-    question.choiceMode === 'document_select';
+    getQuizPassageMode(question) === 'document' ||
+    getQuizChoiceMode(question) === 'document_select';
 
-  if (isDocumentResult && question.documentCard) {
+  if (isDocumentResult && documentCard) {
     return (
       <DocumentResultView
         isCorrect={isCorrect}
         explanation={resolvedExplanation}
-        documentCard={question.documentCard}
-        correctIndex={resolvedCorrectIndex >= 0 ? resolvedCorrectIndex : question.correctIndex}
+        documentCard={documentCard}
+        correctIndex={resolvedCorrectIndex}
         selectedAnswerIndex={selectedIndex !== -1 ? selectedIndex : undefined}
         characterImageUrl={characterImageUrl}
         isLastQuestion={isLastQuestion}
@@ -59,9 +66,7 @@ export default function QuizResultPhase({
     <ChoiceResultView
       isCorrect={isCorrect}
       correctAnswerText={resolvedCorrectAnswer}
-      selectedAnswerText={
-        selectedIndex !== -1 ? (question.choices[selectedIndex] ?? '') : ''
-      }
+      selectedAnswerText={selectedIndex !== -1 ? (choices[selectedIndex] ?? '') : ''}
       explanation={resolvedExplanation}
       characterImageUrl={characterImageUrl}
       isLastQuestion={isLastQuestion}

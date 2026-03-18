@@ -1,17 +1,18 @@
 import type { ComponentProps } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { MOCK_CHOICE_QUESTION_SET } from '@/mock/choiceQuestion';
+import type { VocabInfo } from '@/api/learning/learning.types';
 
 import VocabCard from './VocabCard';
 
-const sampleVocab = MOCK_CHOICE_QUESTION_SET.questions.find(
-  (question) => question.type === 'vocab'
-);
-
-if (!sampleVocab) {
-  throw new Error('Vocab card story fixture not found');
-}
+const sampleVocab: VocabInfo = {
+  id: 1,
+  frontMain: '확정일자',
+  frontSub: '보증금 보호 장치',
+  frontImageUrl: 'https://images.unsplash.com/photo-1450101499163-c8848c66cb85?auto=format&fit=crop&w=400&q=80',
+  backMain: '전입신고와 함께 보증금 보호 순위를 확보하는 절차',
+  backSub: '이사 당일에 함께 처리해야 안전합니다.',
+};
 
 const meta = {
   title: 'Learning/Vocab/VocabCard',

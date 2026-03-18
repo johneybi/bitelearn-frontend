@@ -3,15 +3,16 @@ import { useEffect, useMemo, useState } from 'react';
 import QuizHeader from '@/components/common/QuizHeader';
 import QuizIndicator from '@/components/features/learning/quiz/QuizIndicator';
 import QuizImage from '@/components/features/learning/quiz/QuizImage';
-import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
+import type { QuizInfo } from '@/api/learning/learning.types';
 import type { QuizMetric, QuizPhase, StepIndicatorInfo } from './quiz.types';
 import QuizPassagePhase from './phases/QuizPassagePhase';
 import QuizChoicesPhase from './phases/QuizChoicesPhase';
 import QuizResultPhase from './phases/QuizResultPhase';
 import type { QuizSubmitResponse } from '@/api/learning/learning.types';
+import { getQuizChoices, getQuizPassageMode } from './learningQuiz.utils';
 
 type QuizPlayerProps = {
-  questions: ChoiceQuestionItem[];
+  questions: QuizInfo[];
   initialIndex?: number;
   headerTitle?: string;
   onBack?: () => void;
@@ -20,7 +21,7 @@ type QuizPlayerProps = {
   onCurrentIndexChange?: (index: number) => void;
   onMetricsChange?: (metrics: QuizMetric[]) => void;
   onSubmitAnswer?: (
-    question: ChoiceQuestionItem,
+    question: QuizInfo,
     selectedAnswerIndex: number
   ) => Promise<QuizSubmitResponse>;
 };
@@ -69,20 +70,22 @@ export default function QuizPlayer({
   }
 
   const currentQuestion = questions[currentIndex];
+  const currentChoices = getQuizChoices(currentQuestion);
   const selectedIndex = selectedChoice === '' ? -1 : Number(selectedChoice);
   const currentResult = resultByIndex[currentIndex];
   const isShowingEvaluation = phase === 'checking' && !isEvaluating;
   const isCorrect =
     currentResult?.correct ??
-    (selectedIndex !== -1 && selectedIndex === currentQuestion.correctIndex);
+    (selectedIndex !== -1 &&
+      selectedIndex === currentResult?.correctAnswerIndex);
   const isLastQuestion = currentIndex === questions.length - 1;
   const resolvedCorrectIndex =
-    currentResult?.correctAnswerIndex ?? currentQuestion.correctIndex;
+    currentResult?.correctAnswerIndex ?? -1;
 
   const localIndicatorSteps: StepIndicatorInfo[] = useMemo(
     () =>
-      questions.map((question, index) => ({
-        type: question.type ?? 'quiz',
+      questions.map((_, index) => ({
+        type: 'quiz',
         status: metrics[index],
         isCurrent: index === currentIndex,
       })),
@@ -100,7 +103,7 @@ export default function QuizPlayer({
   }, [metrics, onMetricsChange]);
 
   const handleSolve = () => {
-    if (currentQuestion.passageMode === 'conversation') {
+    if (getQuizPassageMode(currentQuestion) === 'conversation') {
       setSeenPassages((prev) => new Set(prev).add(currentIndex));
     }
     setPhase('choices');
@@ -121,9 +124,9 @@ export default function QuizPlayer({
     setPhase('checking');
     setIsEvaluating(true);
 
-    let correct = resolvedIndex === currentQuestion.correctIndex;
-    let explanation = currentQuestion.explanation;
-    let correctAnswer = currentQuestion.choices[currentQuestion.correctIndex] ?? '';
+    let correct = false;
+    let explanation = '';
+    let correctAnswer = '';
 
     if (onSubmitAnswer) {
       try {
@@ -132,11 +135,11 @@ export default function QuizPlayer({
         explanation = submitResult.explanation;
         correctAnswer = submitResult.correctAnswer;
       } catch {
-        correct = resolvedIndex === currentQuestion.correctIndex;
+        correct = false;
       }
     }
 
-    const correctAnswerIndex = currentQuestion.choices.findIndex(
+    const correctAnswerIndex = currentChoices.findIndex(
       (choice) => choice.trim() === correctAnswer.trim()
     );
 
@@ -192,8 +195,8 @@ export default function QuizPlayer({
       {phase === 'passage' && (
         <>
           <QuizImage
-            src={currentQuestion.imageUrl}
-            alt={currentQuestion.imageAlt}
+            src={currentQuestion.questionImageUrl ?? undefined}
+            alt={currentQuestion.questionTitle}
           />
           <QuizPassagePhase
             question={currentQuestion}

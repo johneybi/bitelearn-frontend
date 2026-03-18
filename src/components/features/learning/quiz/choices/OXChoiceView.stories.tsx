@@ -8,7 +8,7 @@ type OXChoiceViewProps = ComponentProps<typeof OXChoiceView>;
 
 const baseArgs = {
   questionNumber: 6,
-  question: '중개사의 말만 믿고 등기부등본을 확인하지 않아도 계약은 안전하다.',
+  questionTitle: '중개사의 말만 믿고 등기부등본을 확인하지 않아도 계약은 안전하다.',
   correctIndex: 1,
   onCheckAnswer: (_selectedIndex: number) => {},
   isChecking: false,

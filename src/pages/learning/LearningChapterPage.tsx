@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import ChapterPlayer from '@/components/features/learning/chapter/ChapterPlayer';
@@ -8,87 +8,7 @@ import {
   getLearningChapterResult,
   submitLearningQuiz,
 } from '@/api/learning/learning.api';
-import type {
-  ChapterLearningResponse,
-  QuizInfo,
-} from '@/api/learning/learning.types';
-import type { ChoiceQuestionSet } from '@/mock/choiceQuestion';
-
-function toChoices(quiz: QuizInfo) {
-  const options = quiz.specificData?.options ?? [];
-  return options.map((option) =>
-    typeof option === 'string' ? option : option.docText
-  );
-}
-
-function mapLearningDataToQuestionSet(
-  chapterId: number,
-  chapterData: ChapterLearningResponse
-): ChoiceQuestionSet {
-  const vocabQuestions = chapterData.vocabs.map((vocab, index) => ({
-    questionNumber: index + 1,
-    type: 'vocab' as const,
-    passageMode: 'text' as const,
-    passage: vocab.backMain,
-    flavorText: vocab.frontSub ?? '핵심 단어',
-    imageUrl: vocab.frontImageUrl ?? '',
-    imageAlt: `${vocab.frontMain} 단어 이미지`,
-    question: vocab.backSub ?? vocab.backMain,
-    choices: [vocab.frontMain],
-    correctIndex: 0,
-    explanation: vocab.backSub ?? vocab.backMain,
-    quizId: chapterId * 1000 + index + 1,
-  }));
-
-  const quizQuestions = chapterData.quizzes.map((quiz, index) => {
-    const choices = toChoices(quiz);
-    const dialogues = quiz.specificData?.dialogues ?? [];
-    const isDialogueType = quiz.type === 'DIALOGUE_MCQ' || quiz.type === 'DIALOGUE_OX';
-
-    return {
-      questionNumber: index + 1,
-      type: 'quiz' as const,
-      passageMode: isDialogueType ? ('conversation' as const) : ('text' as const),
-      choiceMode:
-        quiz.type === 'DIALOGUE_OX'
-          ? ('ox' as const)
-          : ('multiple' as const),
-      passage: quiz.passageContent ?? '',
-      flavorText: quiz.passageTitle ?? '',
-      imageUrl: quiz.questionImageUrl ?? '',
-      imageAlt: quiz.questionTitle,
-      question: quiz.questionTitle,
-      choices,
-      correctIndex: 0,
-      explanation: '',
-      quizId: quiz.quizId,
-      conversations: isDialogueType
-        ? dialogues.map((line, dialogueIndex) => ({
-            id: `d-${quiz.quizId}-${dialogueIndex}`,
-            speakerId: line.speaker,
-            message: line.message,
-          }))
-        : undefined,
-      conversationSpeakers: isDialogueType
-        ? Array.from(new Set(dialogues.map((line) => line.speaker))).map(
-            (speaker, speakerIndex) => ({
-              id: speaker,
-              name: speaker,
-              position:
-                speakerIndex % 2 === 0
-                  ? ('left' as const)
-                  : ('right' as const),
-            })
-          )
-        : undefined,
-    };
-  });
-
-  return {
-    title: chapterData.chapterTitle,
-    questions: [...vocabQuestions, ...quizQuestions],
-  };
-}
+import type { ChapterLearningResponse } from '@/api/learning/learning.types';
 
 export default function LearningChapterPage() {
   const navigate = useNavigate();
@@ -136,13 +56,6 @@ export default function LearningChapterPage() {
     );
   }
 
-  const questionSet = useMemo(() => {
-    if (!chapterData) {
-      return null;
-    }
-    return mapLearningDataToQuestionSet(chapterIdNumber, chapterData);
-  }, [chapterData, chapterIdNumber]);
-
   if (isLoading) {
     return (
       <main className="flex h-dvh items-center justify-center bg-slate-50 p-6">
@@ -151,7 +64,7 @@ export default function LearningChapterPage() {
     );
   }
 
-  if (hasError || !chapterData || !questionSet) {
+  if (hasError || !chapterData) {
     return (
       <main className="flex h-dvh items-center justify-center bg-slate-50 p-6">
         <p className="text-sm font-medium text-slate-500">
@@ -163,7 +76,9 @@ export default function LearningChapterPage() {
 
   return (
     <ChapterPlayer
-      questionSet={questionSet}
+      chapterTitle={chapterData.chapterTitle}
+      vocabs={chapterData.vocabs}
+      quizzes={chapterData.quizzes}
       chapterIntro={{
         title: chapterData.chapterTitle,
         prologueSubtitle: chapterData.prologueSubtitle,

@@ -6,9 +6,9 @@ import QuizTitle from '../shared/QuizTitle';
 
 type OXChoiceViewProps = {
   questionNumber: number;
-  question: string;
+  questionTitle: string;
   /** 정답 인덱스: 0 = O, 1 = X */
-  correctIndex: number;
+  correctIndex?: number;
   onCheckAnswer: (selectedIndex: number) => void;
   isChecking?: boolean;
   onPrevious?: () => void;
@@ -16,7 +16,7 @@ type OXChoiceViewProps = {
 
 export default function OXChoiceView({
   questionNumber,
-  question,
+  questionTitle,
   correctIndex,
   onCheckAnswer,
   isChecking = false,
@@ -110,7 +110,7 @@ export default function OXChoiceView({
   return (
     <>
       <section className="flex flex-1 flex-col overflow-hidden px-6">
-        <QuizTitle questionNumber={questionNumber} question={question} />
+        <QuizTitle questionNumber={questionNumber} questionTitle={questionTitle} />
 
         <div className="flex flex-1 gap-4 pb-4">
           {renderButton(0, 'O')}
