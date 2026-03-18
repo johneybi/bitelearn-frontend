@@ -9,6 +9,7 @@ type ChapterIntroProps = {
   chapterGoal: string;
   chapterDescription: string;
   coreKeywords: string[];
+  shouldResume?: boolean;
   onStart: () => void;
   onBack: () => void;
 };
@@ -19,6 +20,7 @@ export default function ChapterIntro({
   chapterGoal,
   chapterDescription,
   coreKeywords,
+  shouldResume = false,
   onStart,
   onBack,
 }: ChapterIntroProps) {
@@ -74,7 +76,7 @@ export default function ChapterIntro({
           className="h-14 w-full rounded-2xl text-base font-bold"
           onClick={onStart}
         >
-          학습 시작하기 <ChevronRight size={16} />
+          {shouldResume ? '학습 이어하기' : '학습 시작하기'} <ChevronRight size={16} />
         </Button>
       </footer>
     </main>

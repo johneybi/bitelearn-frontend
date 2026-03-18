@@ -183,6 +183,10 @@ export default function ChapterPlayer({
         chapterGoal={chapterIntro.goal}
         chapterDescription={chapterIntro.description}
         coreKeywords={chapterIntro.coreKeywords}
+        shouldResume={
+          initialStatus === 'QUIZ_IN_PROGRESS' ||
+          (initialQuizSequence !== null && initialQuizSequence > 1)
+        }
         onBack={onBack}
         onStart={() => {
           if (initialStatus === 'QUIZ_IN_PROGRESS') {
