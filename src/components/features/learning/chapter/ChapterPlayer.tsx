@@ -69,10 +69,7 @@ export default function ChapterPlayer({
   const initialPhase: ChapterPhase = 'intro';
 
   const [chapterPhase, setChapterPhase] = useState<ChapterPhase>(initialPhase);
-  const [quizResult, setQuizResult] = useState<{
-    total: number;
-    correct: number;
-  } | null>(null);
+  const [quizResult, setQuizResult] = useState<ChapterResultResponse | null>(null);
 
   const [vocabIdx, setVocabIdx] = useState(0);
   const [quizCurrentIndex, setQuizCurrentIndex] = useState(
@@ -108,10 +105,14 @@ export default function ChapterPlayer({
   if (chapterPhase === 'final' && quizResult) {
     return (
       <ChapterResult
-        correct={quizResult.correct}
-        total={quizResult.total}
+        correct={quizResult.correctCount}
+        total={quizResult.totalCount}
+        accuracyRate={quizResult.accuracyRate}
+        earnedBytes={quizResult.earnedBytes}
         chapterTitle={chapterTitle}
-        onFinish={() => onComplete(quizResult.total, quizResult.correct)}
+        onFinish={() =>
+          onComplete(quizResult.totalCount, quizResult.correctCount)
+        }
       />
     );
   }
@@ -119,8 +120,9 @@ export default function ChapterPlayer({
   if (chapterPhase === 'done' && quizResult) {
     return (
       <ChapterDone
-        correct={quizResult.correct}
-        total={quizResult.total}
+        correct={quizResult.correctCount}
+        total={quizResult.totalCount}
+        accuracyRate={quizResult.accuracyRate}
         chapterTitle={chapterTitle}
         onFinish={() => setChapterPhase('final')}
       />
@@ -136,20 +138,30 @@ export default function ChapterPlayer({
           if (onFetchResult) {
             onFetchResult()
               .then((result) => {
-                setQuizResult({
-                  total: result.totalCount,
-                  correct: result.correctCount,
-                });
+                setQuizResult(result);
                 setChapterPhase('done');
               })
               .catch(() => {
-                setQuizResult({ total, correct });
+                const fallbackAccuracyRate =
+                  total > 0 ? Math.round((correct / total) * 100) : 0;
+
+                setQuizResult({
+                  correctCount: correct,
+                  totalCount: total,
+                  accuracyRate: fallbackAccuracyRate,
+                  earnedBytes: 0,
+                });
                 setChapterPhase('done');
               });
             return;
           }
 
-          setQuizResult({ total, correct });
+          setQuizResult({
+            correctCount: correct,
+            totalCount: total,
+            accuracyRate: total > 0 ? Math.round((correct / total) * 100) : 0,
+            earnedBytes: 0,
+          });
           setChapterPhase('done');
         }}
         indicatorSteps={combinedSteps}
