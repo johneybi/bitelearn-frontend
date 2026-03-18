@@ -11,7 +11,7 @@ export default function QuizIndicator({ steps }: QuizIndicatorProps) {
       {steps.map((step, index) => {
         let bgColor = 'bg-slate-200';
 
-        if (step.type === 'word') {
+        if (step.type === 'vocab') {
           bgColor = 'bg-blue-500'; // 학습 단계: 파란색
         } else if (step.type === 'quiz') {
           if (step.status === 'correct') {

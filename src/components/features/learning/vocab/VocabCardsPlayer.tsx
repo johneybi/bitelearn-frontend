@@ -1,47 +1,59 @@
-import { useMemo, useState } from 'react';
-import { AnimatePresence, motion, type Variants } from 'framer-motion';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useTransform,
+  type Variants,
+} from 'framer-motion';
 import { MousePointerClick } from 'lucide-react';
 
 import QuizHeader from '@/components/common/QuizHeader';
 import QuizFooter from '@/components/common/QuizFooter';
 import QuizIndicator from '@/components/features/learning/quiz/QuizIndicator';
-import WordCard from './WordCard';
+import VocabCard from './VocabCard';
 
 import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
 import type { StepIndicatorInfo } from '@/components/features/learning/quiz/quiz.types';
 
-type WordCardsPlayerProps = {
-  words: ChoiceQuestionItem[];
-  wordIdx: number;
-  onWordIdxChange: (idx: number) => void;
+type VocabCardsPlayerProps = {
+  vocabs: ChoiceQuestionItem[];
+  vocabIdx: number;
+  onVocabIdxChange: (idx: number) => void;
   onComplete: () => void;
   onBack: () => void;
   indicatorSteps?: StepIndicatorInfo[];
 };
 
-export default function WordCardsPlayer({
-  words,
-  wordIdx,
-  onWordIdxChange,
+export default function VocabCardsPlayer({
+  vocabs,
+  vocabIdx,
+  onVocabIdxChange,
   onComplete,
   onBack,
   indicatorSteps: externalSteps,
-}: WordCardsPlayerProps) {
+}: VocabCardsPlayerProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [direction, setDirection] = useState(1);
+  const dragX = useMotionValue(0);
+  const cardRotate = useTransform(dragX, [-150, 0, 150], [-8, 0, 8]);
 
-  const currentWord = words[wordIdx];
-  const isFirstWord = wordIdx === 0;
-  const isLastWord = wordIdx === words.length - 1;
+  const currentVocab = vocabs[vocabIdx];
+  const isFirstVocab = vocabIdx === 0;
+  const isLastVocab = vocabIdx === vocabs.length - 1;
+
+  useEffect(() => {
+    dragX.set(0);
+  }, [vocabIdx, dragX]);
 
   const localSteps: StepIndicatorInfo[] = useMemo(
     () =>
-      words.map((_, idx) => ({
-        type: 'word',
+      vocabs.map((_, idx) => ({
+        type: 'vocab',
         status: 'none',
-        isCurrent: idx === wordIdx,
+        isCurrent: idx === vocabIdx,
       })),
-    [words, wordIdx]
+    [vocabs, vocabIdx]
   );
 
   const indicatorSteps = externalSteps ?? localSteps;
@@ -74,25 +86,25 @@ export default function WordCardsPlayer({
   };
 
   const handleNext = () => {
-    if (isLastWord) {
+    if (isLastVocab) {
       onComplete();
       return;
     }
 
     setDirection(1);
     setIsFlipped(false);
-    onWordIdxChange(wordIdx + 1);
+    onVocabIdxChange(vocabIdx + 1);
   };
 
   const handlePrev = () => {
-    if (isFirstWord) return;
+    if (isFirstVocab) return;
 
     setDirection(-1);
     setIsFlipped(false);
-    onWordIdxChange(wordIdx - 1);
+    onVocabIdxChange(vocabIdx - 1);
   };
 
-  if (!currentWord) {
+  if (!currentVocab) {
     return (
       <main className="flex h-full min-h-0 flex-col bg-white text-slate-900">
         <div className="z-20 shrink-0 border-b border-slate-100 bg-white">
@@ -122,7 +134,7 @@ export default function WordCardsPlayer({
       <div className="relative flex flex-1 items-center justify-center overflow-hidden px-6">
         <AnimatePresence mode="wait" initial={false} custom={direction}>
           <motion.div
-            key={wordIdx}
+            key={vocabIdx}
             custom={direction}
             variants={slideVariants}
             initial="initial"
@@ -130,17 +142,36 @@ export default function WordCardsPlayer({
             exit="exit"
             className="perspective-1000 z-10 h-[480px] w-full max-w-[320px]"
           >
-            <WordCard
-              word={currentWord}
-              isFlipped={isFlipped}
-              onFlip={() => setIsFlipped((prev) => !prev)}
-            />
+            <motion.div
+              style={{ x: dragX, rotate: cardRotate }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.2}
+              onDragEnd={(_, info) => {
+                const { offset, velocity } = info;
+                if (offset.x < -80 || velocity.x < -500) {
+                  handleNext();
+                } else if (
+                  (offset.x > 80 || velocity.x > 500) &&
+                  !isFirstVocab
+                ) {
+                  handlePrev();
+                }
+              }}
+              className="relative h-full w-full"
+            >
+              <VocabCard
+                vocab={currentVocab}
+                isFlipped={isFlipped}
+                onFlip={() => setIsFlipped((prev) => !prev)}
+              />
+            </motion.div>
           </motion.div>
         </AnimatePresence>
 
         <div className="pointer-events-none absolute inset-x-0 bottom-5 flex items-center justify-center">
-          <AnimatePresence>
-            {!isFlipped && (
+          <AnimatePresence mode="wait">
+            {!isFlipped ? (
               <motion.div
                 key="flip-guide"
                 initial={{ opacity: 0, y: 10 }}
@@ -152,6 +183,18 @@ export default function WordCardsPlayer({
                 <p className="text-sm font-bold tracking-tight">
                   카드를 뒤집어 확인해 보세요
                 </p>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="swipe-guide"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="flex items-center gap-1.5 text-slate-300"
+              >
+                <span className="text-xs font-bold tracking-tight">
+                  ← 스와이프로도 넘길 수 있어요
+                </span>
               </motion.div>
             )}
           </AnimatePresence>
@@ -169,10 +212,10 @@ export default function WordCardsPlayer({
               className="absolute inset-0"
             >
               <QuizFooter
-                onPrevious={isFirstWord ? undefined : handlePrev}
+                onPrevious={isFirstVocab ? undefined : handlePrev}
                 onClick={handleNext}
               >
-                {isLastWord ? '단어 학습 완료하기' : '다음 단어 확인'}
+                {isLastVocab ? '단어 학습 완료하기' : '다음 단어 확인'}
               </QuizFooter>
             </motion.div>
           )}

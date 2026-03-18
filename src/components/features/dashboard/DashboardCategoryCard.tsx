@@ -29,21 +29,6 @@ export default function DashboardCategoryCard({
           {category.chapterCount}개 챕터
         </p>
       </div>
-
-      <div className="mt-5 w-full">
-        <div className="mb-1.5 flex items-end justify-between px-0.5">
-          <span className="text-[10px] font-bold text-slate-900">
-            {category.progressPercent}%
-          </span>
-        </div>
-
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-          <div
-            className="h-full rounded-full bg-slate-900"
-            style={{ width: `${category.progressPercent}%` }}
-          />
-        </div>
-      </div>
     </Button>
   );
 }
