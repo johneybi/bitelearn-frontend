@@ -34,7 +34,7 @@ export default function Router() {
           </Route>
 
           <Route
-            path="/learning/:categoryId"
+            path="/learning/:categoryId/topics/:topicId"
             element={<LearningRoadmapPage />}
           />
           <Route

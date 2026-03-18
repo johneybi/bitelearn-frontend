@@ -1,11 +1,11 @@
 import { Check, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import type { Chapter } from '@/mock/chapter';
+import type { LearningChapterListItem } from '@/api/learning/learning.types';
 import { cn } from '@/lib/utils';
 
 type StageNodeProps = {
-  chapter: Chapter;
+  chapter: LearningChapterListItem;
   index: number;
   onSelect: () => void;
 };
@@ -15,9 +15,9 @@ export default function StageNode({
   index,
   onSelect,
 }: StageNodeProps) {
-  const isCompleted = chapter.status === 'completed';
-  const isInProgress = chapter.status === 'in_progress';
-  const isLocked = chapter.status === 'locked';
+  const isCompleted = chapter.status === 'COMPLETED';
+  const isInProgress = chapter.status === 'QUIZ_IN_PROGRESS';
+  const isLocked = chapter.isLocked ?? false;
 
   return (
     <motion.div
@@ -51,7 +51,9 @@ export default function StageNode({
         ) : isLocked ? (
           <Lock size={20} />
         ) : (
-          <span className="text-3xl">{chapter.emoji}</span>
+          <span className="text-2xl font-extrabold text-slate-700">
+            {chapter.sequence}
+          </span>
         )}
 
         {isInProgress && (
@@ -69,12 +71,6 @@ export default function StageNode({
         >
           {chapter.title}
         </p>
-
-        {!isLocked && (
-          <p className="mt-1 text-xs font-medium text-slate-400">
-            약 {chapter.estimatedMinutes}분 · {chapter.questionCount}문제
-          </p>
-        )}
       </div>
     </motion.div>
   );

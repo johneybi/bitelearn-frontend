@@ -1,18 +1,97 @@
+import { Check, ChevronDown, ChevronRight, ChevronUp } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import CategoryCard from '@/components/features/learning/CategoryCard';
-import { MOCK_CATEGORY_CHAPTERS } from '@/mock/chapter';
+import { getLearningChapters } from '@/api/learning/learning.api';
+import type { LearningChapterListItem } from '@/api/learning/learning.types';
+import { Button } from '@/components/ui/button';
+import { LEARNING_NAVIGATION } from '@/constants/learningNavigation';
+import { cn } from '@/lib/utils';
+
+type TopicSummary = {
+  topicId: string;
+  topicName: string;
+  chapters: LearningChapterListItem[];
+};
+
+type CategorySummary = {
+  total: number;
+  completed: number;
+  topics: TopicSummary[];
+};
 
 export default function LearningPage() {
   const navigate = useNavigate();
+  const [expandedCategoryId, setExpandedCategoryId] = useState<string | null>(
+    null
+  );
+  const [summaryByCategory, setSummaryByCategory] = useState<
+    Record<string, CategorySummary>
+  >({});
+  const [isLoading, setIsLoading] = useState(true);
 
-  const totalDomains = MOCK_CATEGORY_CHAPTERS.length;
-  const startedDomains = MOCK_CATEGORY_CHAPTERS.filter(
-    (category) => category.completedChapters > 0
-  ).length;
+  useEffect(() => {
+    let isMounted = true;
+    setIsLoading(true);
 
-  const handleSelectCategory = (categoryId: string) => {
-    navigate(`/learning/${categoryId}`);
+    Promise.all(
+      LEARNING_NAVIGATION.map(async (category) => {
+        const responses = await Promise.all(
+          category.topics.map((topic) =>
+            getLearningChapters({
+              category: category.code,
+              topic: topic.code,
+            })
+          )
+        );
+
+        const topicSummaries: TopicSummary[] = responses.map((response, idx) => ({
+          topicId: category.topics[idx]?.id ?? `topic-${idx}`,
+          topicName: category.topics[idx]?.name ?? '중분류',
+          chapters: response.chapters,
+        }));
+
+        const mergedChapters = topicSummaries.flatMap((topic) => topic.chapters);
+        const completed = mergedChapters.filter(
+          (chapter) => chapter.status === 'COMPLETED'
+        ).length;
+
+        return [
+          category.id,
+          {
+            total: mergedChapters.length,
+            completed,
+            topics: topicSummaries,
+          } satisfies CategorySummary,
+        ] as const;
+      })
+    )
+      .then((entries) => {
+        if (!isMounted) return;
+        setSummaryByCategory(Object.fromEntries(entries));
+      })
+      .finally(() => {
+        if (!isMounted) return;
+        setIsLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const totalDomains = LEARNING_NAVIGATION.length;
+  const startedDomains = useMemo(
+    () =>
+      LEARNING_NAVIGATION.filter((category) => {
+        const summary = summaryByCategory[category.id];
+        return summary ? summary.completed > 0 : false;
+      }).length,
+    [summaryByCategory]
+  );
+
+  const handleToggleCategory = (categoryId: string) => {
+    setExpandedCategoryId((prev) => (prev === categoryId ? null : categoryId));
   };
 
   return (
@@ -42,13 +121,151 @@ export default function LearningPage() {
 
       <section className="hide-scrollbar flex-1 overflow-y-auto px-6 py-8">
         <div className="flex flex-col gap-10">
-          {MOCK_CATEGORY_CHAPTERS.map((cat) => (
-            <CategoryCard
-              key={cat.categoryId}
-              cat={cat}
-              onSelect={() => handleSelectCategory(cat.categoryId)}
-            />
-          ))}
+          {LEARNING_NAVIGATION.map((category) => {
+            const summary = summaryByCategory[category.id];
+            const completed = summary?.completed ?? 0;
+            const total = summary?.total ?? 0;
+            const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+            const isExpanded = expandedCategoryId === category.id;
+            const isComplete = total > 0 && completed === total;
+
+            return (
+              <article
+                key={category.id}
+                className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm"
+              >
+                <Button
+                  variant="ghost"
+                  className="h-auto w-full p-0 hover:bg-transparent"
+                  onClick={() => handleToggleCategory(category.id)}
+                >
+                  <div className="flex w-full flex-col items-start gap-5">
+                    <div className="flex w-full items-start justify-between">
+                      <div className="flex items-center gap-4 text-left">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-slate-50 text-3xl">
+                          {category.emoji}
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold leading-tight text-slate-900">
+                            {category.name}
+                          </h3>
+                          <p className="mt-1 text-sm font-medium text-slate-500">
+                            {category.tagline}
+                          </p>
+                        </div>
+                      </div>
+
+                      {isComplete ? (
+                        <div className="rounded-full bg-emerald-500 p-1.5 text-white">
+                          <Check size={14} />
+                        </div>
+                      ) : (
+                        <div className="text-slate-400">
+                          {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="w-full">
+                      <div className="mb-2 flex items-end justify-between px-1">
+                        <span className="text-xs font-bold text-slate-400">
+                          {completed} / {total} 챕터 완료
+                        </span>
+                        <span className="text-sm font-bold text-slate-900">
+                          {isLoading ? '-' : `${progress}%`}
+                        </span>
+                      </div>
+
+                      <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                        <div
+                          className="h-full rounded-full bg-[#F2A65A] transition-all duration-300"
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </Button>
+
+                {isExpanded && (
+                  <div className="mt-5 border-t border-slate-100 pt-4">
+                    <div className="flex flex-col gap-3">
+                      {(summary?.topics ?? []).map((topic) => {
+                        const topicCompleted = topic.chapters.filter(
+                          (chapter) => chapter.status === 'COMPLETED'
+                        ).length;
+                        const topicStatusLabel =
+                          topicCompleted === topic.chapters.length &&
+                          topic.chapters.length > 0
+                            ? '학습 완료'
+                            : topic.chapters.some(
+                                  (chapter) => chapter.status === 'QUIZ_IN_PROGRESS'
+                                )
+                              ? '학습 중'
+                              : '학습 전';
+
+                        return (
+                          <Button
+                            key={topic.topicId}
+                            variant="ghost"
+                            className="h-auto w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 hover:bg-slate-100"
+                            onClick={() =>
+                              navigate(
+                                `/learning/${category.id}/topics/${topic.topicId}`
+                              )
+                            }
+                          >
+                            <div className="w-full">
+                              <div className="mb-2 flex items-center justify-between">
+                                <p className="text-base font-bold text-slate-900">
+                                  {topic.topicName}
+                                </p>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs font-bold text-slate-400">
+                                    {topicStatusLabel}
+                                  </span>
+                                  <ChevronRight size={16} className="text-slate-400" />
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-1">
+                                {topic.chapters.map((chapter, idx) => {
+                                  const isDone = chapter.status === 'COMPLETED';
+                                  const isInProgress =
+                                    chapter.status === 'QUIZ_IN_PROGRESS';
+                                  return (
+                                    <div
+                                      key={chapter.chapterId}
+                                      className="flex items-center gap-1"
+                                    >
+                                      <div
+                                        className={cn(
+                                          'flex h-5 w-5 items-center justify-center rounded-full text-[10px]',
+                                          isDone
+                                            ? 'bg-emerald-500 text-white'
+                                            : isInProgress
+                                              ? 'bg-slate-300 text-white'
+                                              : 'bg-slate-200 text-slate-400'
+                                        )}
+                                      >
+                                        <Check size={12} />
+                                      </div>
+                                      {idx !== topic.chapters.length - 1 && (
+                                        <div className="h-[2px] w-4 rounded-full bg-slate-200" />
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </article>
+            );
+          })}
         </div>
 
         <div className="mt-20 px-8 pb-32 text-center">

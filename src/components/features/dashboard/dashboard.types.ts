@@ -11,7 +11,6 @@ export type DashboardCategory = {
   emoji: string;
   name: string;
   chapterCount: number;
-  progressPercent: number;
 };
 
 export type DashboardRecommendation = {

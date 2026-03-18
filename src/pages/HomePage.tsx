@@ -32,7 +32,7 @@ function HomePage() {
   // 최근 학습 데이터 (임시)
   const recentLearning = {
     categoryId: 'real-estate',
-    chapterId: 'contract_step2',
+    chapterId: '1001',
     category: '부동산 · 주거',
     chapterTitle: '전세사기 예방 기초',
     progressPercent: 68,
@@ -73,9 +73,7 @@ function HomePage() {
 
             <DashboardCategoryList
               categories={DASHBOARD_CATEGORIES}
-              onCategoryClick={(category) => {
-                navigate(`/learning/${category.id}`);
-              }}
+              onCategoryClick={() => navigate('/learning')}
             />
 
             <DashboardTodayRecommendation
