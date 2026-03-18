@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import RootLayout from '@/layouts/RootLayout';
 import AppLayout from '@/layouts/AppLayout';
-import AuthLayout from '@/layouts/AuthLayout';
 
 import ProtectedRoute from '@/components/features/auth/ProtectedRoute';
 import PublicRoute from '@/components/features/auth/PublicRoute';
@@ -10,6 +9,7 @@ import PublicRoute from '@/components/features/auth/PublicRoute';
 import HomePage from '@/pages/HomePage';
 import LoginPage from '@/pages/LoginPage';
 import SignupPage from '@/pages/SignupPage';
+import TermsAgreementPage from '@/pages/TermsAgreementPage';
 import OAuthCallbackPage from '@/pages/OAuthCallbackPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 import LearningPage from '@/pages/learning/LearningPage';
@@ -51,10 +51,9 @@ export default function Router() {
           </Route>
 
           <Route element={<PublicRoute />}>
-            <Route element={<AuthLayout />}>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignupPage />} />
-            </Route>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup/terms" element={<TermsAgreementPage />} />
+            <Route path="/signup" element={<SignupPage />} />
           </Route>
 
           <Route path="/oauth/callback" element={<OAuthCallbackPage />} />

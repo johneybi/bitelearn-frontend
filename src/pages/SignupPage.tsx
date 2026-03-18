@@ -1,6 +1,8 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
+import AuthHeader from '@/components/common/AuthHeader';
 import type { SignupFormValues } from '@/schemas/signupSchema';
 import SignupForm, {
   type SignupFormSubmitHelpers,
@@ -9,12 +11,23 @@ import { signup } from '@/api/auth/auth.api';
 import { isAppError } from '@/api/error/appError';
 import { API_ERROR_MESSAGE } from '@/api/error/errorMessages';
 import { logError } from '@/lib/logError';
+import { SIGNUP_TERMS_AGREED_STORAGE_KEY } from '@/constants/auth';
 
 const SIGNUP_ERROR_FALLBACK_MESSAGE =
   '회원가입에 실패했습니다. 다시 시도해주세요.';
 
 export default function SignupPage() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const hasAgreedTerms =
+      sessionStorage.getItem(SIGNUP_TERMS_AGREED_STORAGE_KEY) === 'true';
+
+    if (!hasAgreedTerms) {
+      toast.error('약관 동의 후 회원가입을 진행해주세요.');
+      navigate('/signup/terms', { replace: true });
+    }
+  }, [navigate]);
 
   // 회원가입 제출 핸들러
   const handleSignupSubmit = async (
@@ -24,8 +37,13 @@ export default function SignupPage() {
     clearErrors();
 
     try {
-      const { passwordConfirm, ...submitData } = data;
+      const submitData = {
+        email: data.email,
+        password: data.password,
+        nickname: data.nickname,
+      };
       await signup(submitData);
+      sessionStorage.removeItem(SIGNUP_TERMS_AGREED_STORAGE_KEY);
 
       toast.success('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
       navigate('/login');
@@ -55,5 +73,14 @@ export default function SignupPage() {
     }
   };
 
-  return <SignupForm onSubmit={handleSignupSubmit} />;
+  return (
+    <div className="min-h-dvh bg-background">
+      <AuthHeader
+        showBackButton
+        title="회원가입"
+        onBackClick={() => navigate(-1)}
+      />
+      <SignupForm onSubmit={handleSignupSubmit} />
+    </div>
+  );
 }

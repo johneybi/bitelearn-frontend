@@ -3,7 +3,6 @@ import { toast } from 'sonner';
 
 import { getMe, login } from '@/api/auth/auth.api';
 import { isAppError } from '@/api/error/appError';
-import { API_ERROR_MESSAGE } from '@/api/error/errorMessages';
 import { setAccessToken } from '@/api/auth/tokenStore';
 import { toExpiresAt } from '@/api/auth/token.util';
 import LoginForm, {
@@ -12,6 +11,13 @@ import LoginForm, {
 import { logError } from '@/lib/logError';
 import type { LoginFormValues } from '@/schemas/loginSchema';
 import { useAuthStore } from '@/stores/auth.store';
+import { ChevronRight } from 'lucide-react';
+import AuthHeader from '@/components/common/AuthHeader';
+
+import logo from '@/assets/brand/logo.svg';
+import symbol from '@/assets/brand/symbol.svg';
+import google from '@/assets/icons/social/google.svg';
+import naver from '@/assets/icons/social/naver.svg';
 
 type SocialProvider = 'GOOGLE' | 'NAVER';
 
@@ -32,7 +38,7 @@ export default function LoginPage() {
   // 로컬 로그인 핸들러
   const handleLocalLogin = async (
     data: LoginFormValues,
-    { clearErrors, setError }: LoginFormSubmitHelpers
+    { clearErrors }: LoginFormSubmitHelpers
   ) => {
     clearErrors();
 
@@ -47,24 +53,14 @@ export default function LoginPage() {
 
       navigate('/');
     } catch (error) {
+      logError('LoginPage', '로그인 실패', error);
+
       if (isAppError(error)) {
-        if (error.message === API_ERROR_MESSAGE.LOGIN_FAILED) {
-          setError('email', {
-            type: 'server',
-            message: ' ',
-          });
-          setError('password', {
-            type: 'server',
-            message: error.message,
-          });
-          return;
-        }
+        toast.error(error.message);
+        return;
       }
 
-      logError('LoginPage', '로그인 실패', error);
-      toast.error(
-        isAppError(error) ? error.message : LOGIN_ERROR_FALLBACK_MESSAGE
-      );
+      toast.error(LOGIN_ERROR_FALLBACK_MESSAGE);
     }
   };
 
@@ -74,6 +70,71 @@ export default function LoginPage() {
   };
 
   return (
-    <LoginForm onSubmit={handleLocalLogin} onSocialLogin={handleSocialLogin} />
+    <div className="relative flex min-h-dvh flex-col bg-background">
+      <AuthHeader
+        className="absolute inset-x-0 top-0 z-10"
+        showCloseButton
+        onCloseClick={() => navigate(-1)}
+      />
+
+      <div className="flex flex-1 flex-col gap-6 bg-background px-5">
+        <div className="flex flex-col items-center justify-center gap-10 self-stretch px-[69px] pb-16 pt-24">
+          <div className="flex items-center justify-center gap-3">
+            <img
+              src={symbol}
+              alt="logo"
+              className="h-10 w-[29px]"
+              aria-hidden="true"
+            />
+            <img src={logo} alt="bitelearn" className="h-[34px] w-[154px]" />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-16">
+          <LoginForm onSubmit={handleLocalLogin} />
+
+          <div className="flex w-full flex-col gap-5">
+            <button
+              type="button"
+              onClick={() => handleSocialLogin('GOOGLE')}
+              className="relative inline-flex h-11 w-full items-center justify-center rounded-xl border border-border bg-popover px-4 py-2.5 text-base font-medium text-foreground shadow-sm transition-colors"
+            >
+              <img
+                src={google}
+                alt=""
+                aria-hidden="true"
+                className="mr-2 h-5 w-5"
+              />
+              <span>구글로 시작하기</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleSocialLogin('NAVER')}
+              className="relative inline-flex h-11 w-full items-center justify-center rounded-xl border border-border bg-popover px-4 py-2.5 text-base font-medium text-foreground shadow-sm transition-colors"
+            >
+              <img
+                src={naver}
+                alt=""
+                aria-hidden="true"
+                className="mr-2 h-4 w-4"
+              />
+              <span>네이버로 시작하기</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate('/signup/terms')}
+              className="relative inline-flex h-11 w-full items-center justify-center rounded-xl bg-secondary px-4 py-2.5 text-base font-medium text-white transition-colors"
+            >
+              <span className="inline-flex items-center gap-2">
+                <ChevronRight className="h-5 w-5" strokeWidth={2.2} />
+                <span>이메일로 가입하기</span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

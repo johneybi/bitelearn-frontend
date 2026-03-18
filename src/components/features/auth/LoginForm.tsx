@@ -1,20 +1,17 @@
 import { useForm, type UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'react-router-dom';
+import { LogIn } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { cn } from '@/lib/utils';
 import { loginSchema, type LoginFormValues } from '@/schemas/loginSchema';
-
-type SocialProvider = 'GOOGLE' | 'NAVER';
 
 export type LoginFormSubmitHelpers = Pick<
   UseFormReturn<LoginFormValues>,
@@ -26,10 +23,10 @@ type LoginFormProps = {
     data: LoginFormValues,
     helpers: LoginFormSubmitHelpers
   ) => Promise<void> | void;
-  onSocialLogin?: (provider: SocialProvider) => void;
+  onSocialLogin?: (provider: 'GOOGLE' | 'NAVER') => void;
 };
 
-export default function LoginForm({ onSubmit, onSocialLogin }: LoginFormProps) {
+export default function LoginForm({ onSubmit }: LoginFormProps) {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -39,101 +36,77 @@ export default function LoginForm({ onSubmit, onSocialLogin }: LoginFormProps) {
   });
 
   return (
-    <>
-      <h2 className="mb-6 text-center text-2xl font-bold">로그인</h2>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit((data) =>
+          onSubmit(data, {
+            setError: form.setError,
+            clearErrors: form.clearErrors,
+          })
+        )}
+      >
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field, fieldState }) => (
+                <FormItem className="space-y-2">
+                  <FormControl>
+                    <Input
+                      autoComplete="email"
+                      placeholder="이메일"
+                      className={cn(
+                        'h-10 rounded-md bg-popover px-3 py-2 text-sm text-foreground shadow-sm',
+                        'placeholder:text-placeholder focus-visible:ring-0 focus-visible:ring-offset-0',
+                        fieldState.error
+                          ? 'border-destructive focus-visible:border-destructive'
+                          : 'border-input'
+                      )}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-xs text-destructive" />
+                </FormItem>
+              )}
+            />
 
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit((data) =>
-            onSubmit(data, {
-              setError: form.setError,
-              clearErrors: form.clearErrors,
-            })
-          )}
-          className="space-y-4"
-        >
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>이메일</FormLabel>
-                <FormControl>
-                  <Input
-                    type="email"
-                    autoComplete="email"
-                    placeholder="example@mail.com"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <FormControl>
+                    <Input
+                      type="password"
+                      autoComplete="current-password"
+                      placeholder="비밀번호"
+                      className={cn(
+                        'h-10 rounded-md border-input bg-popover px-3 py-2 text-sm text-foreground shadow-sm',
+                        'placeholder:text-placeholder focus-visible:ring-0 focus-visible:ring-offset-0'
+                      )}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-xs text-destructive" />
+                </FormItem>
+              )}
+            />
+          </div>
 
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>비밀번호</FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    autoComplete="current-password"
-                    placeholder="********"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button
+          <button
             type="submit"
-            className="mt-6 w-full"
             disabled={form.formState.isSubmitting}
+            className={cn(
+              'relative inline-flex h-11 w-full items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-base font-semibold text-foreground transition-transform',
+              'disabled:cursor-not-allowed disabled:opacity-60'
+            )}
           >
-            {form.formState.isSubmitting ? '로그인 중...' : '로그인'}
-          </Button>
-        </form>
-      </Form>
-
-      {/* 소셜 로그인 구분선 */}
-      <div className="my-6 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-gray-300 after:mt-0.5 after:flex-1 after:border-t after:border-gray-300">
-        <p className="mx-4 mb-0 text-center text-sm text-gray-500">또는</p>
-      </div>
-
-      {/* 소셜 로그인 버튼 영역 */}
-      <div className="flex flex-col gap-2">
-        <Button
-          variant="outline"
-          className="w-full text-gray-700"
-          type="button"
-          onClick={() => onSocialLogin?.('GOOGLE')}
-        >
-          구글로 시작하기
-        </Button>
-        <Button
-          type="button"
-          className="w-full bg-[#03C75A] text-white hover:bg-[#02b350]"
-          onClick={() => onSocialLogin?.('NAVER')}
-        >
-          네이버로 시작하기
-        </Button>
-      </div>
-
-      {/* 회원가입 페이지 이동 링크 */}
-      <div className="mt-6 text-center text-sm text-gray-600">
-        계정이 없으신가요?{' '}
-        <Link
-          to="/signup"
-          className="font-semibold text-blue-600 hover:underline"
-        >
-          회원가입하기
-        </Link>
-      </div>
-    </>
+            <LogIn className="mr-2 h-6 w-6" strokeWidth={2.2} />
+            <span>로그인</span>
+          </button>
+        </div>
+      </form>
+    </Form>
   );
 }
