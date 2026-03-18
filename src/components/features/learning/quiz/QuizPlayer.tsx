@@ -8,7 +8,7 @@ import type { QuizMetric, QuizPhase, StepIndicatorInfo } from './quiz.types';
 import QuizPassagePhase from './phases/QuizPassagePhase';
 import QuizChoicesPhase from './phases/QuizChoicesPhase';
 import QuizResultPhase from './phases/QuizResultPhase';
-import type { SubmitLearningQuizResponse } from '@/api/learning/learning.types';
+import type { QuizSubmitResponse } from '@/api/learning/learning.types';
 
 type QuizPlayerProps = {
   questions: ChoiceQuestionItem[];
@@ -22,7 +22,7 @@ type QuizPlayerProps = {
   onSubmitAnswer?: (
     question: ChoiceQuestionItem,
     selectedAnswerIndex: number
-  ) => Promise<SubmitLearningQuizResponse>;
+  ) => Promise<QuizSubmitResponse>;
 };
 
 export default function QuizPlayer({
@@ -115,7 +115,7 @@ export default function QuizPlayer({
     if (onSubmitAnswer) {
       try {
         const submitResult = await onSubmitAnswer(currentQuestion, resolvedIndex);
-        correct = submitResult.isCorrect;
+        correct = submitResult.correct;
         explanation = submitResult.explanation;
         correctAnswer = submitResult.correctAnswer;
       } catch {

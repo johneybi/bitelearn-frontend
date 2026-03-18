@@ -1,17 +1,17 @@
 import type {
-  LearningCategoryCode,
-  LearningTopicCode,
+  Category,
+  Topic,
 } from '@/api/learning/learning.types';
 
 export type LearningTopicMeta = {
   id: string;
-  code: LearningTopicCode;
+  code: Topic;
   name: string;
 };
 
 export type LearningCategoryMeta = {
   id: string;
-  code: LearningCategoryCode;
+  code: Category;
   name: string;
   emoji: string;
   tagline: string;
@@ -27,7 +27,8 @@ export const LEARNING_NAVIGATION: LearningCategoryMeta[] = [
     tagline: '내 보증금, 내가 지킨다',
     topics: [
       { id: 'jeonse', code: 'JEONSE', name: '전세' },
-      { id: 'wolse', code: 'WOLSE', name: '월세' },
+      { id: 'monthly-rent', code: 'MONTHLY_RENT', name: '월세' },
+      { id: 'buying', code: 'BUYING', name: '매매' },
     ],
   },
   {
@@ -36,23 +37,23 @@ export const LEARNING_NAVIGATION: LearningCategoryMeta[] = [
     name: '생활금융 · 고용',
     emoji: '💳',
     tagline: '돈과 일, 내 편으로 만들기',
-    topics: [{ id: 'salary', code: 'SALARY', name: '월급 관리' }],
+    topics: [
+      { id: 'jeonse', code: 'JEONSE', name: '전세' },
+      { id: 'monthly-rent', code: 'MONTHLY_RENT', name: '월세' },
+      { id: 'buying', code: 'BUYING', name: '매매' },
+    ],
   },
   {
-    id: 'career',
-    code: 'CAREER',
-    name: '커리어 · 세무',
-    emoji: '💼',
-    tagline: '세금도 전략이다',
-    topics: [{ id: 'tax', code: 'TAX', name: '기초 세무' }],
-  },
-  {
-    id: 'investment',
-    code: 'INVESTMENT',
-    name: '자산운용 · 투자',
-    emoji: '📈',
-    tagline: '위험은 줄이고 기회는 키운다',
-    topics: [{ id: 'starter', code: 'STARTER', name: '투자 입문' }],
+    id: 'law',
+    code: 'LAW',
+    name: '법률 · 권리',
+    emoji: '⚖️',
+    tagline: '내 권리, 정확히 알기',
+    topics: [
+      { id: 'jeonse', code: 'JEONSE', name: '전세' },
+      { id: 'monthly-rent', code: 'MONTHLY_RENT', name: '월세' },
+      { id: 'buying', code: 'BUYING', name: '매매' },
+    ],
   },
 ];
 
@@ -62,4 +63,3 @@ export function getCategoryMetaByRouteId(categoryId?: string) {
     LEARNING_NAVIGATION[0]
   );
 }
-

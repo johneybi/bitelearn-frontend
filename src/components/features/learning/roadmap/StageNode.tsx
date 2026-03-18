@@ -1,11 +1,11 @@
 import { Check, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import type { LearningChapterListItem } from '@/api/learning/learning.types';
+import type { ChapterSummaryDto } from '@/api/learning/learning.types';
 import { cn } from '@/lib/utils';
 
 type StageNodeProps = {
-  chapter: LearningChapterListItem;
+  chapter: ChapterSummaryDto;
   index: number;
   onSelect: () => void;
 };

@@ -13,9 +13,9 @@ import type {
 } from '@/components/features/learning/quiz/quiz.types';
 import VocabCardsPlayer from '../vocab/VocabCardsPlayer';
 import type {
-  GetLearningChapterResultResponse,
-  LearningProgressStatus,
-  SubmitLearningQuizResponse,
+  ChapterResultResponse,
+  ChapterStatus,
+  QuizSubmitResponse,
 } from '@/api/learning/learning.types';
 
 type ChapterPhase =
@@ -37,14 +37,14 @@ type ChapterIntroData = {
 type ChapterPlayerProps = {
   questionSet: ChoiceQuestionSet;
   chapterIntro: ChapterIntroData;
-  initialStatus?: LearningProgressStatus;
+  initialStatus?: ChapterStatus;
   initialQuizSequence?: number | null;
   onVocabComplete?: () => Promise<void>;
   onSubmitQuiz?: (
     quizId: number,
     selectedAnswer: string
-  ) => Promise<SubmitLearningQuizResponse>;
-  onFetchResult?: () => Promise<GetLearningChapterResultResponse>;
+  ) => Promise<QuizSubmitResponse>;
+  onFetchResult?: () => Promise<ChapterResultResponse>;
   onComplete: (total: number, correct: number) => void;
   onBack: () => void;
 };

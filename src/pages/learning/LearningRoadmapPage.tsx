@@ -12,7 +12,7 @@ import {
   STEP_Y,
 } from '@/components/features/learning/roadmap/roadmap.utils';
 import { getLearningChapters } from '@/api/learning/learning.api';
-import type { LearningChapterListItem } from '@/api/learning/learning.types';
+import type { ChapterSummaryDto } from '@/api/learning/learning.types';
 import { getCategoryMetaByRouteId } from '@/constants/learningNavigation';
 
 export default function LearningRoadmapPage() {
@@ -22,7 +22,7 @@ export default function LearningRoadmapPage() {
   const resolvedTopicId =
     category.topics.find((topic) => topic.id === topicId)?.id ??
     category.topics[0]?.id;
-  const [chapters, setChapters] = useState<LearningChapterListItem[]>([]);
+  const [chapters, setChapters] = useState<ChapterSummaryDto[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
 

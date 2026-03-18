@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { getLearningChapters } from '@/api/learning/learning.api';
-import type { LearningChapterListItem } from '@/api/learning/learning.types';
+import type { ChapterSummaryDto } from '@/api/learning/learning.types';
 import { Button } from '@/components/ui/button';
 import { LEARNING_NAVIGATION } from '@/constants/learningNavigation';
 import { cn } from '@/lib/utils';
@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 type TopicSummary = {
   topicId: string;
   topicName: string;
-  chapters: LearningChapterListItem[];
+  chapters: ChapterSummaryDto[];
 };
 
 type CategorySummary = {
@@ -34,9 +34,9 @@ export default function LearningPage() {
     let isMounted = true;
     setIsLoading(true);
 
-    Promise.all(
+    Promise.allSettled(
       LEARNING_NAVIGATION.map(async (category) => {
-        const responses = await Promise.all(
+        const responses = await Promise.allSettled(
           category.topics.map((topic) =>
             getLearningChapters({
               category: category.code,
@@ -45,11 +45,20 @@ export default function LearningPage() {
           )
         );
 
-        const topicSummaries: TopicSummary[] = responses.map((response, idx) => ({
-          topicId: category.topics[idx]?.id ?? `topic-${idx}`,
-          topicName: category.topics[idx]?.name ?? '중분류',
-          chapters: response.chapters,
-        }));
+        const topicSummaries: TopicSummary[] = category.topics.map((topic, idx) => {
+          const response = responses[idx];
+          const chapters =
+            response?.status === 'fulfilled' &&
+            Array.isArray(response.value.chapters)
+              ? response.value.chapters
+              : [];
+
+          return {
+            topicId: topic.id,
+            topicName: topic.name,
+            chapters,
+          };
+        });
 
         const mergedChapters = topicSummaries.flatMap((topic) => topic.chapters);
         const completed = mergedChapters.filter(
@@ -66,8 +75,14 @@ export default function LearningPage() {
         ] as const;
       })
     )
-      .then((entries) => {
+      .then((settledEntries) => {
         if (!isMounted) return;
+        const entries = settledEntries
+          .filter(
+            (entry): entry is PromiseFulfilledResult<readonly [string, CategorySummary]> =>
+              entry.status === 'fulfilled'
+          )
+          .map((entry) => entry.value);
         setSummaryByCategory(Object.fromEntries(entries));
       })
       .finally(() => {

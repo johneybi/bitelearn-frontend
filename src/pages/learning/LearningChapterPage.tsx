@@ -9,12 +9,12 @@ import {
   submitLearningQuiz,
 } from '@/api/learning/learning.api';
 import type {
-  GetLearningChapterResponse,
-  LearningQuiz,
+  ChapterLearningResponse,
+  QuizInfo,
 } from '@/api/learning/learning.types';
 import type { ChoiceQuestionSet } from '@/mock/choiceQuestion';
 
-function toChoices(quiz: LearningQuiz) {
+function toChoices(quiz: QuizInfo) {
   const options = quiz.specificData?.options ?? [];
   return options.map((option) =>
     typeof option === 'string' ? option : option.docText
@@ -23,7 +23,7 @@ function toChoices(quiz: LearningQuiz) {
 
 function mapLearningDataToQuestionSet(
   chapterId: number,
-  chapterData: GetLearningChapterResponse
+  chapterData: ChapterLearningResponse
 ): ChoiceQuestionSet {
   const vocabQuestions = chapterData.vocabs.map((vocab, index) => ({
     questionNumber: index + 1,
@@ -94,7 +94,7 @@ export default function LearningChapterPage() {
   const navigate = useNavigate();
   const { categoryId, chapterId } = useParams();
   const chapterIdNumber = Number(chapterId);
-  const [chapterData, setChapterData] = useState<GetLearningChapterResponse | null>(
+  const [chapterData, setChapterData] = useState<ChapterLearningResponse | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(false);
