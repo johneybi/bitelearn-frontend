@@ -49,7 +49,15 @@ export default function QuizPlayer({
   const [seenPassages, setSeenPassages] = useState<Set<number>>(new Set());
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [resultByIndex, setResultByIndex] = useState<
-    Record<number, { explanation: string; correctAnswer: string }>
+    Record<
+      number,
+      {
+        correct: boolean;
+        explanation: string;
+        correctAnswer: string;
+        correctAnswerIndex: number;
+      }
+    >
   >({});
 
   if (questions.length === 0) {
@@ -62,9 +70,13 @@ export default function QuizPlayer({
 
   const currentQuestion = questions[currentIndex];
   const selectedIndex = selectedChoice === '' ? -1 : Number(selectedChoice);
+  const currentResult = resultByIndex[currentIndex];
   const isCorrect =
-    selectedIndex !== -1 && selectedIndex === currentQuestion.correctIndex;
+    currentResult?.correct ??
+    (selectedIndex !== -1 && selectedIndex === currentQuestion.correctIndex);
   const isLastQuestion = currentIndex === questions.length - 1;
+  const resolvedCorrectIndex =
+    currentResult?.correctAnswerIndex ?? currentQuestion.correctIndex;
 
   const localIndicatorSteps: StepIndicatorInfo[] = useMemo(
     () =>
@@ -123,6 +135,10 @@ export default function QuizPlayer({
       }
     }
 
+    const correctAnswerIndex = currentQuestion.choices.findIndex(
+      (choice) => choice.trim() === correctAnswer.trim()
+    );
+
     setMetrics((prev) => {
       const next = [...prev];
       next[currentIndex] = correct ? 'correct' : 'incorrect';
@@ -131,8 +147,10 @@ export default function QuizPlayer({
     setResultByIndex((prev) => ({
       ...prev,
       [currentIndex]: {
+        correct,
         explanation,
         correctAnswer,
+        correctAnswerIndex,
       },
     }));
     setIsEvaluating(false);
@@ -189,6 +207,7 @@ export default function QuizPlayer({
         <QuizChoicesPhase
           question={currentQuestion}
           currentIndex={currentIndex}
+          correctIndex={resolvedCorrectIndex}
           selectedChoice={selectedChoice}
           isChecking={phase === 'checking'}
           onSelectChoice={setSelectedChoice}
@@ -203,7 +222,7 @@ export default function QuizPlayer({
           question={currentQuestion}
           selectedChoice={selectedChoice}
           isCorrect={isCorrect}
-          overrideResult={resultByIndex[currentIndex]}
+          overrideResult={currentResult}
           isLastQuestion={isLastQuestion}
           onNext={handleNext}
         />

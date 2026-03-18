@@ -7,6 +7,7 @@ import OXChoiceView from '../choices/OXChoiceView';
 type Props = {
   question: ChoiceQuestionItem;
   currentIndex: number;
+  correctIndex?: number;
   selectedChoice: string;
   isChecking: boolean;
   onSelectChoice: (value: string) => void;
@@ -18,6 +19,7 @@ type Props = {
 export default function QuizChoicesPhase({
   question,
   currentIndex,
+  correctIndex,
   selectedChoice,
   isChecking,
   onSelectChoice,
@@ -27,12 +29,13 @@ export default function QuizChoicesPhase({
 }: Props) {
   if (question.choiceMode === 'document_select') {
     return (
-      <DocumentSelectView
-        question={question}
-        currentIndex={currentIndex}
-        selectedValue={selectedChoice}
-        isChecking={isChecking}
-        onSelectChoice={onSelectChoice}
+        <DocumentSelectView
+          question={question}
+          currentIndex={currentIndex}
+          correctIndex={correctIndex}
+          selectedValue={selectedChoice}
+          isChecking={isChecking}
+          onSelectChoice={onSelectChoice}
         onCheckAnswer={onCheckAnswer}
         onPrevious={onPrevious}
       />
@@ -45,7 +48,7 @@ export default function QuizChoicesPhase({
         key={question.questionNumber ?? currentIndex}
         questionNumber={question.questionNumber ?? currentIndex + 1}
         question={question.question}
-        correctIndex={question.correctIndex}
+        correctIndex={correctIndex ?? question.correctIndex}
         onCheckAnswer={onCheckAnswerWithIndex}
         isChecking={isChecking}
         onPrevious={onPrevious}
@@ -62,7 +65,7 @@ export default function QuizChoicesPhase({
       onSelectChoice={onSelectChoice}
       onCheckAnswer={onCheckAnswerWithIndex}
       isChecking={isChecking}
-      correctIndex={question.correctIndex}
+      correctIndex={correctIndex ?? question.correctIndex}
       onPrevious={onPrevious}
     />
   );

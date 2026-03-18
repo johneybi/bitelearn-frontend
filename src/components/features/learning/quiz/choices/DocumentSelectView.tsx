@@ -6,6 +6,7 @@ import QuizTitle from '../shared/QuizTitle';
 type DocumentSelectViewProps = {
   question: ChoiceQuestionItem;
   currentIndex: number;
+  correctIndex?: number;
   selectedValue: string;
   onSelectChoice: (value: string) => void;
   onCheckAnswer: (selectedIndex?: number) => void;
@@ -16,6 +17,7 @@ type DocumentSelectViewProps = {
 export default function DocumentSelectView({
   question,
   currentIndex,
+  correctIndex,
   selectedValue,
   isChecking,
   onSelectChoice,
@@ -39,7 +41,7 @@ export default function DocumentSelectView({
           selectedValue={selectedValue}
           onSelectField={onSelectChoice}
           isChecking={isChecking}
-          correctIndex={question.correctIndex}
+          correctIndex={correctIndex ?? question.correctIndex}
         />
       </section>
 
