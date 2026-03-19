@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '@/stores/auth.store';
+import { useMeQuery } from '@/api/auth/auth.query';
 
 import DashboardHeader from '@/components/features/dashboard/DashboardHeader';
 import { getDashboardHeaderContent } from '@/components/features/dashboard/getDashboardHeaderContent';
@@ -18,7 +18,7 @@ import { formatDisplayName } from '@/utils/formatUser';
 function HomePage() {
   const navigate = useNavigate();
 
-  const user = useAuthStore((state) => state.user);
+  const { data: user } = useMeQuery();
 
   const headerContent = getDashboardHeaderContent({
     isLoggedIn: !!user,

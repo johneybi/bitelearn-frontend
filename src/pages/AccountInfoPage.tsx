@@ -1,18 +1,25 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import AccountProfileSection from '@/components/features/mypage/AccountProfileSection';
-import { useAuthStore } from '@/stores/auth.store';
-import { getMe, logout, updateNickname } from '@/api/auth/auth.api';
-import { clearAccessToken } from '@/api/auth/tokenStore';
+import { logout, updateNickname } from '@/api/auth/auth.api';
+import { authQueryKeys, useMeQuery } from '@/api/auth/auth.query';
+import { clearAuthSession } from '@/api/auth/authSession';
 
 export default function AccountInfoPage() {
   const navigate = useNavigate();
-
-  const user = useAuthStore((state) => state.user);
-  const setUser = useAuthStore((state) => state.setUser);
-  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const queryClient = useQueryClient();
+  const { data: user } = useMeQuery();
+  const updateNicknameMutation = useMutation({
+    mutationFn: updateNickname,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: authQueryKeys.me,
+      });
+    },
+  });
 
   const [nickname, setNickname] = useState(user?.nickname ?? '');
   const [isEditingNickname, setIsEditingNickname] = useState(false);
@@ -27,8 +34,7 @@ export default function AccountInfoPage() {
     } catch (error) {
       console.error('로그아웃 요청 실패:', error);
     } finally {
-      clearAccessToken();
-      clearAuth();
+      clearAuthSession();
       navigate('/login', { replace: true });
     }
   };
@@ -45,10 +51,7 @@ export default function AccountInfoPage() {
     }
 
     try {
-      await updateNickname({ nickname: trimmed });
-
-      const updatedUser = await getMe();
-      setUser(updatedUser);
+      await updateNicknameMutation.mutateAsync({ nickname: trimmed });
 
       setIsEditingNickname(false);
     } catch (error) {

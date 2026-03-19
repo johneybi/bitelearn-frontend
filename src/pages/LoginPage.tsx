@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { getMe, login } from '@/api/auth/auth.api';
+import { login } from '@/api/auth/auth.api';
+import { authQueryKeys, fetchMe } from '@/api/auth/auth.query';
 import { isAppError } from '@/api/error/appError';
 import { setAccessToken } from '@/api/auth/tokenStore';
 import { toExpiresAt } from '@/api/auth/token.util';
@@ -10,7 +12,6 @@ import LoginForm, {
 } from '@/components/features/auth/LoginForm';
 import { logError } from '@/lib/logError';
 import type { LoginFormValues } from '@/schemas/loginSchema';
-import { useAuthStore } from '@/stores/auth.store';
 import { ChevronRight } from 'lucide-react';
 import AuthHeader from '@/components/common/AuthHeader';
 
@@ -33,7 +34,7 @@ const LOGIN_ERROR_FALLBACK_MESSAGE =
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const setUser = useAuthStore((state) => state.setUser);
+  const queryClient = useQueryClient();
 
   // 로컬 로그인 핸들러
   const handleLocalLogin = async (
@@ -47,9 +48,8 @@ export default function LoginPage() {
       const expiresAt = toExpiresAt(response.accessTokenExpiresIn);
 
       setAccessToken(response.accessToken, expiresAt);
-
-      const me = await getMe();
-      setUser(me);
+      const me = await fetchMe();
+      queryClient.setQueryData(authQueryKeys.me, me);
 
       navigate('/');
     } catch (error) {

@@ -1,16 +1,15 @@
 import { Navigate, Outlet } from 'react-router-dom';
-
-import { useAuthStore } from '@/stores/auth.store';
+import AppLoading from '@/components/common/AppLoading';
+import { useMeQuery } from '@/api/auth/auth.query';
 
 export default function PublicRoute() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isInitializing = useAuthStore((state) => state.isInitializing);
+  const { data: user, isPending } = useMeQuery();
 
-  if (isInitializing) {
-    return null;
+  if (isPending) {
+    return <AppLoading message="인증 정보를 확인하는 중..." />;
   }
 
-  if (isAuthenticated) {
+  if (user) {
     return <Navigate to="/" replace />;
   }
 
