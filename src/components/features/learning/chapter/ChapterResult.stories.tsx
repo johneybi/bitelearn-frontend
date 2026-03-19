@@ -15,6 +15,7 @@ const meta = {
     accuracyRate: 100,
     earnedBytes: 500,
     chapterTitle: '[2단계: 계약] 도장 찍기 전, 멍멍이의 마지막 방어선!',
+    onBack: () => {},
     onFinish: () => {},
     onRetryWrongAnswers: () => {},
   },

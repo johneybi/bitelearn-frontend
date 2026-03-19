@@ -141,6 +141,7 @@ export default function ChapterPlayer({
         accuracyRate={quizResult.accuracyRate}
         earnedBytes={quizResult.earnedBytes}
         chapterTitle={chapterTitle}
+        onBack={onBack}
         onFinish={() =>
           onComplete(quizResult.totalCount, quizResult.correctCount)
         }
