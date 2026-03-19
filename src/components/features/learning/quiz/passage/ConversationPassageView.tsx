@@ -111,10 +111,9 @@ export default function ConversationPassageView({
         data-mode="conversation"
       >
         <QuizPassage
-          questionTitle={question.questionTitle}
-          questionNumber={question.sequence}
+          questionSequence={question.sequence}
           passageContent={question.passageContent ?? ''}
-          passageTitle={question.passageTitle ?? ''}
+          passageTitle={question.passageTitle ?? question.questionTitle}
         >
           <div className="flex flex-col gap-3 py-5">
             {conversations.slice(0, visibleCount).map((conversation) => {
@@ -167,12 +166,12 @@ export default function ConversationPassageView({
                       {speaker?.profileImageUrl ? (
                         <img
                           src={speaker.profileImageUrl}
-                          alt={speaker.name || '나'}
+                          alt={speaker.name || 'profile'}
                           className="h-9 w-9 rounded-full border-2 border-white object-cover shadow-sm"
                         />
                       ) : (
                         <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-400 text-xs font-bold text-white">
-                          나
+                          {speaker?.name?.[0] ?? '?'}
                         </div>
                       )}
                     </div>
@@ -232,12 +231,12 @@ export default function ConversationPassageView({
                     {nextSpeaker?.profileImageUrl ? (
                       <img
                         src={nextSpeaker.profileImageUrl}
-                        alt=""
+                        alt={nextSpeaker.name || 'profile'}
                         className="h-9 w-9 rounded-full border-2 border-white object-cover shadow-sm"
                       />
                     ) : (
                       <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-400 text-xs font-bold text-white">
-                        나
+                        {nextSpeaker?.name?.[0] ?? '?'}
                       </div>
                     )}
                   </div>

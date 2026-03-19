@@ -21,10 +21,9 @@ export default function DocumentPassageView({
     <>
       <section className="flex-1 overflow-y-auto px-6 py-4">
         <QuizPassage
-          questionTitle={question.questionTitle}
-          questionNumber={question.sequence}
+          questionSequence={question.sequence}
           passageContent={question.passageContent ?? ''}
-          passageTitle={question.passageTitle ?? ''}
+          passageTitle={question.passageTitle ?? question.questionTitle}
         >
           <DocumentCard
             data={documentCard}

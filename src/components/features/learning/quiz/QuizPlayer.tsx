@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 
 import QuizHeader from '@/components/common/QuizHeader';
 import QuizIndicator from '@/components/features/learning/quiz/QuizIndicator';
-import QuizImage from '@/components/features/learning/quiz/QuizImage';
 import type { QuizInfo } from '@/api/learning/learning.types';
 import type { QuizMetric, QuizPhase, StepIndicatorInfo } from './quiz.types';
 import QuizPassagePhase from './phases/QuizPassagePhase';
@@ -175,18 +174,12 @@ export default function QuizPlayer({
       <QuizIndicator steps={indicatorSteps} />
 
       {phase === 'passage' && (
-        <>
-          <QuizImage
-            src={currentQuestion.questionImageUrl ?? undefined}
-            alt={currentQuestion.questionTitle}
-          />
-          <QuizPassagePhase
-            question={currentQuestion}
-            currentIndex={currentIndex}
-            skipConversationAnimation={seenPassages.has(currentIndex)}
-            onSolve={handleSolve}
-          />
-        </>
+        <QuizPassagePhase
+          question={currentQuestion}
+          currentIndex={currentIndex}
+          skipConversationAnimation={seenPassages.has(currentIndex)}
+          onSolve={handleSolve}
+        />
       )}
 
       {(phase === 'choices' || phase === 'checking') && (
