@@ -30,7 +30,7 @@ export default function QuizChoicesPhase({
   const choiceMode =
     question.type === 'DIALOGUE_OX'
       ? 'ox'
-      : question.type === 'DOC_SELECT'
+      : question.type === 'DOC_CLICK'
         ? 'document_select'
         : 'multiple';
   const choices = question.specificData?.options ?? [];

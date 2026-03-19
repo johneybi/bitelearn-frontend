@@ -4,8 +4,8 @@ export type ChapterStatus = 'READY' | 'QUIZ_IN_PROGRESS' | 'COMPLETED';
 // 퀴즈 유형
 export type QuizType =
   | 'TEXT_MCQ'
-  | 'DOC_SELECT'
-  | 'DOC_MULTI'
+  | 'DOC_CLICK'
+  | 'DOC_MCQ'
   | 'DIALOGUE_MCQ'
   | 'DIALOGUE_OX';
 

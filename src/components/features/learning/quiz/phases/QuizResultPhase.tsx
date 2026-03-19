@@ -41,9 +41,9 @@ export default function QuizResultPhase({
     : '/images/character/dog_fail.png';
 
   const isDocumentResult =
-    ((question.type === 'DOC_SELECT' || question.type === 'DOC_MULTI') &&
+    ((question.type === 'DOC_CLICK' || question.type === 'DOC_MCQ') &&
       hasDocumentElements) ||
-    question.type === 'DOC_SELECT';
+    question.type === 'DOC_CLICK';
 
   if (isDocumentResult && documentCard) {
     return (

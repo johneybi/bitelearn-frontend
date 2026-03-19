@@ -4,7 +4,7 @@ import DocumentSelectView from './DocumentSelectView';
 const documentSelectQuestion: QuizInfo = {
   quizId: 4,
   sequence: 4,
-  type: 'DOC_SELECT',
+  type: 'DOC_CLICK',
   passageTitle: '계약서 항목 확인',
   passageContent: '아래 항목 중 보증금 보호와 가장 직접적으로 연결되는 항목을 고르세요.',
   questionImageUrl: '',

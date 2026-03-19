@@ -4,7 +4,7 @@ import DocumentPassageView from './DocumentPassageView';
 const documentPassageQuestion: QuizInfo = {
   quizId: 3,
   sequence: 3,
-  type: 'DOC_MULTI',
+  type: 'DOC_MCQ',
   passageTitle: '등기사항전부증명서',
   passageContent: '다음 문서 항목을 보고 위험 신호를 찾아보세요.',
   questionImageUrl: '',
