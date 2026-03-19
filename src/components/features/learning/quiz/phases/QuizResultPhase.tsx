@@ -27,14 +27,12 @@ export default function QuizResultPhase({
   onNext,
 }: Props) {
   const choices = question.specificData?.options ?? [];
+  const documentElements = question.specificData?.documentElements ?? [];
   const selectedIndex = selectedChoice !== '' ? Number(selectedChoice) : -1;
   const resolvedExplanation = overrideResult?.explanation ?? '';
   const resolvedCorrectAnswer = overrideResult?.correctAnswer ?? '';
-  const resolvedCorrectIndex = overrideResult?.correctAnswerIndex ?? -1;
   const documentCard = toDocumentCardData(question);
-  const hasDocumentElements = Boolean(
-    question.specificData?.documentElements?.length
-  );
+  const hasDocumentElements = documentElements.length > 0;
 
   const characterImageUrl = isCorrect
     ? '/images/character/dog_perfect.png'
@@ -45,6 +43,29 @@ export default function QuizResultPhase({
       hasDocumentElements) ||
     question.type === 'DOC_CLICK';
 
+  const findDocumentFieldIndex = (answerText: string) => {
+    const normalizedAnswer = answerText.trim();
+
+    if (!normalizedAnswer) return -1;
+
+    return documentElements.findIndex(
+      (element) =>
+        element.key.trim() === normalizedAnswer ||
+        element.value.trim() === normalizedAnswer
+    );
+  };
+
+  const resolvedCorrectIndex =
+    question.type === 'DOC_MCQ'
+      ? findDocumentFieldIndex(resolvedCorrectAnswer)
+      : overrideResult?.correctAnswerIndex ?? -1;
+  const resolvedSelectedAnswerIndex =
+    question.type === 'DOC_MCQ' && selectedIndex !== -1
+      ? findDocumentFieldIndex(choices[selectedIndex] ?? '')
+      : selectedIndex !== -1
+        ? selectedIndex
+        : undefined;
+
   if (isDocumentResult && documentCard) {
     return (
       <DocumentResultView
@@ -52,7 +73,7 @@ export default function QuizResultPhase({
         explanation={resolvedExplanation}
         documentCard={documentCard}
         correctIndex={resolvedCorrectIndex}
-        selectedAnswerIndex={selectedIndex !== -1 ? selectedIndex : undefined}
+        selectedAnswerIndex={resolvedSelectedAnswerIndex}
         characterImageUrl={characterImageUrl}
         isLastQuestion={isLastQuestion}
         onNext={onNext}
