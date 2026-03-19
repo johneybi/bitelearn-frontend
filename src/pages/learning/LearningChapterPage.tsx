@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import ChapterPlayer from '@/components/features/learning/chapter/ChapterPlayer';
@@ -8,154 +8,76 @@ import {
   getLearningChapterResult,
   submitLearningQuiz,
 } from '@/api/learning/learning.api';
-import type {
-  GetLearningChapterResponse,
-  LearningQuiz,
-} from '@/api/learning/learning.types';
-import type { ChoiceQuestionSet } from '@/mock/choiceQuestion';
+import AppLoading from '@/components/common/AppLoading';
+import { getCategoryMetaByRouteId } from '@/constants/learningNavigation';
+import { logError } from '@/lib/logError';
+import type { ChapterLearningResponse } from '@/api/learning/learning.types';
 
-function toChoices(quiz: LearningQuiz) {
-  const options = quiz.specificData?.options ?? [];
-  return options.map((option) =>
-    typeof option === 'string' ? option : option.docText
-  );
-}
-
-function mapLearningDataToQuestionSet(
-  chapterId: number,
-  chapterData: GetLearningChapterResponse
-): ChoiceQuestionSet {
-  const vocabQuestions = chapterData.vocabs.map((vocab, index) => ({
-    questionNumber: index + 1,
-    type: 'vocab' as const,
-    passageMode: 'text' as const,
-    passage: vocab.backMain,
-    flavorText: vocab.frontSub ?? '핵심 단어',
-    imageUrl: vocab.frontImageUrl ?? '',
-    imageAlt: `${vocab.frontMain} 단어 이미지`,
-    question: vocab.backSub ?? vocab.backMain,
-    choices: [vocab.frontMain],
-    correctIndex: 0,
-    explanation: vocab.backSub ?? vocab.backMain,
-    quizId: chapterId * 1000 + index + 1,
-  }));
-
-  const quizQuestions = chapterData.quizzes.map((quiz, index) => {
-    const choices = toChoices(quiz);
-    const dialogues = quiz.specificData?.dialogues ?? [];
-    const isDialogueType = quiz.type === 'DIALOGUE_MCQ' || quiz.type === 'DIALOGUE_OX';
-
-    return {
-      questionNumber: vocabQuestions.length + index + 1,
-      type: 'quiz' as const,
-      passageMode: isDialogueType ? ('conversation' as const) : ('text' as const),
-      choiceMode:
-        quiz.type === 'DIALOGUE_OX'
-          ? ('ox' as const)
-          : ('multiple' as const),
-      passage: quiz.passageContent ?? '',
-      flavorText: quiz.passageTitle ?? '',
-      imageUrl: quiz.questionImageUrl ?? '',
-      imageAlt: quiz.questionTitle,
-      question: quiz.questionTitle,
-      choices,
-      correctIndex: 0,
-      explanation: '',
-      quizId: quiz.quizId,
-      conversations: isDialogueType
-        ? dialogues.map((line, dialogueIndex) => ({
-            id: `d-${quiz.quizId}-${dialogueIndex}`,
-            speakerId: line.speaker,
-            message: line.message,
-          }))
-        : undefined,
-      conversationSpeakers: isDialogueType
-        ? Array.from(new Set(dialogues.map((line) => line.speaker))).map(
-            (speaker, speakerIndex) => ({
-              id: speaker,
-              name: speaker,
-              position:
-                speakerIndex % 2 === 0
-                  ? ('left' as const)
-                  : ('right' as const),
-            })
-          )
-        : undefined,
-    };
-  });
-
-  return {
-    title: chapterData.chapterTitle,
-    questions: [...vocabQuestions, ...quizQuestions],
-  };
-}
+const LEARNING_CHAPTER_ERROR_MESSAGE =
+  '학습 데이터를 불러오지 못했습니다. 다시 시도해 주세요.';
 
 export default function LearningChapterPage() {
   const navigate = useNavigate();
   const { categoryId, chapterId } = useParams();
+  const category = getCategoryMetaByRouteId(categoryId);
   const chapterIdNumber = Number(chapterId);
-  const [chapterData, setChapterData] = useState<GetLearningChapterResponse | null>(
-    null
-  );
+  const [chapterData, setChapterData] =
+    useState<ChapterLearningResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  const [loadError, setLoadError] = useState<unknown>(null);
 
   useEffect(() => {
-    if (!chapterId || Number.isNaN(chapterIdNumber)) return;
+    if (!category || !categoryId || !chapterId || Number.isNaN(chapterIdNumber)) {
+      return;
+    }
 
     let isMounted = true;
-    setIsLoading(true);
-    setHasError(false);
 
-    getLearningChapter(chapterIdNumber)
-      .then((response) => {
+    const fetchChapter = async () => {
+      try {
+        const response = await getLearningChapter(chapterIdNumber);
         if (!isMounted) return;
         setChapterData(response);
-      })
-      .catch(() => {
+        setLoadError(null);
+      } catch (error) {
         if (!isMounted) return;
-        setHasError(true);
-      })
-      .finally(() => {
+        logError('LearningChapterPage', '학습 데이터 조회 실패', error);
+        setLoadError(error);
+      } finally {
         if (!isMounted) return;
         setIsLoading(false);
-      });
+      }
+    };
+
+    setIsLoading(true);
+    void fetchChapter();
 
     return () => {
       isMounted = false;
     };
-  }, [chapterId, chapterIdNumber]);
+  }, [category, categoryId, chapterId, chapterIdNumber]);
 
-  if (!categoryId || !chapterId || Number.isNaN(chapterIdNumber)) {
+  if (!category || !categoryId || !chapterId || Number.isNaN(chapterIdNumber)) {
     return (
       <main className="flex h-dvh items-center justify-center bg-slate-50 p-6">
         <p className="text-sm font-medium text-slate-500">
-          존재하지 않는 챕터입니다.
+          존재하지 않는 학습 경로입니다.
         </p>
       </main>
     );
   }
 
-  const questionSet = useMemo(() => {
-    if (!chapterData) {
-      return null;
-    }
-    return mapLearningDataToQuestionSet(chapterIdNumber, chapterData);
-  }, [chapterData, chapterIdNumber]);
-
   if (isLoading) {
-    return (
-      <main className="flex h-dvh items-center justify-center bg-slate-50 p-6">
-        <p className="text-sm font-medium text-slate-500">학습 데이터를 불러오는 중입니다.</p>
-      </main>
-    );
+    return <AppLoading message="학습 데이터를 불러오는 중입니다." />;
   }
 
-  if (hasError || !chapterData || !questionSet) {
+  if (loadError || !chapterData) {
     return (
       <main className="flex h-dvh items-center justify-center bg-slate-50 p-6">
-        <p className="text-sm font-medium text-slate-500">
-          학습 데이터를 불러오지 못했습니다.
+        <p className="text-sm font-medium text-red-400">
+          {loadError instanceof Error
+            ? loadError.message
+            : LEARNING_CHAPTER_ERROR_MESSAGE}
         </p>
       </main>
     );
@@ -163,12 +85,13 @@ export default function LearningChapterPage() {
 
   return (
     <ChapterPlayer
-      questionSet={questionSet}
+      chapterTitle={chapterData.chapterTitle}
+      vocabs={chapterData.vocabs}
+      quizzes={chapterData.quizzes}
       chapterIntro={{
-        title: chapterData.chapterTitle,
         prologueSubtitle: chapterData.prologueSubtitle,
         goal: chapterData.currentGoal,
-        description: chapterData.prologueContent,
+        prologueContent: chapterData.prologueContent,
         coreKeywords: chapterData.coreKeywords,
       }}
       initialStatus={chapterData.currentStatus}

@@ -3,7 +3,7 @@ import MultipleChoiceView from './MultipleChoiceView';
 
 const baseArgs = {
   questionNumber: 8,
-  question: '이사 당일 보증금을 지키기 위해 반드시 같은 날 완료해야 하는 절차는?',
+  questionTitle: '이사 당일 보증금을 지키기 위해 반드시 같은 날 완료해야 하는 절차는?',
   choices: [
     '짐 정리 후 며칠 안에 전입신고',
     '잔금 입금 후 당일 전입신고 + 확정일자',

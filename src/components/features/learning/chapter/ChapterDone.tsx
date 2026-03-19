@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 type ChapterDoneProps = {
   correct: number;
   total: number;
+  accuracyRate: number;
   chapterTitle: string;
   onFinish: () => void;
 };
@@ -13,11 +14,10 @@ type ChapterDoneProps = {
 export default function ChapterDone({
   correct,
   total,
+  accuracyRate,
   chapterTitle,
   onFinish,
 }: ChapterDoneProps) {
-  const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
-
   return (
     <main className="relative flex h-full min-h-0 flex-col overflow-hidden bg-white text-slate-900">
       <div className="flex flex-1 flex-col items-center justify-center px-6">
@@ -44,7 +44,7 @@ export default function ChapterDone({
 
             <div className="mb-3 flex items-end justify-between">
               <span className="text-4xl font-black leading-none text-slate-900">
-                {pct}%
+                {accuracyRate}%
               </span>
               <span className="mb-0.5 text-sm text-slate-400">
                 {correct} / {total} 정답
@@ -55,7 +55,7 @@ export default function ChapterDone({
               <motion.div
                 className="h-full rounded-full bg-slate-900"
                 initial={{ width: 0 }}
-                animate={{ width: `${pct}%` }}
+                animate={{ width: `${accuracyRate}%` }}
                 transition={{ duration: 1.1, ease: 'easeOut', delay: 0.3 }}
               />
             </div>

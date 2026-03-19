@@ -9,7 +9,10 @@ type ResultVariant = 'perfect' | 'close' | 'fail';
 type ChapterResultProps = {
   correct: number;
   total: number;
+  accuracyRate: number;
+  earnedBytes: number;
   chapterTitle: string;
+  onBack: () => void;
   onFinish: () => void;
   onRetryWrongAnswers?: () => void;
 };
@@ -21,12 +24,8 @@ const VARIANT_CONFIG = {
     title: '야호! 멍멍이의 소중한 500 바이트를\n완벽하게 지켰어요!',
     description:
       '사기꾼도 울고 갈 완벽한 지식!\n오늘 멍멍이는 위험한 함정들을 요리조리 피해서 바이트를 안전하게 지켜냈습니다. 멋진 어른이네요!',
-    biteSaved: '+500 B',
-    biteLost: '-0 B',
     primaryBtn: '다음 챕터 학습하기',
     secondaryBtn: undefined,
-    progressLabel: '으른 레벨업 게이지',
-    progressValue: 92,
     confetti: true,
   },
   close: {
@@ -35,12 +34,8 @@ const VARIANT_CONFIG = {
     title: '휴우~ 아슬아슬하게\n바이트 방어 성공!',
     description:
       '몇 개는 헷갈려서 바이트를 조금 흘렸지만, 치명적인 손해는 막았어요.\n틀린 부분만 다시 주우러 가볼까요?',
-    biteSaved: '+260 B',
-    biteLost: '-240 B',
     primaryBtn: '다음 챕터 학습하기',
     secondaryBtn: '오답 풀고 바이트 되찾기',
-    progressLabel: '으른 레벨업 게이지',
-    progressValue: 55,
     confetti: false,
   },
   fail: {
@@ -49,12 +44,8 @@ const VARIANT_CONFIG = {
     title: '앗... 나쁜 어른들에게\n500 바이트를 털렸어요',
     description:
       '세상 물정 모르는 멍멍이, 결국 함정에 빠져 소중한 바이트가 털려버렸네요.\n얼른 다시 공부해서 잃어버린 내 바이트를 되찾아올까요?',
-    biteSaved: '+0 B',
-    biteLost: '-500 B',
     primaryBtn: '다음 챕터 학습하기',
     secondaryBtn: '오답 풀고 바이트 되찾기',
-    progressLabel: '으른 레벨업 게이지',
-    progressValue: 8,
     confetti: false,
   },
 } as const;
@@ -90,19 +81,20 @@ function CoinParticles() {
 export default function ChapterResult({
   correct,
   total,
+  accuracyRate,
+  earnedBytes,
   chapterTitle,
+  onBack,
   onFinish,
   onRetryWrongAnswers,
 }: ChapterResultProps) {
   const [animated, setAnimated] = useState(false);
 
-  const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
-
   const variant: ResultVariant = useMemo(() => {
-    if (accuracy === 100) return 'perfect';
-    if (accuracy >= 60) return 'close';
+    if (accuracyRate === 100) return 'perfect';
+    if (accuracyRate >= 60) return 'close';
     return 'fail';
-  }, [accuracy]);
+  }, [accuracyRate]);
 
   const cfg = VARIANT_CONFIG[variant];
 
@@ -116,7 +108,7 @@ export default function ChapterResult({
       {cfg.confetti && <CoinParticles />}
 
       <div className="relative z-20 shrink-0 border-b border-slate-100 bg-white">
-        <QuizHeader title="오늘의 생존 결과! 🐾" showCloseButton={false} />
+        <QuizHeader title="퀴즈 결과" onCloseClick={onBack} />
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -167,17 +159,17 @@ export default function ChapterResult({
         >
           <div className="mb-3 flex items-center justify-between">
             <span className="text-sm font-bold text-slate-700">
-              {cfg.progressLabel}
+              으른 레벨업 게이지
             </span>
             <span className="text-sm font-bold text-slate-700">
-              {cfg.progressValue}% 📈
+              {accuracyRate}% 📈
             </span>
           </div>
 
           <div className="relative h-3 w-full overflow-hidden rounded-full bg-slate-100">
             <motion.div
               initial={{ width: 0 }}
-              animate={{ width: animated ? `${cfg.progressValue}%` : 0 }}
+              animate={{ width: animated ? `${accuracyRate}%` : 0 }}
               transition={{ duration: 1.2, delay: 0.8, ease: 'easeOut' }}
               className="h-full rounded-full bg-slate-900"
             />
@@ -189,7 +181,7 @@ export default function ChapterResult({
                 지켜낸 바이트
               </p>
               <p className="mt-0.5 text-[17px] font-extrabold text-emerald-600">
-                {cfg.biteSaved}
+                +{earnedBytes} B
               </p>
             </div>
 
@@ -197,8 +189,8 @@ export default function ChapterResult({
               <p className="text-[11px] font-medium text-slate-500">
                 잃어버린 바이트
               </p>
-              <p className="mt-0.5 text-[17px] font-extrabold text-red-500">
-                {cfg.biteLost}
+              <p className="mt-0.5 text-[17px] font-extrabold text-slate-400">
+                -
               </p>
             </div>
           </div>
@@ -206,7 +198,7 @@ export default function ChapterResult({
           <div className="mt-4 rounded-lg border border-slate-100 bg-slate-50 px-4 py-3 text-left">
             <p className="text-xs font-medium text-slate-500">정답률</p>
             <p className="mt-1 text-lg font-extrabold text-slate-900">
-              {accuracy}% · {correct} / {total} 정답
+              {accuracyRate}% · {correct} / {total} 정답
             </p>
           </div>
         </motion.section>

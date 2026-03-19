@@ -1,50 +1,39 @@
 import type { ReactNode } from 'react';
 
 type QuizPassageProps = {
-  questionText?: string;
-  questionNumber?: number;
-  passage?: string;
-  flavorText?: string;
+  questionSequence?: number;
+  passageContent?: string;
+  passageTitle?: string;
+  media?: ReactNode;
   children?: ReactNode;
-  hidePassage?: boolean;
-  hideFlavorText?: boolean;
   className?: string;
 };
 
 export default function QuizPassage({
-  questionText,
-  questionNumber,
-  passage,
-  flavorText,
+  questionSequence,
+  passageContent,
+  passageTitle,
+  media,
   children,
-  hidePassage = false,
-  hideFlavorText = false,
   className = '',
 }: QuizPassageProps) {
   return (
     <div className={`flex flex-col ${className}`}>
-      {questionText && (
+      {passageTitle && (
         <h2 className="mb-6 px-1 text-lg font-bold leading-tight tracking-tight text-slate-900">
           <span className="mr-2 text-slate-400">
-            {questionNumber ? `Q${questionNumber}.` : ''}
+            {questionSequence ? `Q${questionSequence}.` : ''}
           </span>
-          {questionText}
+          {passageTitle}
         </h2>
       )}
 
-      {!hidePassage && passage && (
+      {media}
+
+      {passageContent && (
         <div className="mb-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all">
           <p className="whitespace-pre-line text-sm font-medium leading-relaxed text-slate-600">
-            {passage}
-          </p>
-        </div>
-      )}
-
-      {!hideFlavorText && flavorText && (
-        <div className="mb-6 flex items-start gap-2 px-1">
-          <div className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-900" />
-          <p className="whitespace-pre-line text-sm font-bold leading-relaxed text-slate-900">
-            {flavorText}
+            {passageContent}
           </p>
         </div>
       )}

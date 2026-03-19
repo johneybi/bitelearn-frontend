@@ -1,8 +1,8 @@
-import { motion } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import AppLoading from '@/components/common/AppLoading';
 import StageNode from '@/components/features/learning/roadmap/StageNode';
 import { Button } from '@/components/ui/button';
 import RoadmapCurve from '@/components/features/learning/roadmap/RoadmapCurve';
@@ -12,60 +12,73 @@ import {
   STEP_Y,
 } from '@/components/features/learning/roadmap/roadmap.utils';
 import { getLearningChapters } from '@/api/learning/learning.api';
-import type { LearningChapterListItem } from '@/api/learning/learning.types';
 import { getCategoryMetaByRouteId } from '@/constants/learningNavigation';
+import { logError } from '@/lib/logError';
+
+const LEARNING_ROADMAP_ERROR_MESSAGE =
+  '챕터 목록을 불러오지 못했습니다. 다시 시도해 주세요.';
 
 export default function LearningRoadmapPage() {
   const navigate = useNavigate();
   const { categoryId, topicId } = useParams();
+
   const category = getCategoryMetaByRouteId(categoryId);
-  const resolvedTopicId =
-    category.topics.find((topic) => topic.id === topicId)?.id ??
-    category.topics[0]?.id;
-  const [chapters, setChapters] = useState<LearningChapterListItem[]>([]);
+  const selectedTopic = category?.topics.find((topic) => topic.id === topicId);
+  const resolvedTopicId = selectedTopic?.id ?? category?.topics[0]?.id;
+  const [chapters, setChapters] = useState<
+    Awaited<ReturnType<typeof getLearningChapters>>['chapters']
+  >([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  const [loadError, setLoadError] = useState<unknown>(null);
 
   useEffect(() => {
-    const selectedTopic = category.topics.find(
+    if (!category) return;
+
+    const resolvedTopic = category.topics.find(
       (topic) => topic.id === resolvedTopicId
     );
 
-    if (!selectedTopic) return;
+    if (!resolvedTopic) return;
 
     let isMounted = true;
-    setIsLoading(true);
-    setHasError(false);
 
-    getLearningChapters({
-      category: category.code,
-      topic: selectedTopic.code,
-    })
-      .then((response) => {
+    const fetchChapters = async () => {
+      try {
+        const response = await getLearningChapters({
+          category: category.code,
+          topic: resolvedTopic.code,
+        });
+
         if (!isMounted) return;
         setChapters(response.chapters);
-      })
-      .catch(() => {
+        setLoadError(null);
+      } catch (error) {
         if (!isMounted) return;
-        setHasError(true);
-      })
-      .finally(() => {
+        logError('LearningRoadmapPage', '챕터 목록 조회 실패', error);
+        setLoadError(error);
+      } finally {
         if (!isMounted) return;
         setIsLoading(false);
-      });
+      }
+    };
+
+    setIsLoading(true);
+    void fetchChapters();
 
     return () => {
       isMounted = false;
     };
   }, [category, resolvedTopicId]);
 
-  const progressPercent = useMemo(() => {
-    if (chapters.length === 0) return 0;
-    const completed = chapters.filter(
-      (chapter) => chapter.status === 'COMPLETED'
-    ).length;
-    return Math.round((completed / chapters.length) * 100);
-  }, [chapters]);
+  if (!category || !selectedTopic) {
+    return (
+      <main className="flex h-dvh items-center justify-center bg-slate-50 p-6">
+        <p className="text-sm font-medium text-slate-500">
+          존재하지 않는 학습 경로입니다.
+        </p>
+      </main>
+    );
+  }
 
   const handleBack = () => {
     navigate('/learning');
@@ -92,7 +105,7 @@ export default function LearningRoadmapPage() {
           </Button>
 
           <h1 className="flex-1 text-center text-sm font-bold text-slate-900">
-            학습 로드맵
+            {selectedTopic.name}
           </h1>
 
           <div className="h-9 w-9" />
@@ -100,37 +113,11 @@ export default function LearningRoadmapPage() {
       </div>
 
       <section className="hide-scrollbar flex-1 overflow-y-auto px-6 pb-10 pt-10">
-        <div className="mb-14 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
-          <div className="mb-3 flex items-end justify-between">
-            <div>
-              <h2 className="text-xl font-bold tracking-tight text-slate-900">
-                {category.name}
-              </h2>
-              <p className="mt-1 text-xs font-medium text-slate-400">
-                {category.tagline}
-              </p>
-            </div>
-
-            <span className="text-2xl font-bold leading-none text-slate-900">
-              {progressPercent}%
-            </span>
-          </div>
-
-          <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-            <motion.div
-              className="h-full rounded-full bg-slate-900"
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPercent}%` }}
-              transition={{ duration: 1, ease: 'circOut' }}
-            />
-          </div>
-        </div>
-
         <div
           className="relative mx-auto w-full"
           style={{ height: roadmapHeight }}
         >
-          {!isLoading && !hasError && count > 0 && (
+          {!isLoading && !loadError && count > 0 && (
             <>
               <RoadmapCurve count={count} totalHeight={roadmapHeight} />
 
@@ -155,18 +142,21 @@ export default function LearningRoadmapPage() {
           )}
 
           {isLoading && (
-            <div className="flex h-full items-center justify-center text-sm font-medium text-slate-400">
-              챕터 목록을 불러오는 중입니다.
-            </div>
+            <AppLoading
+              message="챕터 목록을 불러오는 중입니다."
+              className="min-h-full"
+            />
           )}
 
-          {hasError && (
+          {loadError !== null && (
             <div className="flex h-full items-center justify-center text-sm font-medium text-red-400">
-              챕터 목록을 불러오지 못했습니다.
+              {loadError instanceof Error
+                ? loadError.message
+                : LEARNING_ROADMAP_ERROR_MESSAGE}
             </div>
           )}
 
-          {!isLoading && !hasError && count === 0 && (
+          {!isLoading && !loadError && count === 0 && (
             <div className="flex h-full items-center justify-center text-sm font-medium text-slate-400">
               준비된 챕터가 없습니다.
             </div>

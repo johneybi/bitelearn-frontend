@@ -1,14 +1,14 @@
-import { useState } from 'react';
-
 import QuizFooter from '@/components/common/QuizFooter';
 import { cn } from '@/lib/utils';
 import QuizTitle from '../shared/QuizTitle';
 
 type OXChoiceViewProps = {
   questionNumber: number;
-  question: string;
+  questionTitle: string;
   /** 정답 인덱스: 0 = O, 1 = X */
-  correctIndex: number;
+  correctIndex?: number;
+  selectedValue: string;
+  onSelectChoice: (value: string) => void;
   onCheckAnswer: (selectedIndex: number) => void;
   isChecking?: boolean;
   onPrevious?: () => void;
@@ -16,18 +16,21 @@ type OXChoiceViewProps = {
 
 export default function OXChoiceView({
   questionNumber,
-  question,
+  questionTitle,
   correctIndex,
+  selectedValue,
+  onSelectChoice,
   onCheckAnswer,
   isChecking = false,
   onPrevious,
 }: OXChoiceViewProps) {
-  const [selected, setSelected] = useState<0 | 1 | null>(null);
+  const selected =
+    selectedValue === '' ? null : (Number(selectedValue) as 0 | 1);
   const isCtaEnabled = selected !== null && !isChecking;
 
   const handleSelect = (value: 0 | 1) => {
     if (isChecking) return;
-    setSelected(value);
+    onSelectChoice(String(value));
   };
 
   const handleConfirm = () => {
@@ -110,7 +113,7 @@ export default function OXChoiceView({
   return (
     <>
       <section className="flex flex-1 flex-col overflow-hidden px-6">
-        <QuizTitle questionNumber={questionNumber} question={question} />
+        <QuizTitle questionNumber={questionNumber} questionTitle={questionTitle} />
 
         <div className="flex flex-1 gap-4 pb-4">
           {renderButton(0, 'O')}

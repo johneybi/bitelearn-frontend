@@ -12,6 +12,7 @@ const meta = {
   args: {
     correct: 7,
     total: 10,
+    accuracyRate: 70,
     chapterTitle: '[2단계: 계약] 도장 찍기 전, 멍멍이의 마지막 방어선!',
     onFinish: () => {},
   },

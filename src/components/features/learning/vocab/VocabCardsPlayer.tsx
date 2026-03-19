@@ -13,19 +13,21 @@ import QuizFooter from '@/components/common/QuizFooter';
 import QuizIndicator from '@/components/features/learning/quiz/QuizIndicator';
 import VocabCard from './VocabCard';
 
-import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
+import type { VocabInfo } from '@/api/learning/learning.types';
 import type { StepIndicatorInfo } from '@/components/features/learning/quiz/quiz.types';
 
 type VocabCardsPlayerProps = {
-  vocabs: ChoiceQuestionItem[];
+  chapterTitle: string;
+  vocabs: VocabInfo[];
   vocabIdx: number;
   onVocabIdxChange: (idx: number) => void;
-  onComplete: () => void;
+  onComplete: () => Promise<void> | void;
   onBack: () => void;
   indicatorSteps?: StepIndicatorInfo[];
 };
 
 export default function VocabCardsPlayer({
+  chapterTitle,
   vocabs,
   vocabIdx,
   onVocabIdxChange,
@@ -35,6 +37,7 @@ export default function VocabCardsPlayer({
 }: VocabCardsPlayerProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [direction, setDirection] = useState(1);
+  const [isCompleting, setIsCompleting] = useState(false);
   const dragX = useMotionValue(0);
   const cardRotate = useTransform(dragX, [-150, 0, 150], [-8, 0, 8]);
 
@@ -85,9 +88,16 @@ export default function VocabCardsPlayer({
     }),
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    if (isCompleting) return;
+
     if (isLastVocab) {
-      onComplete();
+      setIsCompleting(true);
+      try {
+        await onComplete();
+      } finally {
+        setIsCompleting(false);
+      }
       return;
     }
 
@@ -104,30 +114,14 @@ export default function VocabCardsPlayer({
     onVocabIdxChange(vocabIdx - 1);
   };
 
-  if (!currentVocab) {
-    return (
-      <main className="flex h-full min-h-0 flex-col bg-white text-slate-900">
-        <div className="z-20 shrink-0 border-b border-slate-100 bg-white">
-          <QuizHeader
-            title="생존 단어장"
-            showCloseButton
-            onCloseClick={onBack}
-          />
-        </div>
-
-        <div className="flex flex-1 items-center justify-center p-6">
-          <p className="text-sm font-medium text-slate-500">
-            표시할 단어가 없습니다.
-          </p>
-        </div>
-      </main>
-    );
-  }
-
   return (
     <main className="flex h-full min-h-0 flex-col bg-slate-50 text-slate-900">
       <div className="z-20 shrink-0 border-b border-slate-100 bg-white">
-        <QuizHeader title="생존 단어장" showCloseButton onCloseClick={onBack} />
+        <QuizHeader
+          title={chapterTitle}
+          showCloseButton
+          onCloseClick={onBack}
+        />
         <QuizIndicator steps={indicatorSteps} />
       </div>
 
@@ -144,7 +138,7 @@ export default function VocabCardsPlayer({
           >
             <motion.div
               style={{ x: dragX, rotate: cardRotate }}
-              drag="x"
+              drag={isFlipped ? 'x' : false}
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.2}
               onDragEnd={(_, info) => {
@@ -212,6 +206,7 @@ export default function VocabCardsPlayer({
               className="absolute inset-0"
             >
               <QuizFooter
+                disabled={isCompleting}
                 onPrevious={isFirstVocab ? undefined : handlePrev}
                 onClick={handleNext}
               >

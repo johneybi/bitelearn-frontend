@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import QuizFooter from '@/components/common/QuizFooter';
 import QuizPassage from '../shared/QuizPassage';
-import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
+import type { QuizInfo } from '@/api/learning/learning.types';
 
 type ConversationPassageViewProps = {
-  question: ChoiceQuestionItem;
+  question: QuizInfo;
   onSolve: () => void;
   /** true면 말풍선 애니메이션 없이 전체 대화를 바로 표시 */
   skipAnimation?: boolean;
@@ -16,9 +16,29 @@ export default function ConversationPassageView({
   onSolve,
   skipAnimation = false,
 }: ConversationPassageViewProps) {
-  const conversations = question.conversations || [];
-  const conversationSpeakers = question.conversationSpeakers || [];
-  const conversationInfoBox = question.conversationInfoBox;
+  const dialogues = question.specificData?.dialogues ?? [];
+  const conversations = useMemo(
+    () =>
+      dialogues.map((line, dialogueIndex) => ({
+        id: `d-${question.quizId}-${dialogueIndex}`,
+        speakerId: line.speaker,
+        message: line.message,
+      })),
+    [dialogues, question.quizId]
+  );
+  const conversationSpeakers = useMemo(
+    () =>
+      Array.from(new Set(dialogues.map((line) => line.speaker))).map(
+        (speaker, speakerIndex) => ({
+          id: speaker,
+          name: speaker,
+          profileImageUrl: undefined,
+          position:
+            speakerIndex % 2 === 0 ? ('left' as const) : ('right' as const),
+        })
+      ),
+    [dialogues]
+  );
 
   const [visibleCount, setVisibleCount] = useState(() =>
     skipAnimation ? conversations.length : 0
@@ -91,8 +111,9 @@ export default function ConversationPassageView({
         data-mode="conversation"
       >
         <QuizPassage
-          passage={question.passage}
-          flavorText={question.flavorText}
+          questionSequence={question.sequence}
+          passageContent={question.passageContent ?? ''}
+          passageTitle={question.passageTitle ?? question.questionTitle}
         >
           <div className="flex flex-col gap-3 py-5">
             {conversations.slice(0, visibleCount).map((conversation) => {
@@ -145,12 +166,12 @@ export default function ConversationPassageView({
                       {speaker?.profileImageUrl ? (
                         <img
                           src={speaker.profileImageUrl}
-                          alt={speaker.name || '나'}
+                          alt={speaker.name || 'profile'}
                           className="h-9 w-9 rounded-full border-2 border-white object-cover shadow-sm"
                         />
                       ) : (
                         <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-400 text-xs font-bold text-white">
-                          나
+                          {speaker?.name?.[0] ?? '?'}
                         </div>
                       )}
                     </div>
@@ -210,12 +231,12 @@ export default function ConversationPassageView({
                     {nextSpeaker?.profileImageUrl ? (
                       <img
                         src={nextSpeaker.profileImageUrl}
-                        alt=""
+                        alt={nextSpeaker.name || 'profile'}
                         className="h-9 w-9 rounded-full border-2 border-white object-cover shadow-sm"
                       />
                     ) : (
                       <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-400 text-xs font-bold text-white">
-                        나
+                        {nextSpeaker?.name?.[0] ?? '?'}
                       </div>
                     )}
                   </div>
@@ -223,17 +244,6 @@ export default function ConversationPassageView({
               </div>
             )}
 
-            {allVisible && conversationInfoBox && (
-              <div className="animate-bubble-in mt-4 rounded-2xl border border-amber-100 bg-amber-50 p-5 shadow-sm">
-                <h4 className="mb-2 flex items-center gap-2 text-sm font-bold text-amber-900">
-                  <span className="text-lg">💡</span>
-                  {conversationInfoBox.title}
-                </h4>
-                <p className="text-sm leading-relaxed text-amber-800 opacity-90">
-                  {conversationInfoBox.content}
-                </p>
-              </div>
-            )}
           </div>
         </QuizPassage>
       </section>

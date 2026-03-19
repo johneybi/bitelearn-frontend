@@ -1,11 +1,14 @@
 import QuizFooter from '@/components/common/QuizFooter';
 import DocumentCard from '../shared/DocumentCard';
-import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
+import type { QuizInfo } from '@/api/learning/learning.types';
+import { toDocumentCardData } from '../learningQuiz.utils';
 import QuizTitle from '../shared/QuizTitle';
 
 type DocumentSelectViewProps = {
-  question: ChoiceQuestionItem;
-  currentIndex: number;
+  question: QuizInfo;
+  questionNumber: number;
+  questionTitle: string;
+  correctIndex?: number;
   selectedValue: string;
   onSelectChoice: (value: string) => void;
   onCheckAnswer: (selectedIndex?: number) => void;
@@ -15,31 +18,33 @@ type DocumentSelectViewProps = {
 
 export default function DocumentSelectView({
   question,
-  currentIndex,
+  questionNumber,
+  questionTitle,
+  correctIndex,
   selectedValue,
   isChecking,
   onSelectChoice,
   onCheckAnswer,
   onPrevious,
 }: DocumentSelectViewProps) {
-  if (!question.documentCard) return null;
+  const documentCard = toDocumentCardData(question)!;
 
   return (
     <>
       <section className="flex-1 overflow-y-auto px-6">
         <QuizTitle
-          questionNumber={question.questionNumber ?? currentIndex + 1}
-          question={question.question}
+          questionNumber={questionNumber}
+          questionTitle={questionTitle}
         />
 
         <DocumentCard
-          data={question.documentCard}
+          data={documentCard}
           mode="interactive"
           choiceMode="document_select"
           selectedValue={selectedValue}
           onSelectField={onSelectChoice}
           isChecking={isChecking}
-          correctIndex={question.correctIndex}
+          correctIndex={correctIndex}
         />
       </section>
 
@@ -49,7 +54,7 @@ export default function DocumentSelectView({
         onClick={onCheckAnswer}
         onPrevious={onPrevious}
       >
-        {isChecking ? '서류 스캔 중...' : '정답 확인하기'}
+        정답 확인
       </QuizFooter>
     </>
   );

@@ -1,15 +1,18 @@
 import { motion } from 'framer-motion';
-import { MousePointerClick } from 'lucide-react';
 
-import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
+import type { VocabInfo } from '@/api/learning/learning.types';
 
 type VocabCardProps = {
-  vocab: ChoiceQuestionItem;
+  vocab: VocabInfo;
   isFlipped: boolean;
   onFlip: () => void;
 };
 
-export default function VocabCard({ vocab, isFlipped, onFlip }: VocabCardProps) {
+export default function VocabCard({
+  vocab,
+  isFlipped,
+  onFlip,
+}: VocabCardProps) {
   return (
     <motion.div
       className="preserve-3d relative h-full w-full cursor-pointer rounded-2xl shadow-md"
@@ -20,10 +23,10 @@ export default function VocabCard({ vocab, isFlipped, onFlip }: VocabCardProps) 
       {/* Front */}
       <div className="backface-hidden group absolute inset-0 flex h-full w-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white">
         <div className="flex flex-1 items-center justify-center overflow-hidden bg-slate-100">
-          {vocab.imageUrl ? (
+          {vocab.frontImageUrl ? (
             <img
-              src={vocab.imageUrl}
-              alt={vocab.imageAlt}
+              src={vocab.frontImageUrl}
+              alt={`${vocab.frontMain} 이미지`}
               className="h-full w-full object-cover opacity-90 grayscale transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
@@ -34,19 +37,13 @@ export default function VocabCard({ vocab, isFlipped, onFlip }: VocabCardProps) 
         </div>
 
         <div className="flex shrink-0 flex-col items-center border-t border-slate-100 bg-white p-8 text-center">
+          <h2 className="mb-6 break-keep text-xl font-bold text-slate-800">
+            {vocab.frontMain}
+          </h2>
           <div className="mb-3 rounded-full border border-slate-200 bg-slate-100 px-4 py-1.5">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-              {vocab.flavorText || '핵심 단어'}
+              {vocab.frontSub}
             </span>
-          </div>
-
-          <h2 className="mb-6 break-keep text-xl font-bold text-slate-800">
-            {vocab.choices[0]}
-          </h2>
-
-          <div className="flex items-center gap-2 text-slate-400">
-            <MousePointerClick size={14} />
-            <span className="text-xs font-medium">터치해서 의미 확인</span>
           </div>
         </div>
       </div>
@@ -55,21 +52,17 @@ export default function VocabCard({ vocab, isFlipped, onFlip }: VocabCardProps) 
       <div className="backface-hidden rotate-y-180 absolute inset-0 flex h-full w-full flex-col overflow-hidden rounded-2xl border border-slate-700 bg-slate-800 p-8 text-white shadow-xl">
         <div className="flex flex-1 flex-col justify-center overflow-y-auto">
           <h3 className="mb-6 text-center text-lg font-bold leading-tight">
-            {vocab.question}
+            {vocab.frontMain}
           </h3>
 
           <div className="mx-auto mb-8 h-1 w-10 rounded-full bg-slate-600" />
-
           <p className="whitespace-pre-line break-keep text-center text-[15px] font-medium leading-relaxed text-slate-200">
-            {vocab.passage}
+            {vocab.backMain}
           </p>
-
-          <div className="mt-8 rounded-xl border border-slate-700/50 bg-slate-900/50 p-5 shadow-inner">
-            <p className="text-sm font-medium leading-relaxed text-slate-300">
-              <span className="mr-2 text-slate-400">💡</span>
-              {vocab.explanation}
-            </p>
-          </div>
+          <div className="mx-auto mb-8 h-1 w-10 rounded-full bg-slate-600" />
+          <p className="whitespace-pre-line break-keep text-center text-[15px] font-medium leading-relaxed text-slate-200">
+            {vocab.backSub}
+          </p>
         </div>
       </div>
     </motion.div>

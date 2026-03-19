@@ -4,19 +4,23 @@ import QuizPlayer from '@/components/features/learning/quiz/QuizPlayer';
 import ChapterDone from './ChapterDone';
 import ChapterResult from './ChapterResult';
 import ChapterIntro from './ChapterIntro';
-import VocabDone from './VocabDone';
+import VocabDone from '../vocab/VocabDone';
 
-import type { ChoiceQuestionSet } from '@/mock/choiceQuestion';
 import type {
   QuizMetric,
   StepIndicatorInfo,
 } from '@/components/features/learning/quiz/quiz.types';
 import VocabCardsPlayer from '../vocab/VocabCardsPlayer';
 import type {
-  GetLearningChapterResultResponse,
-  LearningProgressStatus,
-  SubmitLearningQuizResponse,
+  ChapterResultResponse,
+  ChapterStatus,
+  QuizInfo,
+  QuizSubmitResponse,
+  VocabInfo,
 } from '@/api/learning/learning.types';
+import { isAppError } from '@/api/error/appError';
+import { logError } from '@/lib/logError';
+import { toast } from 'sonner';
 
 type ChapterPhase =
   | 'intro'
@@ -27,30 +31,33 @@ type ChapterPhase =
   | 'final';
 
 type ChapterIntroData = {
-  title: string;
   prologueSubtitle: string;
   goal: string;
-  description: string;
+  prologueContent: string;
   coreKeywords: string[];
 };
 
 type ChapterPlayerProps = {
-  questionSet: ChoiceQuestionSet;
+  chapterTitle: string;
+  vocabs: VocabInfo[];
+  quizzes: QuizInfo[];
   chapterIntro: ChapterIntroData;
-  initialStatus?: LearningProgressStatus;
+  initialStatus?: ChapterStatus;
   initialQuizSequence?: number | null;
   onVocabComplete?: () => Promise<void>;
-  onSubmitQuiz?: (
+  onSubmitQuiz: (
     quizId: number,
     selectedAnswer: string
-  ) => Promise<SubmitLearningQuizResponse>;
-  onFetchResult?: () => Promise<GetLearningChapterResultResponse>;
+  ) => Promise<QuizSubmitResponse>;
+  onFetchResult: () => Promise<ChapterResultResponse>;
   onComplete: (total: number, correct: number) => void;
   onBack: () => void;
 };
 
 export default function ChapterPlayer({
-  questionSet,
+  chapterTitle,
+  vocabs,
+  quizzes,
   chapterIntro,
   initialStatus = 'READY',
   initialQuizSequence = null,
@@ -60,62 +67,91 @@ export default function ChapterPlayer({
   onComplete,
   onBack,
 }: ChapterPlayerProps) {
-  const vocabQuestions = useMemo(
-    () => questionSet.questions.filter((q) => q.type === 'vocab'),
-    [questionSet]
-  );
-
-  const quizQuestions = useMemo(
-    () => questionSet.questions.filter((q) => q.type === 'quiz'),
-    [questionSet]
-  );
-
   const initialPhase: ChapterPhase = 'intro';
+  const isQuizInProgress = initialStatus === 'QUIZ_IN_PROGRESS';
+  const chapterIntroMode =
+    initialStatus === 'COMPLETED'
+      ? 'retry'
+      : isQuizInProgress
+        ? 'resume'
+        : 'start';
 
   const [chapterPhase, setChapterPhase] = useState<ChapterPhase>(initialPhase);
-  const [quizResult, setQuizResult] = useState<{
-    total: number;
-    correct: number;
-  } | null>(null);
-
+  const [quizResult, setQuizResult] = useState<ChapterResultResponse | null>(
+    null
+  );
   const [vocabIdx, setVocabIdx] = useState(0);
   const [quizCurrentIndex, setQuizCurrentIndex] = useState(
-    initialQuizSequence && initialQuizSequence > 0 ? initialQuizSequence - 1 : 0
+    isQuizInProgress && initialQuizSequence && initialQuizSequence > 0
+      ? initialQuizSequence - 1
+      : 0
   );
   const [quizMetrics, setQuizMetrics] = useState<QuizMetric[]>(
-    Array(quizQuestions.length).fill('none')
+    Array(quizzes.length).fill('none')
   );
 
-  const combinedSteps: StepIndicatorInfo[] = useMemo(() => {
-    const vocabSteps: StepIndicatorInfo[] = vocabQuestions.map((_, idx) => ({
+  const handleQuizComplete = () => {
+    onFetchResult()
+      .then((result) => {
+        setQuizResult(result);
+        setChapterPhase('done');
+      })
+      .catch((error) => {
+        logError('ChapterPlayer', '챕터 결과 조회 실패', error);
+        toast.error(
+          isAppError(error)
+            ? error.message
+            : '챕터 결과를 불러오지 못했습니다. 다시 시도해 주세요.'
+        );
+      });
+  };
+
+  const submitQuizAnswer = async (
+    question: QuizInfo,
+    selectedAnswerIndex: number
+  ) => {
+    const selectedAnswer =
+      question.type === 'DOC_CLICK'
+        ? question.specificData?.documentElements?.[selectedAnswerIndex]?.key ??
+          question.specificData?.options?.[selectedAnswerIndex] ??
+          ''
+        : question.specificData?.options?.[selectedAnswerIndex] ?? '';
+
+    if (typeof selectedAnswer !== 'string' || selectedAnswer.trim() === '') {
+      throw new Error('퀴즈 제출에 필요한 데이터가 올바르지 않습니다.');
+    }
+
+    return onSubmitQuiz(question.quizId, selectedAnswer);
+  };
+
+  const chapterIndicatorSteps: StepIndicatorInfo[] = useMemo(() => {
+    const vocabSteps: StepIndicatorInfo[] = vocabs.map((_, idx) => ({
       type: 'vocab',
       status: 'none',
       isCurrent: chapterPhase === 'vocabs' && idx === vocabIdx,
     }));
 
-    const quizSteps: StepIndicatorInfo[] = quizQuestions.map((q, idx) => ({
-      type: q.type ?? 'quiz',
+    const quizSteps: StepIndicatorInfo[] = quizzes.map((_, idx) => ({
+      type: 'quiz',
       status: chapterPhase === 'vocabs' ? 'none' : quizMetrics[idx],
       isCurrent: chapterPhase === 'quiz' && idx === quizCurrentIndex,
     }));
 
     return [...vocabSteps, ...quizSteps];
-  }, [
-    vocabQuestions,
-    quizQuestions,
-    chapterPhase,
-    vocabIdx,
-    quizCurrentIndex,
-    quizMetrics,
-  ]);
+  }, [vocabs, quizzes, chapterPhase, vocabIdx, quizCurrentIndex, quizMetrics]);
 
   if (chapterPhase === 'final' && quizResult) {
     return (
       <ChapterResult
-        correct={quizResult.correct}
-        total={quizResult.total}
-        chapterTitle={questionSet.title}
-        onFinish={() => onComplete(quizResult.total, quizResult.correct)}
+        correct={quizResult.correctCount}
+        total={quizResult.totalCount}
+        accuracyRate={quizResult.accuracyRate}
+        earnedBytes={quizResult.earnedBytes}
+        chapterTitle={chapterTitle}
+        onBack={onBack}
+        onFinish={() =>
+          onComplete(quizResult.totalCount, quizResult.correctCount)
+        }
       />
     );
   }
@@ -123,9 +159,10 @@ export default function ChapterPlayer({
   if (chapterPhase === 'done' && quizResult) {
     return (
       <ChapterDone
-        correct={quizResult.correct}
-        total={quizResult.total}
-        chapterTitle={questionSet.title}
+        correct={quizResult.correctCount}
+        total={quizResult.totalCount}
+        accuracyRate={quizResult.accuracyRate}
+        chapterTitle={chapterTitle}
         onFinish={() => setChapterPhase('final')}
       />
     );
@@ -134,42 +171,15 @@ export default function ChapterPlayer({
   if (chapterPhase === 'quiz') {
     return (
       <QuizPlayer
-        questions={quizQuestions}
+        questions={quizzes}
+        chapterTitle={chapterTitle}
         onBack={onBack}
-        onComplete={(total, correct) => {
-          if (onFetchResult) {
-            onFetchResult()
-              .then((result) => {
-                setQuizResult({
-                  total: result.totalCount,
-                  correct: result.correctCount,
-                });
-                setChapterPhase('done');
-              })
-              .catch(() => {
-                setQuizResult({ total, correct });
-                setChapterPhase('done');
-              });
-            return;
-          }
-
-          setQuizResult({ total, correct });
-          setChapterPhase('done');
-        }}
-        indicatorSteps={combinedSteps}
+        onComplete={handleQuizComplete}
+        indicatorSteps={chapterIndicatorSteps}
         onCurrentIndexChange={setQuizCurrentIndex}
         onMetricsChange={setQuizMetrics}
-        initialIndex={quizCurrentIndex}
-        onSubmitAnswer={
-          onSubmitQuiz
-            ? async (question, selectedAnswerIndex) => {
-                const quizId = question.quizId ?? question.questionNumber;
-                const selectedAnswer =
-                  question.choices[selectedAnswerIndex] ?? '';
-                return onSubmitQuiz(quizId, selectedAnswer);
-              }
-            : undefined
-        }
+        startIndex={quizCurrentIndex}
+        onSubmitAnswer={submitQuizAnswer}
       />
     );
   }
@@ -177,19 +187,20 @@ export default function ChapterPlayer({
   if (chapterPhase === 'intro') {
     return (
       <ChapterIntro
-        chapterTitle={chapterIntro.title}
+        chapterTitle={chapterTitle}
         prologueSubtitle={chapterIntro.prologueSubtitle}
         chapterGoal={chapterIntro.goal}
-        chapterDescription={chapterIntro.description}
+        prologueContent={chapterIntro.prologueContent}
         coreKeywords={chapterIntro.coreKeywords}
+        introMode={chapterIntroMode}
         onBack={onBack}
         onStart={() => {
-          if (initialStatus === 'QUIZ_IN_PROGRESS') {
+          if (isQuizInProgress) {
             setChapterPhase('quiz');
             return;
           }
 
-          if (vocabQuestions.length > 0) {
+          if (vocabs.length > 0) {
             setChapterPhase('vocabs');
             return;
           }
@@ -203,31 +214,38 @@ export default function ChapterPlayer({
   if (chapterPhase === 'vocab_done') {
     return (
       <VocabDone
-        chapterTitle={questionSet.title}
-        vocabCount={vocabQuestions.length}
+        chapterTitle={chapterTitle}
         onClose={onBack}
-        onStartQuiz={() => {
-          if (onVocabComplete) {
-            onVocabComplete()
-              .catch(() => undefined)
-              .finally(() => setChapterPhase('quiz'));
-            return;
-          }
-
-          setChapterPhase('quiz');
-        }}
+        onStartQuiz={() => setChapterPhase('quiz')}
       />
     );
   }
 
   return (
     <VocabCardsPlayer
-      vocabs={vocabQuestions}
+      chapterTitle={chapterTitle}
+      vocabs={vocabs}
       vocabIdx={vocabIdx}
       onVocabIdxChange={setVocabIdx}
-      onComplete={() => setChapterPhase('vocab_done')}
+      onComplete={async () => {
+        if (onVocabComplete) {
+          try {
+            await onVocabComplete();
+          } catch (error) {
+            logError('ChapterPlayer', '단어 학습 완료 처리 실패', error);
+            toast.error(
+              isAppError(error)
+                ? error.message
+                : '단어 학습 완료 처리에 실패했습니다. 다시 시도해 주세요.'
+            );
+            return;
+          }
+        }
+
+        setChapterPhase('vocab_done');
+      }}
       onBack={onBack}
-      indicatorSteps={combinedSteps}
+      indicatorSteps={chapterIndicatorSteps}
     />
   );
 }

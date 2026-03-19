@@ -1,11 +1,11 @@
-import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
+import type { QuizInfo } from '@/api/learning/learning.types';
 
 import ConversationPassageView from '../passage/ConversationPassageView';
 import DocumentPassageView from '../passage/DocumentPassageView';
 import TextPassageView from '../passage/TextPassageView';
 
 type Props = {
-  question: ChoiceQuestionItem;
+  question: QuizInfo;
   currentIndex: number;
   skipConversationAnimation: boolean;
   onSolve: () => void;
@@ -17,10 +17,10 @@ export default function QuizPassagePhase({
   skipConversationAnimation,
   onSolve,
 }: Props) {
-  if (question.passageMode === 'conversation') {
+  if (question.type === 'DIALOGUE_MCQ' || question.type === 'DIALOGUE_OX') {
     return (
       <ConversationPassageView
-        key={question.questionNumber ?? currentIndex}
+        key={question.sequence ?? currentIndex}
         question={question}
         onSolve={onSolve}
         skipAnimation={skipConversationAnimation}
@@ -28,7 +28,10 @@ export default function QuizPassagePhase({
     );
   }
 
-  if (question.passageMode === 'document') {
+  if (
+    question.type === 'DOC_MCQ' &&
+    question.specificData?.documentElements?.length
+  ) {
     return <DocumentPassageView question={question} onSolve={onSolve} />;
   }
 

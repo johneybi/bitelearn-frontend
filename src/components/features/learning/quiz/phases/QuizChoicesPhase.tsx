@@ -1,12 +1,13 @@
-import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
+import type { QuizInfo } from '@/api/learning/learning.types';
 
 import MultipleChoiceView from '../choices/MultipleChoiceView';
 import DocumentSelectView from '../choices/DocumentSelectView';
 import OXChoiceView from '../choices/OXChoiceView';
 
 type Props = {
-  question: ChoiceQuestionItem;
+  question: QuizInfo;
   currentIndex: number;
+  correctIndex?: number;
   selectedChoice: string;
   isChecking: boolean;
   onSelectChoice: (value: string) => void;
@@ -18,6 +19,7 @@ type Props = {
 export default function QuizChoicesPhase({
   question,
   currentIndex,
+  correctIndex,
   selectedChoice,
   isChecking,
   onSelectChoice,
@@ -25,11 +27,25 @@ export default function QuizChoicesPhase({
   onCheckAnswerWithIndex,
   onPrevious,
 }: Props) {
-  if (question.choiceMode === 'document_select') {
+  const questionNumber = question.sequence ?? currentIndex + 1;
+  const hasDocumentElements = Boolean(
+    question.specificData?.documentElements?.length
+  );
+  const choiceMode =
+    question.type === 'DIALOGUE_OX'
+      ? 'ox'
+      : question.type === 'DOC_CLICK' && hasDocumentElements
+        ? 'document_select'
+        : 'multiple';
+  const choices = question.specificData?.options ?? [];
+
+  if (choiceMode === 'document_select') {
     return (
       <DocumentSelectView
         question={question}
-        currentIndex={currentIndex}
+        questionNumber={questionNumber}
+        questionTitle={question.questionTitle}
+        correctIndex={correctIndex}
         selectedValue={selectedChoice}
         isChecking={isChecking}
         onSelectChoice={onSelectChoice}
@@ -39,13 +55,15 @@ export default function QuizChoicesPhase({
     );
   }
 
-  if (question.choiceMode === 'ox') {
+  if (choiceMode === 'ox') {
     return (
       <OXChoiceView
-        key={question.questionNumber ?? currentIndex}
-        questionNumber={question.questionNumber ?? currentIndex + 1}
-        question={question.question}
-        correctIndex={question.correctIndex}
+        key={questionNumber}
+        questionNumber={questionNumber}
+        questionTitle={question.questionTitle}
+        correctIndex={correctIndex}
+        selectedValue={selectedChoice}
+        onSelectChoice={onSelectChoice}
         onCheckAnswer={onCheckAnswerWithIndex}
         isChecking={isChecking}
         onPrevious={onPrevious}
@@ -55,14 +73,14 @@ export default function QuizChoicesPhase({
 
   return (
     <MultipleChoiceView
-      questionNumber={question.questionNumber ?? currentIndex + 1}
-      question={question.question}
-      choices={question.choices}
+      questionNumber={questionNumber}
+      questionTitle={question.questionTitle}
+      choices={choices}
       selectedValue={selectedChoice}
       onSelectChoice={onSelectChoice}
       onCheckAnswer={onCheckAnswerWithIndex}
       isChecking={isChecking}
-      correctIndex={question.correctIndex}
+      correctIndex={correctIndex}
       onPrevious={onPrevious}
     />
   );

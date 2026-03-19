@@ -1,16 +1,16 @@
 type QuizTitleProps = {
   questionNumber?: number;
-  question: string;
+  questionTitle: string;
 };
 
 export default function QuizTitle({
   questionNumber,
-  question,
+  questionTitle,
 }: QuizTitleProps) {
   return (
     <h2 className="mb-4 text-base font-semibold text-slate-600">
       {questionNumber ? `Q${questionNumber}. ` : ''}
-      {question}
+      {questionTitle}
     </h2>
   );
 }

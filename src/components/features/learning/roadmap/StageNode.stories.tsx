@@ -1,11 +1,11 @@
 import type { ComponentProps } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import type { LearningChapterListItem } from '@/api/learning/learning.types';
+import type { ChapterSummaryDto } from '@/api/learning/learning.types';
 
 import StageNode from './StageNode';
 
-const roadmapChapters: LearningChapterListItem[] = [
+const roadmapChapters: ChapterSummaryDto[] = [
   {
     chapterId: 1001,
     title: '완료 챕터',

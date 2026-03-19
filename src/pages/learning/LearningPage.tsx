@@ -3,15 +3,17 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { getLearningChapters } from '@/api/learning/learning.api';
-import type { LearningChapterListItem } from '@/api/learning/learning.types';
+import type { ChapterSummaryDto } from '@/api/learning/learning.types';
+import AppLoading from '@/components/common/AppLoading';
 import { Button } from '@/components/ui/button';
 import { LEARNING_NAVIGATION } from '@/constants/learningNavigation';
+import { logError } from '@/lib/logError';
 import { cn } from '@/lib/utils';
 
 type TopicSummary = {
   topicId: string;
   topicName: string;
-  chapters: LearningChapterListItem[];
+  chapters: ChapterSummaryDto[];
 };
 
 type CategorySummary = {
@@ -19,6 +21,9 @@ type CategorySummary = {
   completed: number;
   topics: TopicSummary[];
 };
+
+const LEARNING_PAGE_ERROR_MESSAGE =
+  '학습 카테고리를 불러오지 못했습니다. 다시 시도해 주세요.';
 
 export default function LearningPage() {
   const navigate = useNavigate();
@@ -29,51 +34,98 @@ export default function LearningPage() {
     Record<string, CategorySummary>
   >({});
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<unknown>(null);
 
   useEffect(() => {
     let isMounted = true;
-    setIsLoading(true);
 
-    Promise.all(
-      LEARNING_NAVIGATION.map(async (category) => {
-        const responses = await Promise.all(
-          category.topics.map((topic) =>
-            getLearningChapters({
-              category: category.code,
-              topic: topic.code,
-            })
-          )
+    const fetchSummaryByCategory = async () => {
+      try {
+        // 카테고리 요약 전용 API가 아직 없어 토픽별 챕터 응답을 임시로 합산한다.
+        const settledEntries = await Promise.allSettled(
+          LEARNING_NAVIGATION.map(async (category) => {
+            const responses = await Promise.allSettled(
+              category.topics.map((topic) =>
+                getLearningChapters({
+                  category: category.code,
+                  topic: topic.code,
+                })
+              )
+            );
+
+            if (responses.every((response) => response.status === 'rejected')) {
+              throw responses[0]?.reason;
+            }
+
+            const topicSummaries: TopicSummary[] = category.topics.map(
+              (topic, idx) => {
+                const response = responses[idx];
+                const chapters =
+                  response?.status === 'fulfilled' &&
+                  Array.isArray(response.value.chapters)
+                    ? response.value.chapters
+                    : [];
+
+                return {
+                  topicId: topic.id,
+                  topicName: topic.name,
+                  chapters,
+                };
+              }
+            );
+
+            const mergedChapters = topicSummaries.flatMap(
+              (topic) => topic.chapters
+            );
+            const completed = mergedChapters.filter(
+              (chapter) => chapter.status === 'COMPLETED'
+            ).length;
+
+            return [
+              category.id,
+              {
+                total: mergedChapters.length,
+                completed,
+                topics: topicSummaries,
+              } satisfies CategorySummary,
+            ] as const;
+          })
         );
 
-        const topicSummaries: TopicSummary[] = responses.map((response, idx) => ({
-          topicId: category.topics[idx]?.id ?? `topic-${idx}`,
-          topicName: category.topics[idx]?.name ?? '중분류',
-          chapters: response.chapters,
-        }));
+        settledEntries.forEach((entry) => {
+          if (entry.status === 'rejected') {
+            logError('LearningPage', '카테고리 요약 조회 실패', entry.reason);
+          }
+        });
 
-        const mergedChapters = topicSummaries.flatMap((topic) => topic.chapters);
-        const completed = mergedChapters.filter(
-          (chapter) => chapter.status === 'COMPLETED'
-        ).length;
+        const entries = settledEntries
+          .filter(
+            (entry): entry is PromiseFulfilledResult<
+              readonly [string, CategorySummary]
+            > => entry.status === 'fulfilled'
+          )
+          .map((entry) => entry.value);
 
-        return [
-          category.id,
-          {
-            total: mergedChapters.length,
-            completed,
-            topics: topicSummaries,
-          } satisfies CategorySummary,
-        ] as const;
-      })
-    )
-      .then((entries) => {
+        if (entries.length === 0) {
+          const firstRejectedEntry = settledEntries.find(
+            (entry): entry is PromiseRejectedResult => entry.status === 'rejected'
+          );
+          throw firstRejectedEntry?.reason ?? new Error(LEARNING_PAGE_ERROR_MESSAGE);
+        }
+
         if (!isMounted) return;
         setSummaryByCategory(Object.fromEntries(entries));
-      })
-      .finally(() => {
+        setLoadError(null);
+      } catch (error) {
+        if (!isMounted) return;
+        setLoadError(error);
+      } finally {
         if (!isMounted) return;
         setIsLoading(false);
-      });
+      }
+    };
+
+    void fetchSummaryByCategory();
 
     return () => {
       isMounted = false;
@@ -89,6 +141,22 @@ export default function LearningPage() {
       }).length,
     [summaryByCategory]
   );
+
+  if (isLoading) {
+    return <AppLoading message="학습 카테고리를 불러오는 중입니다." />;
+  }
+
+  if (loadError) {
+    return (
+      <main className="flex min-h-dvh items-center justify-center bg-white p-6">
+        <p className="text-sm font-medium text-red-400">
+          {loadError instanceof Error
+            ? loadError.message
+            : LEARNING_PAGE_ERROR_MESSAGE}
+        </p>
+      </main>
+    );
+  }
 
   const handleToggleCategory = (categoryId: string) => {
     setExpandedCategoryId((prev) => (prev === categoryId ? null : categoryId));
@@ -172,7 +240,7 @@ export default function LearningPage() {
                           {completed} / {total} 챕터 완료
                         </span>
                         <span className="text-sm font-bold text-slate-900">
-                          {isLoading ? '-' : `${progress}%`}
+                          {`${progress}%`}
                         </span>
                       </div>
 

@@ -12,7 +12,10 @@ const meta = {
   args: {
     correct: 10,
     total: 10,
+    accuracyRate: 100,
+    earnedBytes: 500,
     chapterTitle: '[2단계: 계약] 도장 찍기 전, 멍멍이의 마지막 방어선!',
+    onBack: () => {},
     onFinish: () => {},
     onRetryWrongAnswers: () => {},
   },
@@ -27,6 +30,8 @@ export const Close: Story = {
   args: {
     correct: 7,
     total: 10,
+    accuracyRate: 70,
+    earnedBytes: 260,
   },
 };
 
@@ -34,5 +39,7 @@ export const Fail: Story = {
   args: {
     correct: 3,
     total: 10,
+    accuracyRate: 30,
+    earnedBytes: 0,
   },
 };

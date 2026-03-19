@@ -1,46 +1,48 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import QuizHeader from '@/components/common/QuizHeader';
 import QuizIndicator from '@/components/features/learning/quiz/QuizIndicator';
-import QuizImage from '@/components/features/learning/quiz/QuizImage';
-import type { ChoiceQuestionItem } from '@/mock/choiceQuestion';
+import type { QuizInfo } from '@/api/learning/learning.types';
 import type { QuizMetric, QuizPhase, StepIndicatorInfo } from './quiz.types';
 import QuizPassagePhase from './phases/QuizPassagePhase';
 import QuizChoicesPhase from './phases/QuizChoicesPhase';
 import QuizResultPhase from './phases/QuizResultPhase';
-import type { SubmitLearningQuizResponse } from '@/api/learning/learning.types';
+import type { QuizSubmitResponse } from '@/api/learning/learning.types';
+import { isAppError } from '@/api/error/appError';
+import { logError } from '@/lib/logError';
+import { toast } from 'sonner';
 
 type QuizPlayerProps = {
-  questions: ChoiceQuestionItem[];
-  initialIndex?: number;
-  headerTitle?: string;
-  onBack?: () => void;
-  onComplete?: (total: number, correct: number) => void;
-  indicatorSteps?: StepIndicatorInfo[];
-  onCurrentIndexChange?: (index: number) => void;
-  onMetricsChange?: (metrics: QuizMetric[]) => void;
-  onSubmitAnswer?: (
-    question: ChoiceQuestionItem,
+  questions: QuizInfo[];
+  startIndex?: number;
+  chapterTitle: string;
+  onBack: () => void;
+  onComplete: () => void;
+  indicatorSteps: StepIndicatorInfo[];
+  onCurrentIndexChange: (index: number) => void;
+  onMetricsChange: (metrics: QuizMetric[]) => void;
+  onSubmitAnswer: (
+    question: QuizInfo,
     selectedAnswerIndex: number
-  ) => Promise<SubmitLearningQuizResponse>;
+  ) => Promise<QuizSubmitResponse>;
 };
 
 export default function QuizPlayer({
   questions,
-  initialIndex = 0,
-  headerTitle,
+  startIndex = 0,
+  chapterTitle,
   onBack,
   onComplete,
-  indicatorSteps: externalIndicatorSteps,
+  indicatorSteps,
   onCurrentIndexChange,
   onMetricsChange,
   onSubmitAnswer,
 }: QuizPlayerProps) {
-  const safeInitialIndex =
+  const safeStartIndex =
     questions.length > 0
-      ? Math.max(0, Math.min(initialIndex, questions.length - 1))
+      ? Math.max(0, Math.min(startIndex, questions.length - 1))
       : 0;
-  const [currentIndex, setCurrentIndex] = useState(safeInitialIndex);
+  const [currentIndex, setCurrentIndex] = useState(safeStartIndex);
   const [phase, setPhase] = useState<QuizPhase>('passage');
   const [selectedChoice, setSelectedChoice] = useState('');
   const [metrics, setMetrics] = useState<QuizMetric[]>(
@@ -49,7 +51,15 @@ export default function QuizPlayer({
   const [seenPassages, setSeenPassages] = useState<Set<number>>(new Set());
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [resultByIndex, setResultByIndex] = useState<
-    Record<number, { explanation: string; correctAnswer: string }>
+    Record<
+      number,
+      {
+        correct: boolean;
+        explanation: string;
+        correctAnswer: string;
+        correctAnswerIndex: number;
+      }
+    >
   >({});
 
   if (questions.length === 0) {
@@ -61,33 +71,26 @@ export default function QuizPlayer({
   }
 
   const currentQuestion = questions[currentIndex];
-  const selectedIndex = selectedChoice === '' ? -1 : Number(selectedChoice);
-  const isCorrect =
-    selectedIndex !== -1 && selectedIndex === currentQuestion.correctIndex;
+  const currentChoices = currentQuestion.specificData?.options ?? [];
+  const currentResult = resultByIndex[currentIndex];
+  const isShowingEvaluation = phase === 'checking' && !isEvaluating;
+  const isCorrect = currentResult?.correct ?? false;
   const isLastQuestion = currentIndex === questions.length - 1;
-
-  const localIndicatorSteps: StepIndicatorInfo[] = useMemo(
-    () =>
-      questions.map((question, index) => ({
-        type: question.type ?? 'quiz',
-        status: metrics[index],
-        isCurrent: index === currentIndex,
-      })),
-    [questions, metrics, currentIndex]
-  );
-
-  const indicatorSteps = externalIndicatorSteps ?? localIndicatorSteps;
+  const resolvedCorrectIndex = currentResult?.correctAnswerIndex ?? -1;
 
   useEffect(() => {
-    onCurrentIndexChange?.(currentIndex);
+    onCurrentIndexChange(currentIndex);
   }, [currentIndex, onCurrentIndexChange]);
 
   useEffect(() => {
-    onMetricsChange?.(metrics);
+    onMetricsChange(metrics);
   }, [metrics, onMetricsChange]);
 
   const handleSolve = () => {
-    if (currentQuestion.passageMode === 'conversation') {
+    if (
+      currentQuestion.type === 'DIALOGUE_MCQ' ||
+      currentQuestion.type === 'DIALOGUE_OX'
+    ) {
       setSeenPassages((prev) => new Set(prev).add(currentIndex));
     }
     setPhase('choices');
@@ -108,20 +111,35 @@ export default function QuizPlayer({
     setPhase('checking');
     setIsEvaluating(true);
 
-    let correct = resolvedIndex === currentQuestion.correctIndex;
-    let explanation = currentQuestion.explanation;
-    let correctAnswer = currentQuestion.choices[currentQuestion.correctIndex] ?? '';
+    let correct = false;
+    let explanation = '';
+    let correctAnswer = '';
 
-    if (onSubmitAnswer) {
-      try {
-        const submitResult = await onSubmitAnswer(currentQuestion, resolvedIndex);
-        correct = submitResult.isCorrect;
-        explanation = submitResult.explanation;
-        correctAnswer = submitResult.correctAnswer;
-      } catch {
-        correct = resolvedIndex === currentQuestion.correctIndex;
-      }
+    try {
+      const submitResult = await onSubmitAnswer(currentQuestion, resolvedIndex);
+      correct = submitResult.correct;
+      explanation = submitResult.explanation;
+      correctAnswer = submitResult.correctAnswer;
+    } catch (error) {
+      logError('QuizPlayer', '퀴즈 제출 실패', error);
+      setIsEvaluating(false);
+      setPhase('choices');
+      toast.error(
+        isAppError(error)
+          ? error.message
+          : '답안을 제출하지 못했습니다. 다시 시도해 주세요.'
+      );
+      return;
     }
+
+    const correctAnswerIndex =
+      currentQuestion.type === 'DOC_CLICK'
+        ? (currentQuestion.specificData?.documentElements ?? []).findIndex(
+            (element) => element.key.trim() === correctAnswer.trim()
+          )
+        : currentChoices.findIndex(
+            (choice) => choice.trim() === correctAnswer.trim()
+          );
 
     setMetrics((prev) => {
       const next = [...prev];
@@ -131,8 +149,10 @@ export default function QuizPlayer({
     setResultByIndex((prev) => ({
       ...prev,
       [currentIndex]: {
+        correct,
         explanation,
         correctAnswer,
+        correctAnswerIndex,
       },
     }));
     setIsEvaluating(false);
@@ -150,8 +170,7 @@ export default function QuizPlayer({
 
   const handleNext = () => {
     if (isLastQuestion) {
-      const correctCount = metrics.filter((m) => m === 'correct').length;
-      onComplete?.(questions.length, correctCount);
+      onComplete();
       return;
     }
 
@@ -162,35 +181,26 @@ export default function QuizPlayer({
 
   return (
     <main className="flex h-full min-h-0 flex-col bg-white text-slate-900">
-      <QuizHeader
-        title={headerTitle ?? '객관식 퀴즈'}
-        showCloseButton={!!onBack}
-        onCloseClick={onBack}
-      />
+      <QuizHeader title={chapterTitle} showCloseButton onCloseClick={onBack} />
 
       <QuizIndicator steps={indicatorSteps} />
 
       {phase === 'passage' && (
-        <>
-          <QuizImage
-            src={currentQuestion.imageUrl}
-            alt={currentQuestion.imageAlt}
-          />
-          <QuizPassagePhase
-            question={currentQuestion}
-            currentIndex={currentIndex}
-            skipConversationAnimation={seenPassages.has(currentIndex)}
-            onSolve={handleSolve}
-          />
-        </>
+        <QuizPassagePhase
+          question={currentQuestion}
+          currentIndex={currentIndex}
+          skipConversationAnimation={seenPassages.has(currentIndex)}
+          onSolve={handleSolve}
+        />
       )}
 
       {(phase === 'choices' || phase === 'checking') && (
         <QuizChoicesPhase
           question={currentQuestion}
           currentIndex={currentIndex}
+          correctIndex={resolvedCorrectIndex}
           selectedChoice={selectedChoice}
-          isChecking={phase === 'checking'}
+          isChecking={isShowingEvaluation}
           onSelectChoice={setSelectedChoice}
           onCheckAnswer={() => handleCheckAnswer()}
           onCheckAnswerWithIndex={handleCheckAnswer}
@@ -203,7 +213,7 @@ export default function QuizPlayer({
           question={currentQuestion}
           selectedChoice={selectedChoice}
           isCorrect={isCorrect}
-          overrideResult={resultByIndex[currentIndex]}
+          overrideResult={currentResult}
           isLastQuestion={isLastQuestion}
           onNext={handleNext}
         />
