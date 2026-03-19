@@ -1,10 +1,10 @@
 import { setAccessToken, clearAccessToken } from '@/api/auth/tokenStore';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { getMe } from '@/api/auth/auth.api';
+import { authQueryKeys, fetchMe } from '@/api/auth/auth.query';
 import { isAppError } from '@/api/error/appError';
-import { useAuthStore } from '@/stores/auth.store';
 import { toExpiresAt } from '@/api/auth/token.util';
 import { logError } from '@/lib/logError';
 import AppLoading from '@/components/common/AppLoading';
@@ -15,8 +15,7 @@ const OAUTH_CALLBACK_ERROR_FALLBACK_MESSAGE =
 export default function OAuthCallbackPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const setUser = useAuthStore((state) => state.setUser);
-  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const processOAuthLogin = async () => {
@@ -35,8 +34,10 @@ export default function OAuthCallbackPage() {
       window.history.replaceState({}, '', location.pathname);
 
       try {
-        const me = await getMe();
-        setUser(me);
+        await queryClient.fetchQuery({
+          queryKey: authQueryKeys.me,
+          queryFn: fetchMe,
+        });
 
         navigate('/', { replace: true });
       } catch (error) {
@@ -53,14 +54,14 @@ export default function OAuthCallbackPage() {
         );
 
         clearAccessToken();
-        clearAuth();
+        queryClient.setQueryData(authQueryKeys.me, null);
         navigate('/login', { replace: true });
       }
     };
 
     processOAuthLogin();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname, location.search]);
+  }, [location.pathname, location.search, navigate, queryClient]);
 
   return <AppLoading message="로그인 처리 중..." />;
 }
