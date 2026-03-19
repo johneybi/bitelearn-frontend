@@ -10,6 +10,8 @@ const baseArgs = {
   questionNumber: 6,
   questionTitle: '중개사의 말만 믿고 등기부등본을 확인하지 않아도 계약은 안전하다.',
   correctIndex: 1,
+  selectedValue: '',
+  onSelectChoice: (_value: string) => {},
   onCheckAnswer: (_selectedIndex: number) => {},
   isChecking: false,
   onPrevious: () => {},
@@ -27,10 +29,13 @@ type Story = StoryObj<typeof meta>;
 
 function OXStoryHarness(args: OXChoiceViewProps) {
   const [isChecking, setIsChecking] = useState(false);
+  const [selectedValue, setSelectedValue] = useState(args.selectedValue ?? '');
 
   return (
     <OXChoiceView
       {...args}
+      selectedValue={selectedValue}
+      onSelectChoice={setSelectedValue}
       isChecking={isChecking}
       onCheckAnswer={() => setIsChecking(true)}
     />

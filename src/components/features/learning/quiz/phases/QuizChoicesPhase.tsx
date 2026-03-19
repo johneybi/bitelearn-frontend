@@ -57,6 +57,8 @@ export default function QuizChoicesPhase({
         questionNumber={question.sequence ?? currentIndex + 1}
         questionTitle={question.questionTitle}
         correctIndex={correctIndex}
+        selectedValue={selectedChoice}
+        onSelectChoice={onSelectChoice}
         onCheckAnswer={onCheckAnswerWithIndex}
         isChecking={isChecking}
         onPrevious={onPrevious}

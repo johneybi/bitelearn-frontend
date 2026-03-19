@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import QuizFooter from '@/components/common/QuizFooter';
 import { cn } from '@/lib/utils';
 import QuizTitle from '../shared/QuizTitle';
@@ -9,6 +7,8 @@ type OXChoiceViewProps = {
   questionTitle: string;
   /** 정답 인덱스: 0 = O, 1 = X */
   correctIndex?: number;
+  selectedValue: string;
+  onSelectChoice: (value: string) => void;
   onCheckAnswer: (selectedIndex: number) => void;
   isChecking?: boolean;
   onPrevious?: () => void;
@@ -18,16 +18,19 @@ export default function OXChoiceView({
   questionNumber,
   questionTitle,
   correctIndex,
+  selectedValue,
+  onSelectChoice,
   onCheckAnswer,
   isChecking = false,
   onPrevious,
 }: OXChoiceViewProps) {
-  const [selected, setSelected] = useState<0 | 1 | null>(null);
+  const selected =
+    selectedValue === '' ? null : (Number(selectedValue) as 0 | 1);
   const isCtaEnabled = selected !== null && !isChecking;
 
   const handleSelect = (value: 0 | 1) => {
     if (isChecking) return;
-    setSelected(value);
+    onSelectChoice(String(value));
   };
 
   const handleConfirm = () => {
