@@ -17,6 +17,7 @@ import type { VocabInfo } from '@/api/learning/learning.types';
 import type { StepIndicatorInfo } from '@/components/features/learning/quiz/quiz.types';
 
 type VocabCardsPlayerProps = {
+  chapterTitle: string;
   vocabs: VocabInfo[];
   vocabIdx: number;
   onVocabIdxChange: (idx: number) => void;
@@ -26,6 +27,7 @@ type VocabCardsPlayerProps = {
 };
 
 export default function VocabCardsPlayer({
+  chapterTitle,
   vocabs,
   vocabIdx,
   onVocabIdxChange,
@@ -112,30 +114,14 @@ export default function VocabCardsPlayer({
     onVocabIdxChange(vocabIdx - 1);
   };
 
-  if (!currentVocab) {
-    return (
-      <main className="flex h-full min-h-0 flex-col bg-white text-slate-900">
-        <div className="z-20 shrink-0 border-b border-slate-100 bg-white">
-          <QuizHeader
-            title="생존 단어장"
-            showCloseButton
-            onCloseClick={onBack}
-          />
-        </div>
-
-        <div className="flex flex-1 items-center justify-center p-6">
-          <p className="text-sm font-medium text-slate-500">
-            표시할 단어가 없습니다.
-          </p>
-        </div>
-      </main>
-    );
-  }
-
   return (
     <main className="flex h-full min-h-0 flex-col bg-slate-50 text-slate-900">
       <div className="z-20 shrink-0 border-b border-slate-100 bg-white">
-        <QuizHeader title="생존 단어장" showCloseButton onCloseClick={onBack} />
+        <QuizHeader
+          title={chapterTitle}
+          showCloseButton
+          onCloseClick={onBack}
+        />
         <QuizIndicator steps={indicatorSteps} />
       </div>
 
@@ -152,7 +138,7 @@ export default function VocabCardsPlayer({
           >
             <motion.div
               style={{ x: dragX, rotate: cardRotate }}
-              drag="x"
+              drag={isFlipped ? 'x' : false}
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.2}
               onDragEnd={(_, info) => {

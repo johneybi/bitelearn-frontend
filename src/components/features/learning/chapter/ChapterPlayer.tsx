@@ -4,7 +4,7 @@ import QuizPlayer from '@/components/features/learning/quiz/QuizPlayer';
 import ChapterDone from './ChapterDone';
 import ChapterResult from './ChapterResult';
 import ChapterIntro from './ChapterIntro';
-import VocabDone from './VocabDone';
+import VocabDone from '../vocab/VocabDone';
 
 import type {
   QuizMetric,
@@ -203,7 +203,6 @@ export default function ChapterPlayer({
     return (
       <VocabDone
         chapterTitle={chapterTitle}
-        vocabCount={vocabs.length}
         onClose={onBack}
         onStartQuiz={() => setChapterPhase('quiz')}
       />
@@ -212,6 +211,7 @@ export default function ChapterPlayer({
 
   return (
     <VocabCardsPlayer
+      chapterTitle={chapterTitle}
       vocabs={vocabs}
       vocabIdx={vocabIdx}
       onVocabIdxChange={setVocabIdx}

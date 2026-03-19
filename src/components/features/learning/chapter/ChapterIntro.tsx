@@ -39,7 +39,7 @@ export default function ChapterIntro({
 
       <section className="hide-scrollbar flex-1 overflow-y-auto px-6 py-8">
         <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-500">
-          챕터 소개
+          토픽명 + Chapter + 번호
         </div>
 
         <h1 className="text-xl font-black leading-tight tracking-tight text-slate-900">
