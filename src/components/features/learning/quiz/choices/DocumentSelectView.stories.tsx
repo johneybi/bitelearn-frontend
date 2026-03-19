@@ -23,7 +23,8 @@ const documentSelectQuestion: QuizInfo = {
 
 const baseArgs = {
   question: documentSelectQuestion,
-  currentIndex: 0,
+  questionNumber: 4,
+  questionTitle: documentSelectQuestion.questionTitle,
   selectedValue: '',
   onSelectChoice: () => {},
   onCheckAnswer: () => {},

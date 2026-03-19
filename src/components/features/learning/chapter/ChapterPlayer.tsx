@@ -104,9 +104,13 @@ export default function ChapterPlayer({
     selectedAnswerIndex: number
   ) => {
     const selectedAnswer =
-      question.specificData?.options?.[selectedAnswerIndex] ?? '';
+      question.type === 'DOC_CLICK'
+        ? question.specificData?.documentElements?.[selectedAnswerIndex]?.key ??
+          question.specificData?.options?.[selectedAnswerIndex] ??
+          ''
+        : question.specificData?.options?.[selectedAnswerIndex] ?? '';
 
-    if (typeof selectedAnswer !== 'string') {
+    if (typeof selectedAnswer !== 'string' || selectedAnswer.trim() === '') {
       throw new Error('퀴즈 제출에 필요한 데이터가 올바르지 않습니다.');
     }
 

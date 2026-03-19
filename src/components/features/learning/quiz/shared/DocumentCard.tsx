@@ -109,6 +109,7 @@ export default function DocumentCard(props: DocumentCardProps) {
         {data.fields.map((field, index) => {
           const isSelected = selectedValue === String(index);
           const isAnswer = index === correctIndex;
+          const isEmptyField = field.value.trim() === '';
 
           let fieldClass =
             'w-full rounded-2xl border-2 px-4 py-3.5 text-left transition-all duration-200 ';
@@ -118,7 +119,10 @@ export default function DocumentCard(props: DocumentCardProps) {
           if (props.mode === 'interactive') {
             const { choiceMode } = props;
             if (choiceMode === 'document_select') {
-              if (isChecking) {
+              if (isEmptyField) {
+                fieldClass +=
+                  'border-slate-100 bg-slate-50 text-slate-300 opacity-70 cursor-not-allowed';
+              } else if (isChecking) {
                 if (isAnswer) {
                   fieldClass +=
                     'border-slate-900 bg-slate-900 text-white shadow-lg';
@@ -160,14 +164,16 @@ export default function DocumentCard(props: DocumentCardProps) {
           const handleClick =
             props.mode === 'interactive' &&
             props.choiceMode === 'document_select' &&
-            !isChecking
+            !isChecking &&
+            !isEmptyField
               ? () => props.onSelectField?.(String(index))
               : undefined;
 
           const isDisabled =
             props.mode !== 'interactive' ||
             isChecking ||
-            props.choiceMode !== 'document_select';
+            props.choiceMode !== 'document_select' ||
+            isEmptyField;
 
           return (
             <div key={`${field.label}-${index}`} className="relative">
@@ -194,7 +200,7 @@ export default function DocumentCard(props: DocumentCardProps) {
                       }}
                       className="min-w-0 flex-1 basis-0 break-words text-sm font-bold leading-snug"
                     >
-                      {field.value}
+                      {isEmptyField ? '-' : field.value}
                     </span>
                   </div>
 

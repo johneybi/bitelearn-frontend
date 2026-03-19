@@ -125,9 +125,14 @@ export default function QuizPlayer({
       return;
     }
 
-    const correctAnswerIndex = currentChoices.findIndex(
-      (choice) => choice.trim() === correctAnswer.trim()
-    );
+    const correctAnswerIndex =
+      currentQuestion.type === 'DOC_CLICK'
+        ? (currentQuestion.specificData?.documentElements ?? []).findIndex(
+            (element) => element.key.trim() === correctAnswer.trim()
+          )
+        : currentChoices.findIndex(
+            (choice) => choice.trim() === correctAnswer.trim()
+          );
 
     setMetrics((prev) => {
       const next = [...prev];

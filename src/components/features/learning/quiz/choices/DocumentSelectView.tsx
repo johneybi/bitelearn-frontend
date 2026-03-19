@@ -6,7 +6,8 @@ import QuizTitle from '../shared/QuizTitle';
 
 type DocumentSelectViewProps = {
   question: QuizInfo;
-  currentIndex: number;
+  questionNumber: number;
+  questionTitle: string;
   correctIndex?: number;
   selectedValue: string;
   onSelectChoice: (value: string) => void;
@@ -17,7 +18,8 @@ type DocumentSelectViewProps = {
 
 export default function DocumentSelectView({
   question,
-  currentIndex,
+  questionNumber,
+  questionTitle,
   correctIndex,
   selectedValue,
   isChecking,
@@ -25,16 +27,14 @@ export default function DocumentSelectView({
   onCheckAnswer,
   onPrevious,
 }: DocumentSelectViewProps) {
-  const documentCard = toDocumentCardData(question);
-
-  if (!documentCard) return null;
+  const documentCard = toDocumentCardData(question)!;
 
   return (
     <>
       <section className="flex-1 overflow-y-auto px-6">
         <QuizTitle
-          questionNumber={question.sequence ?? currentIndex + 1}
-          questionTitle={question.questionTitle}
+          questionNumber={questionNumber}
+          questionTitle={questionTitle}
         />
 
         <DocumentCard
@@ -54,7 +54,7 @@ export default function DocumentSelectView({
         onClick={onCheckAnswer}
         onPrevious={onPrevious}
       >
-        {isChecking ? '서류 스캔 중...' : '정답 확인하기'}
+        정답 확인
       </QuizFooter>
     </>
   );

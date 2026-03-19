@@ -27,10 +27,14 @@ export default function QuizChoicesPhase({
   onCheckAnswerWithIndex,
   onPrevious,
 }: Props) {
+  const questionNumber = question.sequence ?? currentIndex + 1;
+  const hasDocumentElements = Boolean(
+    question.specificData?.documentElements?.length
+  );
   const choiceMode =
     question.type === 'DIALOGUE_OX'
       ? 'ox'
-      : question.type === 'DOC_CLICK'
+      : question.type === 'DOC_CLICK' && hasDocumentElements
         ? 'document_select'
         : 'multiple';
   const choices = question.specificData?.options ?? [];
@@ -39,7 +43,8 @@ export default function QuizChoicesPhase({
     return (
       <DocumentSelectView
         question={question}
-        currentIndex={currentIndex}
+        questionNumber={questionNumber}
+        questionTitle={question.questionTitle}
         correctIndex={correctIndex}
         selectedValue={selectedChoice}
         isChecking={isChecking}
@@ -53,8 +58,8 @@ export default function QuizChoicesPhase({
   if (choiceMode === 'ox') {
     return (
       <OXChoiceView
-        key={question.sequence ?? currentIndex}
-        questionNumber={question.sequence ?? currentIndex + 1}
+        key={questionNumber}
+        questionNumber={questionNumber}
         questionTitle={question.questionTitle}
         correctIndex={correctIndex}
         selectedValue={selectedChoice}
@@ -68,7 +73,7 @@ export default function QuizChoicesPhase({
 
   return (
     <MultipleChoiceView
-      questionNumber={question.sequence ?? currentIndex + 1}
+      questionNumber={questionNumber}
       questionTitle={question.questionTitle}
       choices={choices}
       selectedValue={selectedChoice}

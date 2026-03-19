@@ -8,7 +8,6 @@ type MultipleChoiceViewProps = {
   questionNumber: number;
   questionTitle: string;
   choices: string[];
-  choiceMode?: 'multiple' | 'ox' | 'document_select';
   selectedValue: string;
   onSelectChoice: (value: string) => void;
   onCheckAnswer: (selectedIndex: number) => void;
@@ -21,7 +20,6 @@ export default function MultipleChoiceView({
   questionNumber,
   questionTitle,
   choices,
-  choiceMode = 'multiple',
   selectedValue,
   onSelectChoice,
   onCheckAnswer,
@@ -33,10 +31,7 @@ export default function MultipleChoiceView({
 
   return (
     <>
-      <section
-        className="flex-1 overflow-y-auto px-6"
-        data-choice-mode={choiceMode}
-      >
+      <section className="flex-1 overflow-y-auto px-6">
         <QuizTitle questionNumber={questionNumber} questionTitle={questionTitle} />
 
         <RadioGroup

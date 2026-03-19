@@ -23,7 +23,7 @@ export default function DocumentPassageView({
         <QuizPassage
           questionSequence={question.sequence}
           passageContent={question.passageContent ?? ''}
-          passageTitle={question.passageTitle ?? question.questionTitle}
+          passageTitle={question.passageTitle ?? ''}
         >
           <DocumentCard
             data={documentCard}

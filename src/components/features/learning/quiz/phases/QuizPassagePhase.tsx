@@ -29,7 +29,7 @@ export default function QuizPassagePhase({
   }
 
   if (
-    (question.type === 'DOC_CLICK' || question.type === 'DOC_MCQ') &&
+    question.type === 'DOC_MCQ' &&
     question.specificData?.documentElements?.length
   ) {
     return <DocumentPassageView question={question} onSolve={onSolve} />;
