@@ -160,13 +160,13 @@ export default function ChapterPlayer({
     return (
       <QuizPlayer
         questions={quizzes}
-        headerTitle={chapterTitle}
+        chapterTitle={chapterTitle}
         onBack={onBack}
         onComplete={handleQuizComplete}
         indicatorSteps={chapterIndicatorSteps}
         onCurrentIndexChange={setQuizCurrentIndex}
         onMetricsChange={setQuizMetrics}
-        initialIndex={quizCurrentIndex}
+        startIndex={quizCurrentIndex}
         onSubmitAnswer={submitQuizAnswer}
       />
     );

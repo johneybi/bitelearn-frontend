@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import QuizHeader from '@/components/common/QuizHeader';
 import QuizIndicator from '@/components/features/learning/quiz/QuizIndicator';
@@ -9,17 +9,18 @@ import QuizPassagePhase from './phases/QuizPassagePhase';
 import QuizChoicesPhase from './phases/QuizChoicesPhase';
 import QuizResultPhase from './phases/QuizResultPhase';
 import type { QuizSubmitResponse } from '@/api/learning/learning.types';
+import { toast } from 'sonner';
 
 type QuizPlayerProps = {
   questions: QuizInfo[];
-  initialIndex?: number;
-  headerTitle?: string;
-  onBack?: () => void;
-  onComplete?: (total: number, correct: number) => void;
-  indicatorSteps?: StepIndicatorInfo[];
-  onCurrentIndexChange?: (index: number) => void;
-  onMetricsChange?: (metrics: QuizMetric[]) => void;
-  onSubmitAnswer?: (
+  startIndex?: number;
+  chapterTitle: string;
+  onBack: () => void;
+  onComplete: () => void;
+  indicatorSteps: StepIndicatorInfo[];
+  onCurrentIndexChange: (index: number) => void;
+  onMetricsChange: (metrics: QuizMetric[]) => void;
+  onSubmitAnswer: (
     question: QuizInfo,
     selectedAnswerIndex: number
   ) => Promise<QuizSubmitResponse>;
@@ -27,20 +28,20 @@ type QuizPlayerProps = {
 
 export default function QuizPlayer({
   questions,
-  initialIndex = 0,
-  headerTitle,
+  startIndex = 0,
+  chapterTitle,
   onBack,
   onComplete,
-  indicatorSteps: externalIndicatorSteps,
+  indicatorSteps,
   onCurrentIndexChange,
   onMetricsChange,
   onSubmitAnswer,
 }: QuizPlayerProps) {
-  const safeInitialIndex =
+  const safeStartIndex =
     questions.length > 0
-      ? Math.max(0, Math.min(initialIndex, questions.length - 1))
+      ? Math.max(0, Math.min(startIndex, questions.length - 1))
       : 0;
-  const [currentIndex, setCurrentIndex] = useState(safeInitialIndex);
+  const [currentIndex, setCurrentIndex] = useState(safeStartIndex);
   const [phase, setPhase] = useState<QuizPhase>('passage');
   const [selectedChoice, setSelectedChoice] = useState('');
   const [metrics, setMetrics] = useState<QuizMetric[]>(
@@ -70,35 +71,18 @@ export default function QuizPlayer({
 
   const currentQuestion = questions[currentIndex];
   const currentChoices = currentQuestion.specificData?.options ?? [];
-  const selectedIndex = selectedChoice === '' ? -1 : Number(selectedChoice);
   const currentResult = resultByIndex[currentIndex];
   const isShowingEvaluation = phase === 'checking' && !isEvaluating;
-  const isCorrect =
-    currentResult?.correct ??
-    (selectedIndex !== -1 &&
-      selectedIndex === currentResult?.correctAnswerIndex);
+  const isCorrect = currentResult?.correct ?? false;
   const isLastQuestion = currentIndex === questions.length - 1;
-  const resolvedCorrectIndex =
-    currentResult?.correctAnswerIndex ?? -1;
-
-  const localIndicatorSteps: StepIndicatorInfo[] = useMemo(
-    () =>
-      questions.map((_, index) => ({
-        type: 'quiz',
-        status: metrics[index],
-        isCurrent: index === currentIndex,
-      })),
-    [questions, metrics, currentIndex]
-  );
-
-  const indicatorSteps = externalIndicatorSteps ?? localIndicatorSteps;
+  const resolvedCorrectIndex = currentResult?.correctAnswerIndex ?? -1;
 
   useEffect(() => {
-    onCurrentIndexChange?.(currentIndex);
+    onCurrentIndexChange(currentIndex);
   }, [currentIndex, onCurrentIndexChange]);
 
   useEffect(() => {
-    onMetricsChange?.(metrics);
+    onMetricsChange(metrics);
   }, [metrics, onMetricsChange]);
 
   const handleSolve = () => {
@@ -130,15 +114,16 @@ export default function QuizPlayer({
     let explanation = '';
     let correctAnswer = '';
 
-    if (onSubmitAnswer) {
-      try {
-        const submitResult = await onSubmitAnswer(currentQuestion, resolvedIndex);
-        correct = submitResult.correct;
-        explanation = submitResult.explanation;
-        correctAnswer = submitResult.correctAnswer;
-      } catch {
-        correct = false;
-      }
+    try {
+      const submitResult = await onSubmitAnswer(currentQuestion, resolvedIndex);
+      correct = submitResult.correct;
+      explanation = submitResult.explanation;
+      correctAnswer = submitResult.correctAnswer;
+    } catch {
+      setIsEvaluating(false);
+      setPhase('choices');
+      toast.error('답안을 제출하지 못했습니다. 다시 시도해 주세요.');
+      return;
     }
 
     const correctAnswerIndex = currentChoices.findIndex(
@@ -174,8 +159,7 @@ export default function QuizPlayer({
 
   const handleNext = () => {
     if (isLastQuestion) {
-      const correctCount = metrics.filter((m) => m === 'correct').length;
-      onComplete?.(questions.length, correctCount);
+      onComplete();
       return;
     }
 
@@ -186,11 +170,7 @@ export default function QuizPlayer({
 
   return (
     <main className="flex h-full min-h-0 flex-col bg-white text-slate-900">
-      <QuizHeader
-        title={headerTitle ?? '객관식 퀴즈'}
-        showCloseButton={!!onBack}
-        onCloseClick={onBack}
-      />
+      <QuizHeader title={chapterTitle} showCloseButton onCloseClick={onBack} />
 
       <QuizIndicator steps={indicatorSteps} />
 
