@@ -34,10 +34,8 @@ export default function OAuthCallbackPage() {
       window.history.replaceState({}, '', location.pathname);
 
       try {
-        await queryClient.fetchQuery({
-          queryKey: authQueryKeys.me,
-          queryFn: fetchMe,
-        });
+        const me = await fetchMe();
+        queryClient.setQueryData(authQueryKeys.me, me);
 
         navigate('/', { replace: true });
       } catch (error) {

@@ -48,10 +48,8 @@ export default function LoginPage() {
       const expiresAt = toExpiresAt(response.accessTokenExpiresIn);
 
       setAccessToken(response.accessToken, expiresAt);
-      await queryClient.fetchQuery({
-        queryKey: authQueryKeys.me,
-        queryFn: fetchMe,
-      });
+      const me = await fetchMe();
+      queryClient.setQueryData(authQueryKeys.me, me);
 
       navigate('/');
     } catch (error) {
