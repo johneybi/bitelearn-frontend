@@ -8,7 +8,8 @@ import {
 } from './tokenStore';
 import type { RefreshResponse } from './auth.types';
 import { toExpiresAt, isTokenExpiringSoon } from './token.util';
-import { useAuthStore } from '@/stores/auth.store';
+import { queryClient } from '@/lib/queryClient';
+import { authQueryKeys } from './auth.query';
 
 type RefreshRequestConfig = InternalAxiosRequestConfig & {
   skipAuthRefresh?: boolean;
@@ -68,7 +69,7 @@ export const refreshAccessToken = async (): Promise<string | null> => {
           if (!shouldRetryRefresh(error) || isLastAttempt) {
             // refresh 최종 실패 시 토큰 삭제
             clearAccessToken();
-            useAuthStore.getState().clearAuth();
+            queryClient.setQueryData(authQueryKeys.me, null);
             return null;
           }
 
@@ -81,7 +82,7 @@ export const refreshAccessToken = async (): Promise<string | null> => {
     }
 
     clearAccessToken();
-    useAuthStore.getState().clearAuth();
+    queryClient.setQueryData(authQueryKeys.me, null);
     return null;
   })();
 

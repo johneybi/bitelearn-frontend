@@ -26,5 +26,6 @@ export function useMeQuery() {
     queryKey: authQueryKeys.me,
     queryFn: fetchMe,
     retry: false,
+    staleTime: Infinity,
   });
 }

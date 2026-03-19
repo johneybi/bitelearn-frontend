@@ -1,8 +1,9 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { clearAccessToken } from './tokenStore';
-import { useAuthStore } from '@/stores/auth.store';
 import { ensureValidAccessToken, refreshAccessToken } from './authRefresh';
 import { toAppError } from '@/api/error/toAppError';
+import { queryClient } from '@/lib/queryClient';
+import { authQueryKeys } from './auth.query';
 
 // 인터셉터에서 사용할 수 있도록 요청 구성 타입 확장
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
@@ -69,7 +70,7 @@ apiClient.interceptors.response.use(
       // 새 토큰이 없는 경우 인증 상태 초기화 후 에러 반환
       if (!newAccessToken) {
         clearAccessToken();
-        useAuthStore.getState().clearAuth();
+        queryClient.setQueryData(authQueryKeys.me, null);
         return Promise.reject(toAppError(error));
       }
 
