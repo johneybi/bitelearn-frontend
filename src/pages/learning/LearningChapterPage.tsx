@@ -8,8 +8,13 @@ import {
   getLearningChapterResult,
   submitLearningQuiz,
 } from '@/api/learning/learning.api';
-import type { ChapterLearningResponse } from '@/api/learning/learning.types';
+import AppLoading from '@/components/common/AppLoading';
 import { getCategoryMetaByRouteId } from '@/constants/learningNavigation';
+import { logError } from '@/lib/logError';
+import type { ChapterLearningResponse } from '@/api/learning/learning.types';
+
+const LEARNING_CHAPTER_ERROR_MESSAGE =
+  '학습 데이터를 불러오지 못했습니다. 다시 시도해 주세요.';
 
 export default function LearningChapterPage() {
   const navigate = useNavigate();
@@ -19,33 +24,38 @@ export default function LearningChapterPage() {
   const [chapterData, setChapterData] =
     useState<ChapterLearningResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  const [loadError, setLoadError] = useState<unknown>(null);
 
   useEffect(() => {
-    if (!category || !chapterId || Number.isNaN(chapterIdNumber)) return;
+    if (!category || !categoryId || !chapterId || Number.isNaN(chapterIdNumber)) {
+      return;
+    }
 
     let isMounted = true;
-    setIsLoading(true);
-    setHasError(false);
 
-    getLearningChapter(chapterIdNumber)
-      .then((response) => {
+    const fetchChapter = async () => {
+      try {
+        const response = await getLearningChapter(chapterIdNumber);
         if (!isMounted) return;
         setChapterData(response);
-      })
-      .catch(() => {
+        setLoadError(null);
+      } catch (error) {
         if (!isMounted) return;
-        setHasError(true);
-      })
-      .finally(() => {
+        logError('LearningChapterPage', '학습 데이터 조회 실패', error);
+        setLoadError(error);
+      } finally {
         if (!isMounted) return;
         setIsLoading(false);
-      });
+      }
+    };
+
+    setIsLoading(true);
+    void fetchChapter();
 
     return () => {
       isMounted = false;
     };
-  }, [category, chapterId, chapterIdNumber]);
+  }, [category, categoryId, chapterId, chapterIdNumber]);
 
   if (!category || !categoryId || !chapterId || Number.isNaN(chapterIdNumber)) {
     return (
@@ -58,20 +68,16 @@ export default function LearningChapterPage() {
   }
 
   if (isLoading) {
-    return (
-      <main className="flex h-dvh items-center justify-center bg-slate-50 p-6">
-        <p className="text-sm font-medium text-slate-500">
-          학습 데이터를 불러오는 중입니다.
-        </p>
-      </main>
-    );
+    return <AppLoading message="학습 데이터를 불러오는 중입니다." />;
   }
 
-  if (hasError || !chapterData) {
+  if (loadError || !chapterData) {
     return (
       <main className="flex h-dvh items-center justify-center bg-slate-50 p-6">
-        <p className="text-sm font-medium text-slate-500">
-          학습 데이터를 불러오지 못했습니다.
+        <p className="text-sm font-medium text-red-400">
+          {loadError instanceof Error
+            ? loadError.message
+            : LEARNING_CHAPTER_ERROR_MESSAGE}
         </p>
       </main>
     );

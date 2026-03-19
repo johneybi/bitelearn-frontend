@@ -2,6 +2,7 @@ import { ChevronLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import AppLoading from '@/components/common/AppLoading';
 import StageNode from '@/components/features/learning/roadmap/StageNode';
 import { Button } from '@/components/ui/button';
 import RoadmapCurve from '@/components/features/learning/roadmap/RoadmapCurve';
@@ -11,8 +12,11 @@ import {
   STEP_Y,
 } from '@/components/features/learning/roadmap/roadmap.utils';
 import { getLearningChapters } from '@/api/learning/learning.api';
-import type { ChapterSummaryDto } from '@/api/learning/learning.types';
 import { getCategoryMetaByRouteId } from '@/constants/learningNavigation';
+import { logError } from '@/lib/logError';
+
+const LEARNING_ROADMAP_ERROR_MESSAGE =
+  '챕터 목록을 불러오지 못했습니다. 다시 시도해 주세요.';
 
 export default function LearningRoadmapPage() {
   const navigate = useNavigate();
@@ -21,9 +25,11 @@ export default function LearningRoadmapPage() {
   const category = getCategoryMetaByRouteId(categoryId);
   const selectedTopic = category?.topics.find((topic) => topic.id === topicId);
   const resolvedTopicId = selectedTopic?.id ?? category?.topics[0]?.id;
-  const [chapters, setChapters] = useState<ChapterSummaryDto[]>([]);
+  const [chapters, setChapters] = useState<
+    Awaited<ReturnType<typeof getLearningChapters>>['chapters']
+  >([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  const [loadError, setLoadError] = useState<unknown>(null);
 
   useEffect(() => {
     if (!category) return;
@@ -35,25 +41,29 @@ export default function LearningRoadmapPage() {
     if (!resolvedTopic) return;
 
     let isMounted = true;
-    setIsLoading(true);
-    setHasError(false);
 
-    getLearningChapters({
-      category: category.code,
-      topic: resolvedTopic.code,
-    })
-      .then((response) => {
+    const fetchChapters = async () => {
+      try {
+        const response = await getLearningChapters({
+          category: category.code,
+          topic: resolvedTopic.code,
+        });
+
         if (!isMounted) return;
         setChapters(response.chapters);
-      })
-      .catch(() => {
+        setLoadError(null);
+      } catch (error) {
         if (!isMounted) return;
-        setHasError(true);
-      })
-      .finally(() => {
+        logError('LearningRoadmapPage', '챕터 목록 조회 실패', error);
+        setLoadError(error);
+      } finally {
         if (!isMounted) return;
         setIsLoading(false);
-      });
+      }
+    };
+
+    setIsLoading(true);
+    void fetchChapters();
 
     return () => {
       isMounted = false;
@@ -107,7 +117,7 @@ export default function LearningRoadmapPage() {
           className="relative mx-auto w-full"
           style={{ height: roadmapHeight }}
         >
-          {!isLoading && !hasError && count > 0 && (
+          {!isLoading && !loadError && count > 0 && (
             <>
               <RoadmapCurve count={count} totalHeight={roadmapHeight} />
 
@@ -132,18 +142,21 @@ export default function LearningRoadmapPage() {
           )}
 
           {isLoading && (
-            <div className="flex h-full items-center justify-center text-sm font-medium text-slate-400">
-              챕터 목록을 불러오는 중입니다.
-            </div>
+            <AppLoading
+              message="챕터 목록을 불러오는 중입니다."
+              className="min-h-full"
+            />
           )}
 
-          {hasError && (
+          {loadError !== null && (
             <div className="flex h-full items-center justify-center text-sm font-medium text-red-400">
-              챕터 목록을 불러오지 못했습니다.
+              {loadError instanceof Error
+                ? loadError.message
+                : LEARNING_ROADMAP_ERROR_MESSAGE}
             </div>
           )}
 
-          {!isLoading && !hasError && count === 0 && (
+          {!isLoading && !loadError && count === 0 && (
             <div className="flex h-full items-center justify-center text-sm font-medium text-slate-400">
               준비된 챕터가 없습니다.
             </div>

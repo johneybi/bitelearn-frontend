@@ -18,6 +18,8 @@ import type {
   QuizSubmitResponse,
   VocabInfo,
 } from '@/api/learning/learning.types';
+import { isAppError } from '@/api/error/appError';
+import { logError } from '@/lib/logError';
 import { toast } from 'sonner';
 
 type ChapterPhase =
@@ -94,8 +96,13 @@ export default function ChapterPlayer({
         setQuizResult(result);
         setChapterPhase('done');
       })
-      .catch(() => {
-        toast.error('챕터 결과를 불러오지 못했습니다.');
+      .catch((error) => {
+        logError('ChapterPlayer', '챕터 결과 조회 실패', error);
+        toast.error(
+          isAppError(error)
+            ? error.message
+            : '챕터 결과를 불러오지 못했습니다. 다시 시도해 주세요.'
+        );
       });
   };
 
@@ -225,11 +232,12 @@ export default function ChapterPlayer({
           try {
             await onVocabComplete();
           } catch (error) {
-            const message =
-              error instanceof Error
+            logError('ChapterPlayer', '단어 학습 완료 처리 실패', error);
+            toast.error(
+              isAppError(error)
                 ? error.message
-                : '단어 학습 완료 처리에 실패했습니다.';
-            toast.error(message);
+                : '단어 학습 완료 처리에 실패했습니다. 다시 시도해 주세요.'
+            );
             return;
           }
         }

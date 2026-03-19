@@ -8,6 +8,8 @@ import QuizPassagePhase from './phases/QuizPassagePhase';
 import QuizChoicesPhase from './phases/QuizChoicesPhase';
 import QuizResultPhase from './phases/QuizResultPhase';
 import type { QuizSubmitResponse } from '@/api/learning/learning.types';
+import { isAppError } from '@/api/error/appError';
+import { logError } from '@/lib/logError';
 import { toast } from 'sonner';
 
 type QuizPlayerProps = {
@@ -118,10 +120,15 @@ export default function QuizPlayer({
       correct = submitResult.correct;
       explanation = submitResult.explanation;
       correctAnswer = submitResult.correctAnswer;
-    } catch {
+    } catch (error) {
+      logError('QuizPlayer', '퀴즈 제출 실패', error);
       setIsEvaluating(false);
       setPhase('choices');
-      toast.error('답안을 제출하지 못했습니다. 다시 시도해 주세요.');
+      toast.error(
+        isAppError(error)
+          ? error.message
+          : '답안을 제출하지 못했습니다. 다시 시도해 주세요.'
+      );
       return;
     }
 
