@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import type { MenuItem } from '@/components/features/mypage/mypage.types';
 import MyProfileCard from '@/components/features/mypage/MyProfileCard';
 import MyPageMenuSection from '@/components/features/mypage/MyPageMenuSection';
-import { useAuthStore } from '@/stores/auth.store';
+import { useMeQuery } from '@/api/auth/auth.query';
 import { formatDisplayName } from '@/utils/formatUser';
 
 const MENU_ITEMS: MenuItem[] = [
@@ -26,7 +26,7 @@ const MENU_ITEMS: MenuItem[] = [
 
 export default function MyPage() {
   const navigate = useNavigate();
-  const user = useAuthStore((state) => state.user);
+  const { data: user } = useMeQuery();
 
   return (
     <div className="relative flex min-h-dvh flex-col overflow-hidden text-slate-900">

@@ -1,27 +1,31 @@
 import { Outlet } from 'react-router-dom';
-import { useAuthStore } from '@/stores/auth.store';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import OnboardingModal from '@/components/features/onboarding/OnboardingModal';
 import { completeOnboarding } from '@/api/auth/auth.api';
+import { authQueryKeys, useMeQuery } from '@/api/auth/auth.query';
 import { Toaster } from '@/components/ui/sonner';
+import { logError } from '@/lib/logError';
 
 export default function RootLayout() {
-  const isOnboardingOpen = useAuthStore((state) => state.isOnboardingOpen);
-  const user = useAuthStore((state) => state.user);
-  const setUser = useAuthStore((state) => state.setUser);
+  const queryClient = useQueryClient();
+  const { data: user } = useMeQuery();
+  const completeOnboardingMutation = useMutation({
+    mutationFn: completeOnboarding,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: authQueryKeys.me,
+      });
+    },
+  });
+
+  const isOnboardingOpen = !!user && !user.isOnboardingCompleted;
 
   const handleCompleteOnboarding = async () => {
     try {
-      await completeOnboarding();
-
-      if (!user) return;
-
-      setUser({
-        ...user,
-        isOnboardingCompleted: true,
-      });
+      await completeOnboardingMutation.mutateAsync();
     } catch (error) {
-      console.error('온보딩 완료 처리 실패', error);
+      logError('RootLayout', '온보딩 완료 처리 실패', error);
     }
   };
 
