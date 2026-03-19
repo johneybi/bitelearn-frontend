@@ -29,10 +29,9 @@ type ChapterPhase =
   | 'final';
 
 type ChapterIntroData = {
-  title: string;
   prologueSubtitle: string;
   goal: string;
-  description: string;
+  prologueContent: string;
   coreKeywords: string[];
 };
 
@@ -44,11 +43,11 @@ type ChapterPlayerProps = {
   initialStatus?: ChapterStatus;
   initialQuizSequence?: number | null;
   onVocabComplete?: () => Promise<void>;
-  onSubmitQuiz?: (
+  onSubmitQuiz: (
     quizId: number,
     selectedAnswer: string
   ) => Promise<QuizSubmitResponse>;
-  onFetchResult?: () => Promise<ChapterResultResponse>;
+  onFetchResult: () => Promise<ChapterResultResponse>;
   onComplete: (total: number, correct: number) => void;
   onBack: () => void;
 };
@@ -67,19 +66,54 @@ export default function ChapterPlayer({
   onBack,
 }: ChapterPlayerProps) {
   const initialPhase: ChapterPhase = 'intro';
+  const isQuizInProgress = initialStatus === 'QUIZ_IN_PROGRESS';
+  const chapterIntroMode =
+    initialStatus === 'COMPLETED'
+      ? 'retry'
+      : isQuizInProgress
+        ? 'resume'
+        : 'start';
 
   const [chapterPhase, setChapterPhase] = useState<ChapterPhase>(initialPhase);
-  const [quizResult, setQuizResult] = useState<ChapterResultResponse | null>(null);
-
+  const [quizResult, setQuizResult] = useState<ChapterResultResponse | null>(
+    null
+  );
   const [vocabIdx, setVocabIdx] = useState(0);
   const [quizCurrentIndex, setQuizCurrentIndex] = useState(
-    initialQuizSequence && initialQuizSequence > 0 ? initialQuizSequence - 1 : 0
+    isQuizInProgress && initialQuizSequence && initialQuizSequence > 0
+      ? initialQuizSequence - 1
+      : 0
   );
   const [quizMetrics, setQuizMetrics] = useState<QuizMetric[]>(
     Array(quizzes.length).fill('none')
   );
 
-  const combinedSteps: StepIndicatorInfo[] = useMemo(() => {
+  const handleQuizComplete = () => {
+    onFetchResult()
+      .then((result) => {
+        setQuizResult(result);
+        setChapterPhase('done');
+      })
+      .catch(() => {
+        toast.error('챕터 결과를 불러오지 못했습니다.');
+      });
+  };
+
+  const submitQuizAnswer = async (
+    question: QuizInfo,
+    selectedAnswerIndex: number
+  ) => {
+    const selectedAnswer =
+      question.specificData?.options?.[selectedAnswerIndex] ?? '';
+
+    if (typeof selectedAnswer !== 'string') {
+      throw new Error('퀴즈 제출에 필요한 데이터가 올바르지 않습니다.');
+    }
+
+    return onSubmitQuiz(question.quizId, selectedAnswer);
+  };
+
+  const chapterIndicatorSteps: StepIndicatorInfo[] = useMemo(() => {
     const vocabSteps: StepIndicatorInfo[] = vocabs.map((_, idx) => ({
       type: 'vocab',
       status: 'none',
@@ -93,14 +127,7 @@ export default function ChapterPlayer({
     }));
 
     return [...vocabSteps, ...quizSteps];
-  }, [
-    vocabs,
-    quizzes,
-    chapterPhase,
-    vocabIdx,
-    quizCurrentIndex,
-    quizMetrics,
-  ]);
+  }, [vocabs, quizzes, chapterPhase, vocabIdx, quizCurrentIndex, quizMetrics]);
 
   if (chapterPhase === 'final' && quizResult) {
     return (
@@ -133,54 +160,14 @@ export default function ChapterPlayer({
     return (
       <QuizPlayer
         questions={quizzes}
+        headerTitle={chapterTitle}
         onBack={onBack}
-        onComplete={(total, correct) => {
-          if (onFetchResult) {
-            onFetchResult()
-              .then((result) => {
-                setQuizResult(result);
-                setChapterPhase('done');
-              })
-              .catch(() => {
-                const fallbackAccuracyRate =
-                  total > 0 ? Math.round((correct / total) * 100) : 0;
-
-                setQuizResult({
-                  correctCount: correct,
-                  totalCount: total,
-                  accuracyRate: fallbackAccuracyRate,
-                  earnedBytes: 0,
-                });
-                setChapterPhase('done');
-              });
-            return;
-          }
-
-          setQuizResult({
-            correctCount: correct,
-            totalCount: total,
-            accuracyRate: total > 0 ? Math.round((correct / total) * 100) : 0,
-            earnedBytes: 0,
-          });
-          setChapterPhase('done');
-        }}
-        indicatorSteps={combinedSteps}
+        onComplete={handleQuizComplete}
+        indicatorSteps={chapterIndicatorSteps}
         onCurrentIndexChange={setQuizCurrentIndex}
         onMetricsChange={setQuizMetrics}
         initialIndex={quizCurrentIndex}
-        onSubmitAnswer={
-          onSubmitQuiz
-            ? async (question, selectedAnswerIndex) => {
-                const quizId = question.quizId;
-                const selectedAnswer =
-                  question.specificData?.options?.[selectedAnswerIndex] ?? '';
-                if (!quizId || typeof selectedAnswer !== 'string') {
-                  throw new Error('퀴즈 제출에 필요한 데이터가 올바르지 않습니다.');
-                }
-                return onSubmitQuiz(quizId, selectedAnswer);
-              }
-            : undefined
-        }
+        onSubmitAnswer={submitQuizAnswer}
       />
     );
   }
@@ -188,18 +175,15 @@ export default function ChapterPlayer({
   if (chapterPhase === 'intro') {
     return (
       <ChapterIntro
-        chapterTitle={chapterIntro.title}
+        chapterTitle={chapterTitle}
         prologueSubtitle={chapterIntro.prologueSubtitle}
         chapterGoal={chapterIntro.goal}
-        chapterDescription={chapterIntro.description}
+        prologueContent={chapterIntro.prologueContent}
         coreKeywords={chapterIntro.coreKeywords}
-        shouldResume={
-          initialStatus === 'QUIZ_IN_PROGRESS' ||
-          (initialQuizSequence !== null && initialQuizSequence > 1)
-        }
+        introMode={chapterIntroMode}
         onBack={onBack}
         onStart={() => {
-          if (initialStatus === 'QUIZ_IN_PROGRESS') {
+          if (isQuizInProgress) {
             setChapterPhase('quiz');
             return;
           }
@@ -217,7 +201,7 @@ export default function ChapterPlayer({
 
   if (chapterPhase === 'vocab_done') {
     return (
-        <VocabDone
+      <VocabDone
         chapterTitle={chapterTitle}
         vocabCount={vocabs.length}
         onClose={onBack}
@@ -248,7 +232,7 @@ export default function ChapterPlayer({
         setChapterPhase('vocab_done');
       }}
       onBack={onBack}
-      indicatorSteps={combinedSteps}
+      indicatorSteps={chapterIndicatorSteps}
     />
   );
 }

@@ -9,19 +9,20 @@ import {
   submitLearningQuiz,
 } from '@/api/learning/learning.api';
 import type { ChapterLearningResponse } from '@/api/learning/learning.types';
+import { getCategoryMetaByRouteId } from '@/constants/learningNavigation';
 
 export default function LearningChapterPage() {
   const navigate = useNavigate();
   const { categoryId, chapterId } = useParams();
+  const category = getCategoryMetaByRouteId(categoryId);
   const chapterIdNumber = Number(chapterId);
-  const [chapterData, setChapterData] = useState<ChapterLearningResponse | null>(
-    null
-  );
+  const [chapterData, setChapterData] =
+    useState<ChapterLearningResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    if (!chapterId || Number.isNaN(chapterIdNumber)) return;
+    if (!category || !chapterId || Number.isNaN(chapterIdNumber)) return;
 
     let isMounted = true;
     setIsLoading(true);
@@ -44,13 +45,13 @@ export default function LearningChapterPage() {
     return () => {
       isMounted = false;
     };
-  }, [chapterId, chapterIdNumber]);
+  }, [category, chapterId, chapterIdNumber]);
 
-  if (!categoryId || !chapterId || Number.isNaN(chapterIdNumber)) {
+  if (!category || !categoryId || !chapterId || Number.isNaN(chapterIdNumber)) {
     return (
       <main className="flex h-dvh items-center justify-center bg-slate-50 p-6">
         <p className="text-sm font-medium text-slate-500">
-          존재하지 않는 챕터입니다.
+          존재하지 않는 학습 경로입니다.
         </p>
       </main>
     );
@@ -59,7 +60,9 @@ export default function LearningChapterPage() {
   if (isLoading) {
     return (
       <main className="flex h-dvh items-center justify-center bg-slate-50 p-6">
-        <p className="text-sm font-medium text-slate-500">학습 데이터를 불러오는 중입니다.</p>
+        <p className="text-sm font-medium text-slate-500">
+          학습 데이터를 불러오는 중입니다.
+        </p>
       </main>
     );
   }
@@ -80,10 +83,9 @@ export default function LearningChapterPage() {
       vocabs={chapterData.vocabs}
       quizzes={chapterData.quizzes}
       chapterIntro={{
-        title: chapterData.chapterTitle,
         prologueSubtitle: chapterData.prologueSubtitle,
         goal: chapterData.currentGoal,
-        description: chapterData.prologueContent,
+        prologueContent: chapterData.prologueContent,
         coreKeywords: chapterData.coreKeywords,
       }}
       initialStatus={chapterData.currentStatus}
