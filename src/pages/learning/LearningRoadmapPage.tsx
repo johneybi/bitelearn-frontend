@@ -1,6 +1,5 @@
-import { motion } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import StageNode from '@/components/features/learning/roadmap/StageNode';
@@ -18,20 +17,22 @@ import { getCategoryMetaByRouteId } from '@/constants/learningNavigation';
 export default function LearningRoadmapPage() {
   const navigate = useNavigate();
   const { categoryId, topicId } = useParams();
+
   const category = getCategoryMetaByRouteId(categoryId);
-  const resolvedTopicId =
-    category.topics.find((topic) => topic.id === topicId)?.id ??
-    category.topics[0]?.id;
+  const selectedTopic = category?.topics.find((topic) => topic.id === topicId);
+  const resolvedTopicId = selectedTopic?.id ?? category?.topics[0]?.id;
   const [chapters, setChapters] = useState<ChapterSummaryDto[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    const selectedTopic = category.topics.find(
+    if (!category) return;
+
+    const resolvedTopic = category.topics.find(
       (topic) => topic.id === resolvedTopicId
     );
 
-    if (!selectedTopic) return;
+    if (!resolvedTopic) return;
 
     let isMounted = true;
     setIsLoading(true);
@@ -39,7 +40,7 @@ export default function LearningRoadmapPage() {
 
     getLearningChapters({
       category: category.code,
-      topic: selectedTopic.code,
+      topic: resolvedTopic.code,
     })
       .then((response) => {
         if (!isMounted) return;
@@ -59,13 +60,15 @@ export default function LearningRoadmapPage() {
     };
   }, [category, resolvedTopicId]);
 
-  const progressPercent = useMemo(() => {
-    if (chapters.length === 0) return 0;
-    const completed = chapters.filter(
-      (chapter) => chapter.status === 'COMPLETED'
-    ).length;
-    return Math.round((completed / chapters.length) * 100);
-  }, [chapters]);
+  if (!category || !selectedTopic) {
+    return (
+      <main className="flex h-dvh items-center justify-center bg-slate-50 p-6">
+        <p className="text-sm font-medium text-slate-500">
+          존재하지 않는 학습 경로입니다.
+        </p>
+      </main>
+    );
+  }
 
   const handleBack = () => {
     navigate('/learning');
@@ -92,7 +95,7 @@ export default function LearningRoadmapPage() {
           </Button>
 
           <h1 className="flex-1 text-center text-sm font-bold text-slate-900">
-            학습 로드맵
+            {selectedTopic.name}
           </h1>
 
           <div className="h-9 w-9" />
@@ -100,32 +103,6 @@ export default function LearningRoadmapPage() {
       </div>
 
       <section className="hide-scrollbar flex-1 overflow-y-auto px-6 pb-10 pt-10">
-        <div className="mb-14 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
-          <div className="mb-3 flex items-end justify-between">
-            <div>
-              <h2 className="text-xl font-bold tracking-tight text-slate-900">
-                {category.name}
-              </h2>
-              <p className="mt-1 text-xs font-medium text-slate-400">
-                {category.tagline}
-              </p>
-            </div>
-
-            <span className="text-2xl font-bold leading-none text-slate-900">
-              {progressPercent}%
-            </span>
-          </div>
-
-          <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-            <motion.div
-              className="h-full rounded-full bg-slate-900"
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPercent}%` }}
-              transition={{ duration: 1, ease: 'circOut' }}
-            />
-          </div>
-        </div>
-
         <div
           className="relative mx-auto w-full"
           style={{ height: roadmapHeight }}

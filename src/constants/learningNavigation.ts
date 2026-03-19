@@ -58,8 +58,5 @@ export const LEARNING_NAVIGATION: LearningCategoryMeta[] = [
 ];
 
 export function getCategoryMetaByRouteId(categoryId?: string) {
-  return (
-    LEARNING_NAVIGATION.find((category) => category.id === categoryId) ??
-    LEARNING_NAVIGATION[0]
-  );
+  return LEARNING_NAVIGATION.find((category) => category.id === categoryId);
 }
