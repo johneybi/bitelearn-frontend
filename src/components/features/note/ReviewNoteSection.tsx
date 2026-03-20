@@ -17,7 +17,7 @@ type ReviewNoteSectionProps = {
   onChangeCategory: (category: Category | null) => void;
   categories: NoteCategory[];
   notes: Note[];
-  totalExp: number;
+  totalBytes: number;
   totalNoteCount: number;
   isLoading?: boolean;
   isLoadingMore?: boolean;
@@ -30,7 +30,7 @@ export default function ReviewNoteSection({
   onChangeCategory,
   categories,
   notes,
-  totalExp,
+  totalBytes,
   totalNoteCount,
   isLoading = false,
   isLoadingMore = false,
@@ -46,7 +46,7 @@ export default function ReviewNoteSection({
     <>
       <ReviewSummary
         pendingReviewCount={totalNoteCount}
-        totalExp={totalExp}
+        totalBytes={totalBytes}
       />
       <div className="px-6 py-3">
         <div className="hide-scrollbar -mx-2 flex gap-2 overflow-x-auto px-2">
