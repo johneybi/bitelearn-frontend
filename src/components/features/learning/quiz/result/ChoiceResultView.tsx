@@ -11,6 +11,7 @@ type ChoiceResultViewProps = {
   characterImageUrl?: string;
   isLastQuestion: boolean;
   onNext: () => void;
+  nextLabel?: string;
 };
 
 export default function ChoiceResultView({
@@ -21,6 +22,7 @@ export default function ChoiceResultView({
   characterImageUrl,
   isLastQuestion,
   onNext,
+  nextLabel,
 }: ChoiceResultViewProps) {
   return (
     <div className="flex min-h-0 flex-1 flex-col duration-500 animate-in fade-in slide-in-from-right-8">
@@ -94,7 +96,7 @@ export default function ChoiceResultView({
       </section>
 
       <QuizFooter onClick={onNext}>
-        {isLastQuestion ? '학습 끝내기' : '다음 문제'}
+        {nextLabel ?? (isLastQuestion ? '학습 끝내기' : '다음 문제')}
       </QuizFooter>
     </div>
   );
