@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Bookmark } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { BookmarkedArticleCardItem } from '@/mock/fetchBookmarkedArticlePage';
+import type { BookmarkedArticleCardItem } from '@/mock/bookmarkedArticle';
 
 type BookmarkSectionProps = {
   articles: BookmarkedArticleCardItem[];

@@ -81,6 +81,37 @@ export const ARTICLE_CATEGORIES = [
 ] as const;
 export type ArticleCategory = (typeof ARTICLE_CATEGORIES)[number];
 
+export type ArticleListItem = {
+  articleId: string;
+  category: string;
+  title: string;
+  thumbnailUrl: string;
+  publishedAt: string;
+  authorName: string;
+};
+
+// 아티클 mock 데이터를 목록 화면용 아이템 형태로 동기 변환
+export function getMockArticleListItems(
+  category: ArticleCategory = '전체'
+): ArticleListItem[] {
+  return [...mockArticles]
+    .sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+    )
+    .filter(
+      (article) => category === '전체' || article.category === category
+    )
+    .map((article) => ({
+      articleId: article.articleId,
+      category: article.category,
+      title: article.title,
+      thumbnailUrl: article.thumbnailUrl,
+      publishedAt: article.publishedAt,
+      authorName: article.author.name,
+    }));
+}
+
 /**
  * [샘플 아티클] 전세사기 방지 체크리스트
  * 바이트런 앱의 아티클 상세 화면 시연을 위한 모크 데이터입니다.
