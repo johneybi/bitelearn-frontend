@@ -2,6 +2,10 @@ import type { Topic } from '@/api/learning/learning.types';
 import { CalendarDays, Clock3, RotateCcw } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import {
+  formatDate,
+  formatTime,
+} from '@/utils/formatDate';
 
 type MistakeCardProps = {
   categoryName: string;
@@ -39,7 +43,7 @@ export default function MistakeCard({
         <div className="flex items-center gap-3 text-slate-300">
           <div className="flex items-center gap-1 text-[11px] font-bold">
             <CalendarDays size={12} />
-            {new Date(createdAt).toLocaleDateString('ko-KR')}
+            {formatDate(createdAt)}
           </div>
         </div>
       </div>
@@ -56,12 +60,7 @@ export default function MistakeCard({
       <div className="flex w-full items-center justify-between border-t border-slate-50 pt-5">
         <div className="flex items-center gap-1.5 text-slate-300">
           <Clock3 size={12} />
-          <span className="text-[11px] font-bold uppercase">
-            {new Date(createdAt).toLocaleTimeString('ko-KR', {
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
-          </span>
+          <span className="text-[11px] font-bold uppercase">{formatTime(createdAt)}</span>
         </div>
 
         <Button
