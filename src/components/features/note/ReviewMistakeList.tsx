@@ -1,4 +1,5 @@
 import type { RefCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { RotateCcw } from 'lucide-react';
 import type { Category } from '@/api/learning/learning.types';
 import type { Note } from '@/api/notes/notes.types';
@@ -27,6 +28,8 @@ export default function ReviewMistakeList({
   hasNext = false,
   sentinelRef,
 }: ReviewMistakeListProps) {
+  const navigate = useNavigate();
+
   if (isLoading) {
     return (
       <div className="rounded-[32px] border-2 border-dashed border-slate-100 py-20 text-center">
@@ -60,6 +63,7 @@ export default function ReviewMistakeList({
           createdAt={note.createdAt}
           topic={note.topic}
           questionTitle={note.questionTitle}
+          onSelect={() => navigate(`/notes/incorrect/${note.noteId}`)}
         />
       ))}
 

@@ -8,6 +8,7 @@ type MistakeCardProps = {
   createdAt: string;
   topic: Topic;
   questionTitle: string;
+  onSelect?: () => void;
   onRetry?: () => void;
 };
 
@@ -22,10 +23,14 @@ export default function MistakeCard({
   createdAt,
   topic,
   questionTitle,
+  onSelect,
   onRetry,
 }: MistakeCardProps) {
   return (
-    <article className="group relative flex flex-col items-start rounded-[28px] border-2 border-slate-100 bg-white p-6 shadow-sm transition-all hover:border-slate-300 active:scale-[0.98]">
+    <article
+      className="group relative flex cursor-pointer flex-col items-start rounded-[28px] border-2 border-slate-100 bg-white p-6 shadow-sm transition-all hover:border-slate-300 active:scale-[0.98]"
+      onClick={onSelect}
+    >
       <div className="mb-4 flex w-full items-center justify-between">
         <span className="rounded-full border border-slate-100 bg-slate-50 px-3 py-1 text-xs font-bold uppercase tracking-tighter text-slate-500">
           {categoryName}
@@ -62,11 +67,15 @@ export default function MistakeCard({
         <Button
           variant="outline"
           size="sm"
-          onClick={onRetry}
+          onClick={(event) => {
+            event.stopPropagation();
+            onRetry?.();
+            onSelect?.();
+          }}
           className="h-9 gap-1.5 rounded-full border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 transition-all hover:border-slate-900 hover:bg-slate-900 hover:text-white"
         >
           <RotateCcw size={13} strokeWidth={2.5} />
-          다시 도전
+          오답 보기
         </Button>
       </div>
 
