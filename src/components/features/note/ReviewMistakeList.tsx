@@ -1,24 +1,18 @@
 import type { RefCallback } from 'react';
 import { RotateCcw } from 'lucide-react';
+import type { Category } from '@/api/learning/learning.types';
+import type { Note } from '@/api/notes/notes.types';
 
 import MistakeCard from '@/components/features/note/MistakeCard';
 
 type NoteCategory = {
-  categoryId: string;
+  category: Category;
   categoryName: string;
-};
-
-type NoteMistake = {
-  id: string;
-  categoryId: string;
-  chapterTitle: string;
-  question: string;
-  wrongAt: string;
 };
 
 type ReviewMistakeListProps = {
   categories: NoteCategory[];
-  mistakes: NoteMistake[];
+  notes: Note[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
   hasNext?: boolean;
@@ -27,7 +21,7 @@ type ReviewMistakeListProps = {
 
 export default function ReviewMistakeList({
   categories,
-  mistakes,
+  notes,
   isLoading = false,
   isLoadingMore = false,
   hasNext = false,
@@ -43,7 +37,7 @@ export default function ReviewMistakeList({
     );
   }
 
-  if (mistakes.length === 0) {
+  if (notes.length === 0) {
     return (
       <div className="rounded-[32px] border-2 border-dashed border-slate-100 py-20 text-center">
         <RotateCcw size={32} className="mx-auto mb-4 text-slate-200" />
@@ -56,20 +50,16 @@ export default function ReviewMistakeList({
 
   return (
     <div className="flex flex-col gap-6">
-      {mistakes.map((item) => (
+      {notes.map((note) => (
         <MistakeCard
-          key={item.id}
-          categoryLabel={
-            categories.find((category) => category.categoryId === item.categoryId)
+          key={note.noteId}
+          categoryName={
+            categories.find((category) => category.category === note.category)
               ?.categoryName || '미분류'
           }
-          dateText={new Date(item.wrongAt).toLocaleDateString('ko-KR')}
-          chapterTitle={item.chapterTitle}
-          question={item.question}
-          timeText={new Date(item.wrongAt).toLocaleTimeString('ko-KR', {
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
+          createdAt={note.createdAt}
+          topic={note.topic}
+          questionTitle={note.questionTitle}
         />
       ))}
 
@@ -80,7 +70,7 @@ export default function ReviewMistakeList({
           </p>
         )}
 
-        {!hasNext && mistakes.length > 0 && (
+        {!hasNext && notes.length > 0 && (
           <p className="text-xs font-bold text-slate-300">
             오답노트를 모두 확인했어요
           </p>

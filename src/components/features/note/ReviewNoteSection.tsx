@@ -1,28 +1,24 @@
 import type { RefCallback } from 'react';
+import type {
+  Category,
+} from '@/api/learning/learning.types';
+import type { Note } from '@/api/notes/notes.types';
 import ReviewSummary from '@/components/features/note/ReviewSummary';
 import ReviewMistakeList from '@/components/features/note/ReviewMistakeList';
 import ReviewCategoryChip from '@/components/features/note/ReviewCategoryChip';
 
 type NoteCategory = {
-  categoryId: string;
+  category: Category;
   categoryName: string;
 };
 
-type NoteMistake = {
-  id: string;
-  categoryId: string;
-  chapterTitle: string;
-  question: string;
-  wrongAt: string;
-};
-
 type ReviewNoteSectionProps = {
-  selectedCategoryId: string;
-  onChangeCategory: (categoryId: string) => void;
+  selectedCategory: Category | null;
+  onChangeCategory: (category: Category | null) => void;
   categories: NoteCategory[];
-  mistakes: NoteMistake[];
+  notes: Note[];
   totalExp: number;
-  totalMistakeCount: number;
+  totalNoteCount: number;
   isLoading?: boolean;
   isLoadingMore?: boolean;
   hasNext?: boolean;
@@ -30,39 +26,39 @@ type ReviewNoteSectionProps = {
 };
 
 export default function ReviewNoteSection({
-  selectedCategoryId,
+  selectedCategory,
   onChangeCategory,
   categories,
-  mistakes,
+  notes,
   totalExp,
-  totalMistakeCount,
+  totalNoteCount,
   isLoading = false,
   isLoadingMore = false,
   hasNext = false,
   sentinelRef,
 }: ReviewNoteSectionProps) {
   const reviewCategories = [
-    { categoryId: 'all', categoryName: '전체' },
+    { category: null, categoryName: '전체' },
     ...categories,
   ];
 
   return (
     <>
       <ReviewSummary
-        pendingReviewCount={totalMistakeCount}
+        pendingReviewCount={totalNoteCount}
         totalExp={totalExp}
       />
       <div className="px-6 py-3">
         <div className="hide-scrollbar -mx-2 flex gap-2 overflow-x-auto px-2">
           {reviewCategories.map((category) => {
-            const isActive = selectedCategoryId === category.categoryId;
+            const isActive = selectedCategory === category.category;
 
             return (
               <ReviewCategoryChip
-                key={category.categoryId}
+                key={category.category ?? 'ALL'}
                 label={category.categoryName}
                 isActive={isActive}
-                onClick={() => onChangeCategory(category.categoryId)}
+                onClick={() => onChangeCategory(category.category)}
               />
             );
           })}
@@ -72,7 +68,7 @@ export default function ReviewNoteSection({
       <div className="px-6 pb-6 pt-4">
         <ReviewMistakeList
           categories={categories}
-          mistakes={mistakes}
+          notes={notes}
           isLoading={isLoading}
           isLoadingMore={isLoadingMore}
           hasNext={hasNext}
