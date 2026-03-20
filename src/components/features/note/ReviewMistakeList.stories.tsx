@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { MemoryRouter } from 'react-router-dom';
 import type { Note } from '@/api/notes/notes.types';
 import type { Category } from '@/api/learning/learning.types';
 
@@ -24,17 +25,6 @@ const sampleNotes: Note[] = [
     correctAnswer: '보증보험 가입 불가 시 계약 해제 특약',
     createdAt: '2026-03-17T09:00:00Z',
   },
-  {
-    noteId: 2,
-    chapterId: 202,
-    quizId: 2002,
-    category: 'FINANCE',
-    topic: 'BUYING',
-    questionTitle: '실업급여 수급 조건 중 피보험 단위기간 요건은?',
-    userAnswer: '90일',
-    correctAnswer: '180일',
-    createdAt: '2026-03-16T15:00:00Z',
-  },
 ];
 
 const meta = {
@@ -44,6 +34,13 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
+  decorators: [
+    (Story) => (
+      <MemoryRouter initialEntries={['/notes']}>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
   args: {
     categories: sampleCategories,
     notes: sampleNotes,
