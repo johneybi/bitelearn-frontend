@@ -13,7 +13,8 @@ import TermsAgreementPage from '@/pages/TermsAgreementPage';
 import OAuthCallbackPage from '@/pages/OAuthCallbackPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 import LearningPage from '@/pages/learning/LearningPage';
-import NotesPage from '@/pages/NotesPage';
+import NotesPage from '@/pages/note/NotesPage';
+import IncorrectNoteDetailPage from '@/pages/note/IncorrectNoteDetailPage';
 import MyPage from '@/pages/MyPage';
 import AccountInfoPage from '@/pages/AccountInfoPage';
 import ArticleListPage from '@/pages/article/ArticleListPage';
@@ -40,6 +41,10 @@ export default function Router() {
           <Route
             path="/learning/:categoryId/:chapterId"
             element={<LearningChapterPage />}
+          />
+          <Route
+            path="/notes/incorrect/:noteId"
+            element={<IncorrectNoteDetailPage />}
           />
           <Route path="/articles/:articleId" element={<ArticleDetailPage />} />
 

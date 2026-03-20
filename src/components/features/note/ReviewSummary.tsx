@@ -2,13 +2,13 @@ import BiteCharacter from '@/components/features/character/BiteCharacter';
 
 type ReviewSummaryProps = {
   pendingReviewCount: number;
-  totalExp: number;
+  totalBytes: number;
   animateCharacter?: boolean;
 };
 
 export default function ReviewSummary({
   pendingReviewCount,
-  totalExp,
+  totalBytes,
   animateCharacter = true,
 }: ReviewSummaryProps) {
   const reviewMessage =
@@ -23,7 +23,7 @@ export default function ReviewSummary({
   return (
     <div className="mt-6 bg-white px-6 pb-4 pt-6">
       <BiteCharacter
-        exp={totalExp}
+        exp={totalBytes}
         messageOverride={reviewMessage}
         animate={animateCharacter}
       />
@@ -50,7 +50,7 @@ export default function ReviewSummary({
 
           <div className="flex items-baseline gap-0.5">
             <span className="text-lg font-bold text-white">
-              {totalExp.toLocaleString()}
+              {totalBytes.toLocaleString()}
             </span>
 
             <span className="ml-0.5 text-[10px] font-bold italic text-white/60">

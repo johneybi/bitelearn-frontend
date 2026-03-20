@@ -10,11 +10,10 @@ const meta = {
     layout: 'padded',
   },
   args: {
-    categoryLabel: '부동산 · 주거',
-    dateText: '2026. 3. 6.',
-    chapterTitle: '계약: 도장 찍기 전 방어선',
-    question: '계약서 특약에 반드시 포함해야 할 문구는?',
-    timeText: '오후 09:42',
+    categoryName: '부동산 · 주거',
+    createdAt: '2026-03-06T12:42:00Z',
+    topic: 'JEONSE',
+    questionTitle: '계약서 특약에 반드시 포함해야 할 문구는?',
     onRetry: () => {},
   },
 } satisfies Meta<typeof MistakeCard>;
@@ -23,6 +22,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+  args: {},
   render: (args) => (
     <div className="mx-auto w-full max-w-sm">
       <MistakeCard {...args} />

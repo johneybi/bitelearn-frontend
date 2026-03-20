@@ -14,6 +14,8 @@ type MultipleChoiceViewProps = {
   isChecking?: boolean;
   correctIndex?: number;
   onPrevious?: () => void;
+  ctaLabel?: string;
+  allowSubmitWhenChecking?: boolean;
 };
 
 export default function MultipleChoiceView({
@@ -26,6 +28,8 @@ export default function MultipleChoiceView({
   isChecking = false,
   correctIndex,
   onPrevious,
+  ctaLabel,
+  allowSubmitWhenChecking = false,
 }: MultipleChoiceViewProps) {
   const isCtaEnabled = selectedValue !== '';
 
@@ -95,12 +99,12 @@ export default function MultipleChoiceView({
       </section>
 
       <QuizFooter
-        disabled={!isCtaEnabled || isChecking}
-        previousDisabled={isChecking}
+        disabled={!isCtaEnabled || (isChecking && !allowSubmitWhenChecking)}
+        previousDisabled={isChecking && !allowSubmitWhenChecking}
         onClick={() => onCheckAnswer(Number(selectedValue))}
         onPrevious={onPrevious}
       >
-        정답 확인
+        {ctaLabel ?? '정답 확인'}
       </QuizFooter>
     </>
   );

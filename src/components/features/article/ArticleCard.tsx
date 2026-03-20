@@ -1,7 +1,9 @@
 import { ChevronRight, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { ArticleDetail } from '@/mock/article';
-import type { ArticleListItem } from '@/types/article';
+import type {
+  ArticleDetail,
+  ArticleListItem,
+} from '@/mock/article';
 
 type ArticleCardProps = {
   article: ArticleListItem | ArticleDetail;

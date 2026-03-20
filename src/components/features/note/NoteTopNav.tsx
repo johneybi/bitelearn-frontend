@@ -1,4 +1,4 @@
-import type { NoteTab } from '@/pages/NotesPage';
+import type { NoteTab } from '@/pages/note/NotesPage';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 type NoteTopNavProps = {
