@@ -1,51 +1,78 @@
-import { useCallback, useState } from 'react';
+import {
+  useEffect,
+  useState,
+} from 'react';
 
 import NoteTopNav from '@/components/features/note/NoteTopNav';
 import ReviewNoteSection from '@/components/features/note/ReviewNoteSection';
 import BookmarkSection from '@/components/features/note/BookmarkSection';
-import useCursorInfiniteQuery from '@/hooks/useCursorInfiniteQuery';
+import useNotesCategorySearchParam from '@/hooks/useNotesCategorySearchParam';
 
-import { MOCK_CATEGORY_CHAPTERS } from '@/mock/chapter';
-import { fetchBookmarkedArticlePage } from '@/mock/fetchBookmarkedArticlePage';
-import { fetchMistakeReviewPage } from '@/mock/fetchMistakeReviewPage';
-import { MISTAKE_ITEMS } from '@/mock/mistakeNote';
+import { useIncorrectNotesQuery } from '@/api/notes/notes.query';
+import { LEARNING_NAVIGATION } from '@/constants/learningNavigation';
+import {
+  fetchBookmarkedArticlePage,
+  type BookmarkedArticleCardItem,
+} from '@/mock/fetchBookmarkedArticlePage';
 
 export type NoteTab = 'review' | 'bookmark';
 
+// 오답노트 카테고리 필터에 사용할 API 기준 카테고리 목록
+const NOTE_CATEGORIES = LEARNING_NAVIGATION.map((category) => ({
+  category: category.code,
+  categoryName: category.name,
+}));
+
 export default function NotesPage() {
   const [activeTab, setActiveTab] = useState<NoteTab>('review');
-  const [selectedCategoryId, setSelectedCategoryId] = useState('all');
+  const [bookmarkArticles, setBookmarkArticles] = useState<
+    BookmarkedArticleCardItem[]
+  >([]);
+  const [isBookmarkLoading, setIsBookmarkLoading] = useState(false);
+  // 선택 카테고리를 URL 쿼리스트링 기준으로 관리
+  const { selectedCategory, setSelectedCategory } =
+    useNotesCategorySearchParam(NOTE_CATEGORIES);
 
-  const fetchReviewPage = useCallback(
-    (cursor?: string | null) =>
-      fetchMistakeReviewPage({
-        cursor,
-        categoryId: selectedCategoryId,
-      }),
-    [selectedCategoryId]
-  );
-
-  const fetchBookmarkPage = useCallback(
-    (cursor?: string | null) =>
-      fetchBookmarkedArticlePage({
-        cursor,
-      }),
-    []
-  );
-
-  const reviewFeed = useCursorInfiniteQuery({
-    queryKey: ['notes', 'review', selectedCategoryId],
-    queryFn: fetchReviewPage,
+  // 리뷰 탭 활성화 시에만 오답노트 무한스크롤 조회 실행
+  const reviewFeed = useIncorrectNotesQuery({
+    category: selectedCategory,
     enabled: activeTab === 'review',
   });
 
-  const bookmarkFeed = useCursorInfiniteQuery({
-    queryKey: ['notes', 'bookmark'],
-    queryFn: fetchBookmarkPage,
-    enabled: activeTab === 'bookmark',
-  });
+  useEffect(() => {
+    let isMounted = true;
 
-  const totalMistakeCount = MISTAKE_ITEMS.length;
+    const loadBookmarks = async () => {
+      setIsBookmarkLoading(true);
+
+      try {
+        // 북마크 목록은 실제 조회 API 대신 mock 데이터를 한 번만 불러와 사용
+        const response = await fetchBookmarkedArticlePage({
+          pageSize: 1000,
+        });
+
+        if (!isMounted) {
+          return;
+        }
+
+        setBookmarkArticles(response.items);
+      } finally {
+        if (isMounted) {
+          setIsBookmarkLoading(false);
+        }
+      }
+    };
+
+    void loadBookmarks();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // 요약 카드에는 첫 페이지 응답의 집계 값 사용
+  const totalNoteCount = reviewFeed.data?.pages[0]?.totalCount ?? 0;
+  const totalBytes = reviewFeed.data?.pages[0]?.totalBytes ?? 0;
 
   return (
     <div className="flex h-full flex-col overflow-hidden bg-white text-slate-900">
@@ -55,12 +82,12 @@ export default function NotesPage() {
         <section className="pb-32 pt-6">
           {activeTab === 'review' && (
             <ReviewNoteSection
-              selectedCategoryId={selectedCategoryId}
-              onChangeCategory={setSelectedCategoryId}
-              categories={MOCK_CATEGORY_CHAPTERS}
-              mistakes={reviewFeed.items}
-              totalExp={1250}
-              totalMistakeCount={totalMistakeCount}
+              selectedCategory={selectedCategory}
+              onChangeCategory={setSelectedCategory}
+              categories={NOTE_CATEGORIES}
+              notes={reviewFeed.notes}
+              totalBytes={totalBytes}
+              totalNoteCount={totalNoteCount}
               isLoading={reviewFeed.isPending}
               isLoadingMore={reviewFeed.isFetchingNextPage}
               hasNext={Boolean(reviewFeed.hasNextPage)}
@@ -71,11 +98,8 @@ export default function NotesPage() {
           {activeTab === 'bookmark' && (
             <div className="px-6">
               <BookmarkSection
-                articles={bookmarkFeed.items}
-                isLoading={bookmarkFeed.isPending}
-                isLoadingMore={bookmarkFeed.isFetchingNextPage}
-                hasNext={Boolean(bookmarkFeed.hasNextPage)}
-                sentinelRef={bookmarkFeed.sentinelRef}
+                articles={bookmarkArticles}
+                isLoading={isBookmarkLoading}
               />
             </div>
           )}
