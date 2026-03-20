@@ -1,7 +1,7 @@
 import { ChevronRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import QuizHeader from '@/components/common/QuizHeader';
+import Header from '@/components/common/Header';
 
 import chapterIntroCharacter from '@/assets/character/scene_first_home_mungmung.png';
 
@@ -39,7 +39,7 @@ export default function ChapterIntro({
 
   return (
     <main className="flex h-full min-h-0 flex-col overflow-hidden bg-background text-slate-900">
-      <QuizHeader showCloseButton onCloseClick={onBack} />
+      <Header showCloseButton onCloseClick={onBack} />
 
       <section className="hide-scrollbar flex-1 overflow-y-auto bg-[radial-gradient(circle_at_center,_rgba(255,237,213,0.92)_0%,_rgba(250,250,250,1)_58%)] pt-[60px]">
         <div className="px-5 pb-8 pt-4">
@@ -79,7 +79,7 @@ export default function ChapterIntro({
           <div className="flex items-center gap-4">
             <span className="tossface text-2xl leading-8">🎯</span>
             <div className="flex flex-col items-start gap-1">
-              <p className="text-primary-600 text-xs font-bold leading-4">
+              <p className="text-xs font-bold leading-4 text-primary-600">
                 이번 목표
               </p>
               <p className="text-sm font-semibold leading-5 text-foreground">
@@ -93,7 +93,7 @@ export default function ChapterIntro({
           <div className="flex items-start gap-4">
             <span className="tossface text-2xl leading-8">📖</span>
             <div className="flex flex-col items-start gap-2">
-              <p className="text-primary-600 text-xs font-bold leading-4">
+              <p className="text-xs font-bold leading-4 text-primary-600">
                 핵심 내용
               </p>
               <div className="flex flex-wrap items-start gap-1.5">
