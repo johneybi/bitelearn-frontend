@@ -1,7 +1,9 @@
-import { ChevronRight, Target } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import QuizHeader from '@/components/common/QuizHeader';
+
+import chapterIntroCharacter from '@/assets/character/scene_first_home_mungmung.png';
 
 type ChapterIntroMode = 'start' | 'resume' | 'retry';
 
@@ -12,6 +14,7 @@ type ChapterIntroProps = {
   prologueContent: string;
   coreKeywords: string[];
   introMode?: ChapterIntroMode;
+  chapterLabel?: string;
   onStart: () => void;
   onBack: () => void;
 };
@@ -23,69 +26,98 @@ export default function ChapterIntro({
   prologueContent,
   coreKeywords,
   introMode = 'start',
+  chapterLabel = '학습 Chapter',
   onStart,
   onBack,
 }: ChapterIntroProps) {
   const startButtonLabel =
     introMode === 'resume'
-      ? '이어하기'
+      ? '이어서 학습하기'
       : introMode === 'retry'
         ? '다시 학습하기'
-        : '시작하기';
+        : '학습하기';
 
   return (
-    <main className="flex h-full min-h-0 flex-col bg-white text-slate-900">
+    <main className="flex h-full min-h-0 flex-col overflow-hidden bg-background text-slate-900">
       <QuizHeader showCloseButton onCloseClick={onBack} />
 
-      <section className="hide-scrollbar flex-1 overflow-y-auto px-6 py-8">
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-500">
-          토픽명 + Chapter + 번호
+      <section className="hide-scrollbar flex-1 overflow-y-auto bg-[radial-gradient(circle_at_center,_rgba(255,237,213,0.92)_0%,_rgba(250,250,250,1)_58%)] pt-[60px]">
+        <div className="px-5 pb-8 pt-4">
+          <div className="flex flex-col items-center gap-4 text-center">
+            <div className="inline-flex items-center rounded-full bg-secondary px-3 py-1.5 text-xs font-semibold leading-4 text-slate-100">
+              {chapterLabel}
+            </div>
+
+            <div className="border-b-2 border-primary px-[2px] pb-[2px]">
+              <h1 className="text-[22px] font-bold leading-[30px] text-slate-950">
+                {chapterTitle}
+              </h1>
+            </div>
+          </div>
         </div>
 
-        <h1 className="text-xl font-black leading-tight tracking-tight text-slate-900">
-          {chapterTitle}
-        </h1>
-
-        <p className="mt-3 text-base font-bold text-slate-700">
-          {prologueSubtitle}
-        </p>
-
-        <p className="mt-6 whitespace-pre-line break-keep text-sm leading-relaxed text-slate-600">
-          {prologueContent}
-        </p>
-
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
-          <p className="mb-2 flex items-center gap-2 text-xs font-bold text-slate-500">
-            <Target size={14} />
-            이번 목표
-          </p>
-          <p className="text-base font-bold leading-snug text-slate-900">
-            {chapterGoal}
-          </p>
+        <div className="flex justify-center">
+          <img
+            src={chapterIntroCharacter}
+            alt=""
+            className="aspect-[102/127] w-[204px]"
+          />
         </div>
 
-        <div className="mt-8 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-          <p className="mb-3 text-xs font-bold text-slate-400">학습 포인트</p>
-          <div className="flex flex-wrap gap-2">
-            {coreKeywords.map((keyword) => (
-              <span
-                key={keyword}
-                className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600"
-              >
-                {keyword}
-              </span>
-            ))}
+        <div className="relative z-10 -mt-[80px] flex flex-1 flex-col rounded-t-3xl bg-white px-9 pb-28 pt-7">
+          <div>
+            <h2 className="text-base font-bold leading-6 text-foreground">
+              {prologueSubtitle}
+            </h2>
+            <p className="mt-3 whitespace-pre-line break-keep text-sm font-normal leading-5 text-foreground">
+              {prologueContent}
+            </p>
+          </div>
+
+          <div className="my-5 h-px w-full bg-slate-100" />
+
+          <div className="flex items-center gap-4">
+            <span className="tossface text-2xl leading-8">🎯</span>
+            <div className="flex flex-col items-start gap-1">
+              <p className="text-primary-600 text-xs font-bold leading-4">
+                이번 목표
+              </p>
+              <p className="text-sm font-semibold leading-5 text-foreground">
+                {chapterGoal}
+              </p>
+            </div>
+          </div>
+
+          <div className="my-5 h-px w-full bg-slate-100" />
+
+          <div className="flex items-start gap-4">
+            <span className="tossface text-2xl leading-8">📖</span>
+            <div className="flex flex-col items-start gap-2">
+              <p className="text-primary-600 text-xs font-bold leading-4">
+                핵심 내용
+              </p>
+              <div className="flex flex-wrap items-start gap-1.5">
+                {coreKeywords.map((keyword) => (
+                  <span
+                    key={keyword}
+                    className="rounded-full bg-neutral-100 px-2.5 py-1.5 text-xs font-semibold leading-4 text-neutral-700"
+                  >
+                    {keyword}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <footer className="shrink-0 border-t border-slate-100 bg-white px-6 pb-8 pt-4">
+      <footer className="fixed bottom-0 left-1/2 z-30 w-full max-w-app -translate-x-1/2 bg-white px-5 pb-8 pt-4">
         <Button
-          className="h-14 w-full rounded-2xl text-base font-bold"
+          className="relative h-14 w-full rounded-2xl bg-primary text-base font-bold leading-6 text-foreground"
           onClick={onStart}
         >
           {startButtonLabel}
-          <ChevronRight size={16} />
+          <ChevronRight className="absolute right-4 size-6" />
         </Button>
       </footer>
     </main>
