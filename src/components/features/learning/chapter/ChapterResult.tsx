@@ -76,7 +76,7 @@ const VARIANT_CONFIG = {
 } as const;
 
 function formatBytes(value: number) {
-  return `${new Intl.NumberFormat('ko-KR').format(Math.max(0, value))} B`;
+  return `${new Intl.NumberFormat('ko-KR').format(Math.abs(value))} B`;
 }
 
 // 코인 애니메이션 컴포넌트
@@ -295,10 +295,10 @@ export default function ChapterResult({
         </motion.section>
       </div>
 
-      <footer className="absolute inset-x-0 bottom-0 z-20 bg-white/[0.92] px-5 pb-8 pt-4 backdrop-blur-sm">
+      <footer className="absolute inset-x-0 bottom-0 z-20 bg-card px-5 pb-8 pt-4 backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-[335px] flex-col gap-[10px]">
           <Button
-            className="relative h-[52px] w-full rounded-xl bg-primary px-4 text-base font-bold text-slate-950 shadow-none"
+            className="relative h-[52px] w-full rounded-xl bg-primary px-4 text-base font-bold text-foreground shadow-none"
             onClick={onFinish}
           >
             <span>{cfg.primaryButtonLabel}</span>
