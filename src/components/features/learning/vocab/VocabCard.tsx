@@ -60,7 +60,7 @@ export default function VocabCard({
       {/* Back */}
       <div className="backface-hidden rotate-y-180 absolute inset-0 flex h-full w-full flex-col overflow-hidden rounded-[24px] border-2 border-slate-100 bg-slate-200 p-[2px] shadow-[0_12px_32px_rgba(15,23,42,0.08)]">
         <div className="flex h-full flex-col rounded-[22px] bg-slate-200 px-6 pb-7 pt-8 text-slate-950">
-          <div className="flex min-h-0 flex-1 flex-col gap-8 overflow-y-auto">
+          <div className="hide-scrollbar flex min-h-0 flex-1 flex-col gap-8 overflow-y-auto">
             <div className="flex w-full flex-col items-center gap-8">
               <h3 className="border-b-2 border-primary px-0.5 pb-0.5 text-center text-2xl font-semibold leading-9">
                 {vocab.frontMain}

@@ -182,7 +182,7 @@ export default function ConversationPassageView({
     <>
       <section
         ref={scrollRef}
-        className="flex-1 overflow-y-auto bg-background px-5 pt-[74px]"
+        className="hide-scrollbar flex-1 overflow-y-auto bg-background px-5 pt-[74px]"
         data-mode="conversation"
       >
         <div className="pt-6">

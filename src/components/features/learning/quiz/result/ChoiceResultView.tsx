@@ -33,7 +33,10 @@ export default function ChoiceResultView({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-background pt-[74px] duration-500 animate-in fade-in slide-in-from-right-8">
-      <section ref={scrollRef} className="flex flex-1 flex-col overflow-y-auto">
+      <section
+        ref={scrollRef}
+        className="hide-scrollbar flex flex-1 flex-col overflow-y-auto"
+      >
         <div className="relative px-5">
           <div className="relative flex min-h-[132px] items-start justify-between overflow-hidden">
             <div className="z-10 flex flex-col items-start gap-4 pl-3 pt-8">

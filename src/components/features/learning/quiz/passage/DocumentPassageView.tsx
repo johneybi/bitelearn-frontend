@@ -27,7 +27,7 @@ export default function DocumentPassageView({
     <>
       <section
         ref={scrollRef}
-        className="flex-1 overflow-y-auto bg-background px-6 pt-[74px]"
+        className="hide-scrollbar flex-1 overflow-y-auto bg-background px-6 pt-[74px]"
       >
         <div className="flex min-h-full w-full flex-col justify-center">
           <div className="flex flex-col gap-4">
