@@ -10,6 +10,7 @@ import level2Image from '@/assets/level/level_2.png';
 import level3Image from '@/assets/level/level_3.png';
 import Header from '@/components/common/Header';
 import { Button } from '@/components/ui/button';
+import LevelInfoDialog from './LevelInfoDialog';
 
 type ResultVariant = 'perfect' | 'close' | 'fail';
 
@@ -134,6 +135,7 @@ export default function ChapterResult({
   void chapterTitle;
 
   const [isProgressVisible, setIsProgressVisible] = useState(false);
+  const [isLevelDialogOpen, setIsLevelDialogOpen] = useState(false);
 
   // 결과 분기 기준
   const variant: ResultVariant = useMemo(() => {
@@ -233,6 +235,7 @@ export default function ChapterResult({
               type="button"
               className={LEVEL_BADGE_CLASS_NAME}
               aria-label={`현재 ${levelState.currentLevel}레벨`}
+              onClick={() => setIsLevelDialogOpen(true)}
             >
               <img
                 src={LEVEL_IMAGES[levelState.currentLevel]}
@@ -314,6 +317,12 @@ export default function ChapterResult({
           ) : null}
         </div>
       </footer>
+
+      <LevelInfoDialog
+        open={isLevelDialogOpen}
+        onOpenChange={setIsLevelDialogOpen}
+        currentLevel={levelState.currentLevel}
+      />
     </main>
   );
 }
