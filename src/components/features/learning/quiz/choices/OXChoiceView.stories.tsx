@@ -52,7 +52,7 @@ export const ChoiceSelectedReadyToSubmit: Story = {
   render: (args) => <OXStoryHarness {...args} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole('button', { name: /맞다/i }));
+    await userEvent.click(canvas.getByRole('button', { name: /그렇다/i }));
   },
 };
 
@@ -61,7 +61,7 @@ export const CorrectChoiceChecking: Story = {
   render: (args) => <OXStoryHarness {...args} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole('button', { name: /맞다/i }));
+    await userEvent.click(canvas.getByRole('button', { name: /그렇다/i }));
     await userEvent.click(canvas.getByRole('button', { name: '정답 확인' }));
   },
 };
@@ -71,7 +71,7 @@ export const IncorrectChoiceChecking: Story = {
   render: (args) => <OXStoryHarness {...args} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole('button', { name: /맞다/i }));
+    await userEvent.click(canvas.getByRole('button', { name: /그렇다/i }));
     await userEvent.click(canvas.getByRole('button', { name: '정답 확인' }));
   },
 };

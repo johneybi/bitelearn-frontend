@@ -1,10 +1,13 @@
+import ChapterIndicator from '@/components/features/learning/chapter/ChapterIndicator';
 import QuizFooter from '@/components/common/QuizFooter';
 import { cn } from '@/lib/utils';
+import type { StepIndicatorInfo } from '../quiz.types';
 import QuizTitle from '../shared/QuizTitle';
 
 type OXChoiceViewProps = {
   questionNumber: number;
   questionTitle: string;
+  indicatorSteps: StepIndicatorInfo[];
   /** 정답 인덱스: 0 = O, 1 = X */
   correctIndex?: number;
   selectedValue: string;
@@ -15,8 +18,8 @@ type OXChoiceViewProps = {
 };
 
 export default function OXChoiceView({
-  questionNumber,
   questionTitle,
+  indicatorSteps,
   correctIndex,
   selectedValue,
   onSelectChoice,
@@ -55,21 +58,33 @@ export default function OXChoiceView({
 
   const buttonConfig = {
     idle: {
-      container: 'bg-white border-slate-200 text-slate-400',
+      container:
+        'border-slate-100 bg-card text-slate-500 shadow-[0_12px_16px_0_rgba(237,238,246,1)]',
+      icon: 'text-slate-400',
+      label: 'text-slate-600',
     },
     selected: {
-      container: 'border-slate-900 text-slate-900 bg-white scale-[1.02]',
+      container:
+        'border-slate-300 bg-slate-100 text-slate-700 shadow-[0_12px_16px_0_rgba(237,238,246,1)] scale-[1.02]',
+      icon: 'text-slate-600',
+      label: 'text-slate-600',
     },
     correct: {
       container:
         'border-green-500 bg-green-50 text-green-600 scale-[1.05] shadow-[0_0_15px_rgba(34,197,94,0.3)] transition-all duration-300 ease-out z-10',
+      icon: 'text-green-400',
+      label: 'text-green-400',
     },
     wrong: {
       container:
         'border-red-500 bg-red-50 text-red-500 scale-[1.05] shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all duration-300 ease-out z-10',
+      icon: 'text-red-400',
+      label: 'text-red-400',
     },
     dim: {
       container: 'border-slate-100 bg-slate-50 text-slate-300',
+      icon: 'text-slate-300',
+      label: 'text-slate-300',
     },
   } as const;
 
@@ -77,6 +92,7 @@ export default function OXChoiceView({
     const state = getButtonState(value);
     const cfg = buttonConfig[state];
     const isO = label === 'O';
+    const answerLabel = isO ? '그렇다' : '아니다';
 
     return (
       <button
@@ -85,26 +101,37 @@ export default function OXChoiceView({
         disabled={isChecking}
         onClick={() => handleSelect(value)}
         className={cn(
-          'flex flex-1 cursor-pointer select-none flex-col items-center justify-center gap-3 rounded-2xl border-2 transition-all duration-200',
+          'flex h-[200px] flex-1 cursor-pointer select-none flex-col items-center justify-center gap-3 rounded-2xl border-2 p-5 transition-all duration-200',
           cfg.container,
           isChecking && 'cursor-not-allowed'
         )}
+        aria-label={answerLabel}
       >
-        <span
+        <div
           className={cn(
-            'text-7xl font-black leading-none',
-            isO ? 'text-emerald-400' : 'text-red-400',
-            state === 'selected' && (isO ? 'text-emerald-500' : 'text-red-500'),
-            state === 'correct' && (isO ? 'text-emerald-600' : 'text-red-600'),
-            state === 'wrong' && 'text-current',
+            'relative flex size-[72px] items-center justify-center',
+            cfg.icon,
             state === 'dim' && 'opacity-30'
           )}
         >
-          {label}
-        </span>
+          {isO ? (
+            <span className="block size-[54px] rounded-full border-[8px] border-current" />
+          ) : (
+            <>
+              <span className="absolute h-2 w-[58px] rotate-45 rounded-full bg-current" />
+              <span className="absolute h-2 w-[58px] -rotate-45 rounded-full bg-current" />
+            </>
+          )}
+        </div>
 
-        <span className="text-xs font-medium text-current opacity-70">
-          {isO ? '맞다' : '아니다'}
+        <span
+          className={cn(
+            'text-base font-medium leading-6 tracking-normal',
+            cfg.label,
+            state === 'dim' && 'opacity-70'
+          )}
+        >
+          {answerLabel}
         </span>
       </button>
     );
@@ -112,20 +139,26 @@ export default function OXChoiceView({
 
   return (
     <>
-      <section className="flex flex-1 flex-col overflow-hidden px-6">
-        <QuizTitle questionNumber={questionNumber} questionTitle={questionTitle} />
+      <section className="flex flex-1 flex-col overflow-hidden px-5 pt-[74px]">
+        <div className="flex min-h-full w-full flex-col justify-center">
+          <div className="flex flex-col gap-3">
+            <QuizTitle questionTitle={questionTitle} />
 
-        <div className="flex flex-1 gap-4 pb-4">
-          {renderButton(0, 'O')}
-          {renderButton(1, 'X')}
+            <div className="flex gap-5">
+              {renderButton(0, 'O')}
+              {renderButton(1, 'X')}
+            </div>
+          </div>
         </div>
       </section>
 
+      <ChapterIndicator steps={indicatorSteps} variant="quiz" />
       <QuizFooter
         disabled={!isCtaEnabled}
         previousDisabled={isChecking}
         onClick={handleConfirm}
         onPrevious={onPrevious}
+        showTrailingIcon={false}
       >
         정답 확인
       </QuizFooter>
