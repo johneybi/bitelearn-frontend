@@ -6,6 +6,7 @@ type ChapterIndicatorVariant = 'vocab' | 'quiz';
 type ChapterIndicatorProps = {
   steps: StepIndicatorInfo[];
   variant?: ChapterIndicatorVariant;
+  showShadow?: boolean;
 };
 
 type IndicatorItemState = 'card' | 'quiz' | 'correct' | 'incorrect';
@@ -111,9 +112,15 @@ function IndicatorItem({
 export default function ChapterIndicator({
   steps,
   variant = 'quiz',
+  showShadow = false,
 }: ChapterIndicatorProps) {
   return (
-    <div className="flex h-10 items-center justify-center bg-popover">
+    <div
+      className={cn(
+        'relative z-10 flex h-10 items-center justify-center bg-popover transition-[box-shadow] duration-300 ease-out',
+        showShadow && 'shadow-[0_-6px_12px_0_#EDEEF6]'
+      )}
+    >
       <div className="flex h-full w-full items-center justify-center px-5 pb-3 pt-2.5">
         {steps.map((step, index) => (
           <IndicatorItem
