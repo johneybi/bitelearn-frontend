@@ -1,22 +1,90 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import bulldogProfileImage from '@/assets/character/bulldog_profile.png';
+import mungmungProfileImage from '@/assets/character/mungmung_profile.jpg';
 import QuizFooter from '@/components/common/QuizFooter';
-import QuizPassage from '../shared/QuizPassage';
+import ChapterIndicator from '@/components/features/learning/chapter/ChapterIndicator';
 import type { QuizInfo } from '@/api/learning/learning.types';
+import type { StepIndicatorInfo } from '../quiz.types';
+import QuizTitle from '../shared/QuizTitle';
 
 type ConversationPassageViewProps = {
   question: QuizInfo;
+  indicatorSteps: StepIndicatorInfo[];
   onSolve: () => void;
-  /** true면 말풍선 애니메이션 없이 전체 대화를 바로 표시 */
+  // 애니메이션 건너뛰고 바로 전체 대화 보여주기
   skipAnimation?: boolean;
 };
 
+const SPEAKER_VISUALS = {
+  멍멍이: {
+    profileImageUrl: mungmungProfileImage,
+    position: 'right' as const,
+    imageClassName: 'left-[-14px] top-[-6px] h-16 w-16 max-w-none',
+  },
+  '불독 중개사': {
+    profileImageUrl: bulldogProfileImage,
+    position: 'left' as const,
+    imageClassName: 'left-[-12px] top-[-6px] h-[60px] w-[60px] max-w-none',
+  },
+  '리트리버 선배': {
+    profileImageUrl: bulldogProfileImage,
+    position: 'left' as const,
+    imageClassName: 'left-[-12px] top-[-6px] h-[60px] w-[60px] max-w-none',
+  },
+  나: {
+    profileImageUrl: mungmungProfileImage,
+    position: 'right' as const,
+    imageClassName: 'left-[-14px] top-[-6px] h-16 w-16 max-w-none',
+  },
+  공인중개사: {
+    profileImageUrl: bulldogProfileImage,
+    position: 'left' as const,
+    imageClassName: 'left-[-12px] top-[-6px] h-[60px] w-[60px] max-w-none',
+  },
+};
+
+function ConversationProfile({
+  speaker,
+}: {
+  speaker?: {
+    name?: string;
+    profileImageUrl?: string;
+    imageClassName?: string;
+  };
+}) {
+  if (!speaker?.profileImageUrl) {
+    return (
+      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-300 text-xs font-bold text-white shadow-[0_4px_6px_0_rgba(237,238,246,1),0_1px_2px_0_rgba(0,0,0,0.05)]">
+        {speaker?.name?.[0] ?? '?'}
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative h-9 w-9 overflow-hidden rounded-full shadow-[0_4px_6px_0_rgba(237,238,246,1),0_1px_2px_0_rgba(0,0,0,0.05)]">
+      <img
+        src={speaker.profileImageUrl}
+        alt={speaker.name || 'profile'}
+        className={`absolute object-cover ${speaker.imageClassName ?? 'inset-0 h-full w-full'}`}
+      />
+    </div>
+  );
+}
+
 export default function ConversationPassageView({
   question,
+  indicatorSteps,
   onSolve,
   skipAnimation = false,
 }: ConversationPassageViewProps) {
-  const dialogues = question.specificData?.dialogues ?? [];
+  // 대화 데이터 파싱
+  const dialogues = useMemo(
+    () => question.specificData?.dialogues ?? [],
+    [question.specificData?.dialogues]
+  );
+
+  // 대화에서 화자 정보 추출 및 시각적 요소 매핑
   const conversations = useMemo(
     () =>
       dialogues.map((line, dialogueIndex) => ({
@@ -26,16 +94,24 @@ export default function ConversationPassageView({
       })),
     [dialogues, question.quizId]
   );
+
+  // 화자별 시각적 요소 계산
   const conversationSpeakers = useMemo(
     () =>
       Array.from(new Set(dialogues.map((line) => line.speaker))).map(
-        (speaker, speakerIndex) => ({
-          id: speaker,
-          name: speaker,
-          profileImageUrl: undefined,
-          position:
-            speakerIndex % 2 === 0 ? ('left' as const) : ('right' as const),
-        })
+        (speaker) => {
+          const speakerVisual =
+            SPEAKER_VISUALS[speaker as keyof typeof SPEAKER_VISUALS] ??
+            SPEAKER_VISUALS['불독 중개사'];
+
+          return {
+            id: speaker,
+            name: speaker,
+            profileImageUrl: speakerVisual.profileImageUrl,
+            position: speakerVisual.position,
+            imageClassName: speakerVisual.imageClassName,
+          };
+        }
       ),
     [dialogues]
   );
@@ -49,11 +125,7 @@ export default function ConversationPassageView({
   const totalBubbles = conversations.length;
   const allVisible = visibleCount >= totalBubbles;
 
-  useEffect(() => {
-    setVisibleCount(skipAnimation ? conversations.length : 0);
-    setShowTyping(false);
-  }, [question, skipAnimation, conversations.length]);
-
+  // 대화 애니메이션 효과
   useEffect(() => {
     if (visibleCount >= totalBubbles) return;
 
@@ -88,6 +160,7 @@ export default function ConversationPassageView({
     };
   }, [visibleCount, totalBubbles, conversations]);
 
+  // 새 대화가 보일 때마다 스크롤을 최하단으로 이동
   useEffect(() => {
     if (!scrollRef.current) return;
 
@@ -107,15 +180,17 @@ export default function ConversationPassageView({
     <>
       <section
         ref={scrollRef}
-        className="flex-1 overflow-y-auto bg-slate-50 px-6 py-4"
+        className="flex-1 overflow-y-auto bg-background px-5 pt-[74px]"
         data-mode="conversation"
       >
-        <QuizPassage
-          questionSequence={question.sequence}
-          passageContent={question.passageContent ?? ''}
-          passageTitle={question.passageTitle ?? question.questionTitle}
-        >
-          <div className="flex flex-col gap-3 py-5">
+        <div className="pt-6">
+          <div className="flex flex-col gap-4">
+            <QuizTitle
+              questionNumber={question.sequence}
+              questionTitle={
+                question.passageTitle?.trim() || question.questionTitle
+              }
+            />
             {conversations.slice(0, visibleCount).map((conversation) => {
               const speaker = conversationSpeakers.find(
                 (item) => item.id === conversation.speakerId
@@ -124,8 +199,8 @@ export default function ConversationPassageView({
 
               const alignClass = isLeft ? 'justify-start' : 'justify-end';
               const bubbleClass = isLeft
-                ? 'rounded-bl-none border border-slate-200 bg-white text-slate-800 shadow-sm'
-                : 'rounded-br-none bg-slate-700 text-white shadow-sm';
+                ? 'rounded-br-2xl rounded-tl-2xl rounded-tr-2xl bg-white text-slate-800 shadow-[0_4px_6px_0_rgba(237,238,246,1)]'
+                : 'rounded-bl-2xl rounded-tl-2xl rounded-tr-2xl bg-slate-600 text-white shadow-[0_4px_6px_0_rgba(203,213,225,1)]';
 
               return (
                 <div
@@ -134,22 +209,14 @@ export default function ConversationPassageView({
                 >
                   {isLeft && (
                     <div className="mb-1 shrink-0">
-                      {speaker?.profileImageUrl ? (
-                        <img
-                          src={speaker.profileImageUrl}
-                          alt={speaker.name || 'profile'}
-                          className="h-9 w-9 rounded-full border-2 border-white object-cover shadow-sm"
-                        />
-                      ) : (
-                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-300 text-xs font-bold text-white">
-                          {speaker?.name?.[0] ?? '?'}
-                        </div>
-                      )}
+                      <ConversationProfile speaker={speaker} />
                     </div>
                   )}
 
                   <div
-                    className={`max-w-[72%] rounded-2xl px-4 py-2.5 text-[14.5px] leading-relaxed ${bubbleClass}`}
+                    className={`max-w-[280px] px-4 py-2.5 text-sm leading-5 ${bubbleClass} ${
+                      isLeft ? 'text-left font-normal' : 'text-left font-medium'
+                    }`}
                   >
                     {conversation.message
                       .split('\n')
@@ -163,17 +230,7 @@ export default function ConversationPassageView({
 
                   {!isLeft && (
                     <div className="mb-1 shrink-0">
-                      {speaker?.profileImageUrl ? (
-                        <img
-                          src={speaker.profileImageUrl}
-                          alt={speaker.name || 'profile'}
-                          className="h-9 w-9 rounded-full border-2 border-white object-cover shadow-sm"
-                        />
-                      ) : (
-                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-400 text-xs font-bold text-white">
-                          {speaker?.name?.[0] ?? '?'}
-                        </div>
-                      )}
+                      <ConversationProfile speaker={speaker} />
                     </div>
                   )}
                 </div>
@@ -188,64 +245,43 @@ export default function ConversationPassageView({
               >
                 {nextIsLeft && (
                   <div className="mb-1 shrink-0">
-                    {nextSpeaker?.profileImageUrl ? (
-                      <img
-                        src={nextSpeaker.profileImageUrl}
-                        alt=""
-                        className="h-9 w-9 rounded-full border-2 border-white object-cover shadow-sm"
-                      />
-                    ) : (
-                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-300 text-xs font-bold text-white">
-                        {nextSpeaker?.name?.[0] ?? '?'}
-                      </div>
-                    )}
+                    <ConversationProfile speaker={nextSpeaker} />
                   </div>
                 )}
 
                 <div
-                  className={`flex gap-1.5 rounded-2xl px-4 py-3.5 shadow-sm ${
+                  className={`flex min-h-9 items-center gap-1.5 px-4 py-2 shadow-[0_4px_6px_0_rgba(237,238,246,1)] ${
                     nextIsLeft
-                      ? 'rounded-bl-none border border-slate-200 bg-white'
-                      : 'rounded-br-none bg-slate-700/80'
+                      ? 'rounded-br-2xl rounded-tl-2xl rounded-tr-2xl bg-white'
+                      : 'rounded-bl-2xl rounded-tl-2xl rounded-tr-2xl bg-slate-600'
                   }`}
                 >
                   <span
                     className={`h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:0ms] ${
-                      nextIsLeft ? 'bg-slate-400' : 'bg-white/70'
+                      nextIsLeft ? 'bg-slate-400' : 'bg-slate-200'
                     }`}
                   />
                   <span
                     className={`h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:150ms] ${
-                      nextIsLeft ? 'bg-slate-400' : 'bg-white/70'
+                      nextIsLeft ? 'bg-slate-400' : 'bg-slate-200'
                     }`}
                   />
                   <span
                     className={`h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:300ms] ${
-                      nextIsLeft ? 'bg-slate-400' : 'bg-white/70'
+                      nextIsLeft ? 'bg-slate-400' : 'bg-slate-200'
                     }`}
                   />
                 </div>
 
                 {!nextIsLeft && (
                   <div className="mb-1 shrink-0">
-                    {nextSpeaker?.profileImageUrl ? (
-                      <img
-                        src={nextSpeaker.profileImageUrl}
-                        alt={nextSpeaker.name || 'profile'}
-                        className="h-9 w-9 rounded-full border-2 border-white object-cover shadow-sm"
-                      />
-                    ) : (
-                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-400 text-xs font-bold text-white">
-                        {nextSpeaker?.name?.[0] ?? '?'}
-                      </div>
-                    )}
+                    <ConversationProfile speaker={nextSpeaker} />
                   </div>
                 )}
               </div>
             )}
-
           </div>
-        </QuizPassage>
+        </div>
       </section>
 
       <style>{`
@@ -258,7 +294,12 @@ export default function ConversationPassageView({
         }
       `}</style>
 
-      <QuizFooter onClick={onSolve} disabled={!allVisible}>
+      <ChapterIndicator steps={indicatorSteps} variant="quiz" />
+      <QuizFooter
+        onClick={onSolve}
+        disabled={!allVisible}
+        showTrailingIcon={false}
+      >
         문제 풀기
       </QuizFooter>
     </>
