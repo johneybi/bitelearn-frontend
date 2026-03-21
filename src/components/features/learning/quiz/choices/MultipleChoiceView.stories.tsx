@@ -1,9 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { StepIndicatorInfo } from '../quiz.types';
 import MultipleChoiceView from './MultipleChoiceView';
+
+const indicatorSteps: StepIndicatorInfo[] = [
+  { type: 'quiz', status: 'correct', isCurrent: false },
+  { type: 'quiz', status: 'none', isCurrent: true },
+  { type: 'quiz', status: 'none', isCurrent: false },
+  { type: 'quiz', status: 'none', isCurrent: false },
+];
 
 const baseArgs = {
   questionNumber: 8,
   questionTitle: '이사 당일 보증금을 지키기 위해 반드시 같은 날 완료해야 하는 절차는?',
+  indicatorSteps,
   choices: [
     '짐 정리 후 며칠 안에 전입신고',
     '잔금 입금 후 당일 전입신고 + 확정일자',

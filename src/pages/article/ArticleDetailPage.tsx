@@ -34,7 +34,7 @@ export default function ArticleDetailPage() {
         articleId={article.articleId}
       />
 
-      <section className="hide-scrollbar min-h-0 flex-1 overflow-y-auto">
+      <section className="hide-scrollbar min-h-0 flex-1 overflow-y-auto pt-[60px]">
         <div className="relative aspect-[4/3] w-full bg-slate-100">
           <img
             src={article.thumbnailUrl}

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-import AuthHeader from '@/components/common/AuthHeader';
+import Header from '@/components/common/Header';
 import type { SignupFormValues } from '@/schemas/signupSchema';
 import SignupForm, {
   type SignupFormSubmitHelpers,
@@ -74,8 +74,8 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-dvh bg-background">
-      <AuthHeader
+    <div className="min-h-dvh bg-background pt-[60px]">
+      <Header
         showBackButton
         title="회원가입"
         onBackClick={() => navigate(-1)}

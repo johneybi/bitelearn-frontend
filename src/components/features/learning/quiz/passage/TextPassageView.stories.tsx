@@ -1,6 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { QuizInfo } from '@/api/learning/learning.types';
+import type { StepIndicatorInfo } from '../quiz.types';
 import TextPassageView from './TextPassageView';
+
+const indicatorSteps: StepIndicatorInfo[] = [
+  { type: 'quiz', status: 'none', isCurrent: true },
+  { type: 'quiz', status: 'none', isCurrent: false },
+  { type: 'quiz', status: 'none', isCurrent: false },
+];
 
 const textPassageQuestion: QuizInfo = {
   quizId: 1,
@@ -36,6 +43,7 @@ type Story = StoryObj<typeof meta>;
 export const PassageVisible: Story = {
   args: {
     question: textPassageQuestion,
+    indicatorSteps,
     onSolve: () => {},
   },
 };

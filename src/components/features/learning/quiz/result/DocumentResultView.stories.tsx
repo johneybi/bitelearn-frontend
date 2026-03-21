@@ -1,10 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { StepIndicatorInfo } from '../quiz.types';
 import DocumentResultView from './DocumentResultView';
+
+const indicatorSteps: StepIndicatorInfo[] = [
+  { type: 'quiz', status: 'correct', isCurrent: false },
+  { type: 'quiz', status: 'incorrect', isCurrent: true },
+  { type: 'quiz', status: 'none', isCurrent: false },
+];
 
 const documentCard = {
   header: '등 기 사 항 전 부 증 명 서',
   subHeader: '토지 및 건물 — 가상 문서',
-  sectionTitle: '▶ 갑구 (소유권에 관한 사항)',
   fields: [
     { label: '소재지', value: '햇살동 100번지 뼈다귀 하우스' },
     { label: '소유자', value: '불독 (800101-*******)' },
@@ -15,7 +21,6 @@ const documentCard = {
       value: '채권자 개굴개굴은행\n청구금액 50,000,000원',
     },
   ],
-  footerNotice: '본 문서는 학습용 가상 서류입니다.',
 };
 
 const baseArgs = {
@@ -25,12 +30,13 @@ const baseArgs = {
   correctIndex: 3,
   selectedAnswerIndex: 3,
   characterImageUrl: '/images/character/dog_perfect.png',
+  indicatorSteps,
   isLastQuestion: false,
   onNext: () => {},
 };
 
 const meta = {
-  title: 'Learning/Quiz/Result/DocumentResultView',
+  title: 'Learning/Quiz/Result/DocumentClickResultView',
   component: DocumentResultView,
   tags: ['autodocs'],
   parameters: { layout: 'fullscreen' },

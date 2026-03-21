@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react';
 import type { QuizInfo } from '@/api/learning/learning.types';
-import type { QuizPhase } from '@/components/features/learning/quiz/quiz.types';
+import type {
+  QuizPhase,
+  StepIndicatorInfo,
+} from '@/components/features/learning/quiz/quiz.types';
 import QuizPassagePhase from '@/components/features/learning/quiz/phases/QuizPassagePhase';
 import QuizChoicesPhase from '@/components/features/learning/quiz/phases/QuizChoicesPhase';
 import QuizResultPhase from '@/components/features/learning/quiz/phases/QuizResultPhase';
@@ -59,6 +62,13 @@ export default function IncorrectNoteQuizViewer({
   );
 
   const isCorrect = userAnswer.trim() === correctAnswer.trim();
+  const indicatorSteps: StepIndicatorInfo[] = [
+    {
+      type: 'quiz',
+      status: isCorrect ? 'correct' : 'incorrect',
+      isCurrent: true,
+    },
+  ];
   const correctAnswerIndex = useMemo(() => {
     if (quiz.type === 'DOC_CLICK') {
       return (quiz.specificData?.documentElements ?? []).findIndex(
@@ -89,6 +99,7 @@ export default function IncorrectNoteQuizViewer({
         <QuizPassagePhase
           question={quiz}
           currentIndex={0}
+          indicatorSteps={indicatorSteps}
           skipConversationAnimation
           onSolve={handleSolve}
         />
@@ -98,6 +109,7 @@ export default function IncorrectNoteQuizViewer({
         <QuizChoicesPhase
           question={quiz}
           currentIndex={0}
+          indicatorSteps={indicatorSteps}
           correctIndex={correctAnswerIndex}
           selectedChoice={selectedChoice}
           isChecking
@@ -118,6 +130,7 @@ export default function IncorrectNoteQuizViewer({
           question={quiz}
           selectedChoice={selectedChoice}
           isCorrect={isCorrect}
+          indicatorSteps={indicatorSteps}
           overrideResult={{
             correct: isCorrect,
             explanation,

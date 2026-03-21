@@ -1,6 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { QuizInfo } from '@/api/learning/learning.types';
+import type { StepIndicatorInfo } from '../quiz.types';
 import DocumentSelectView from './DocumentSelectView';
+
+const indicatorSteps: StepIndicatorInfo[] = [
+  { type: 'quiz', status: 'correct', isCurrent: false },
+  { type: 'quiz', status: 'none', isCurrent: true },
+  { type: 'quiz', status: 'none', isCurrent: false },
+];
+
 const documentSelectQuestion: QuizInfo = {
   quizId: 4,
   sequence: 4,
@@ -10,6 +18,8 @@ const documentSelectQuestion: QuizInfo = {
   questionImageUrl: '',
   questionTitle: '가장 중요한 항목은?',
   specificData: {
+    documentTitle: '임대차계약서',
+    documentSubtitle: '보증금 보호 확인용 예시 문서',
     options: ['소유자', '보증보험 특약', '도배 상태', '입주 가능일'],
     dialogues: [],
     documentElements: [
@@ -25,6 +35,7 @@ const baseArgs = {
   question: documentSelectQuestion,
   questionNumber: 4,
   questionTitle: documentSelectQuestion.questionTitle,
+  indicatorSteps,
   selectedValue: '',
   onSelectChoice: () => {},
   onCheckAnswer: () => {},

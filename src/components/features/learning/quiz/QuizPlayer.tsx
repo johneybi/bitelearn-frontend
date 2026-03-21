@@ -1,22 +1,24 @@
 import { useEffect, useState } from 'react';
 
-import QuizHeader from '@/components/common/QuizHeader';
-import QuizIndicator from '@/components/features/learning/quiz/QuizIndicator';
+import Header from '@/components/common/Header';
 import type { QuizInfo } from '@/api/learning/learning.types';
 import type { QuizMetric, QuizPhase, StepIndicatorInfo } from './quiz.types';
 import QuizPassagePhase from './phases/QuizPassagePhase';
 import QuizChoicesPhase from './phases/QuizChoicesPhase';
 import QuizResultPhase from './phases/QuizResultPhase';
+import QuizExitDialog from './shared/QuizExitDialog';
 import type { QuizSubmitResponse } from '@/api/learning/learning.types';
 import { isAppError } from '@/api/error/appError';
 import { logError } from '@/lib/logError';
 import { toast } from 'sonner';
+import { findDocumentFieldIndexByAnswerText } from './learningQuiz.utils';
 
 type QuizPlayerProps = {
   questions: QuizInfo[];
   startIndex?: number;
   chapterTitle: string;
   onBack: () => void;
+  onPrepareCompletion?: () => Promise<boolean>;
   onComplete: () => void;
   indicatorSteps: StepIndicatorInfo[];
   onCurrentIndexChange: (index: number) => void;
@@ -32,6 +34,7 @@ export default function QuizPlayer({
   startIndex = 0,
   chapterTitle,
   onBack,
+  onPrepareCompletion,
   onComplete,
   indicatorSteps,
   onCurrentIndexChange,
@@ -50,6 +53,7 @@ export default function QuizPlayer({
   );
   const [seenPassages, setSeenPassages] = useState<Set<number>>(new Set());
   const [isEvaluating, setIsEvaluating] = useState(false);
+  const [isExitDialogOpen, setIsExitDialogOpen] = useState(false);
   const [resultByIndex, setResultByIndex] = useState<
     Record<
       number,
@@ -61,22 +65,14 @@ export default function QuizPlayer({
       }
     >
   >({});
-
-  if (questions.length === 0) {
-    return (
-      <main className="flex h-full min-h-0 items-center justify-center bg-white text-slate-900">
-        <p className="text-sm text-slate-400">문제 데이터가 없습니다.</p>
-      </main>
-    );
-  }
-
   const currentQuestion = questions[currentIndex];
-  const currentChoices = currentQuestion.specificData?.options ?? [];
+  const currentChoices = currentQuestion?.specificData?.options ?? [];
   const currentResult = resultByIndex[currentIndex];
   const isShowingEvaluation = phase === 'checking' && !isEvaluating;
   const isCorrect = currentResult?.correct ?? false;
   const isLastQuestion = currentIndex === questions.length - 1;
   const resolvedCorrectIndex = currentResult?.correctAnswerIndex ?? -1;
+  const shouldConfirmExit = phase !== 'result';
 
   useEffect(() => {
     onCurrentIndexChange(currentIndex);
@@ -99,6 +95,15 @@ export default function QuizPlayer({
   const handleGoPassage = () => {
     setPhase('passage');
     setSelectedChoice('');
+  };
+
+  const handleRequestClose = () => {
+    setIsExitDialogOpen(true);
+  };
+
+  const handleConfirmExit = () => {
+    setIsExitDialogOpen(false);
+    onBack();
   };
 
   const handleCheckAnswer = async (selectedIndex?: number) => {
@@ -134,8 +139,9 @@ export default function QuizPlayer({
 
     const correctAnswerIndex =
       currentQuestion.type === 'DOC_CLICK'
-        ? (currentQuestion.specificData?.documentElements ?? []).findIndex(
-            (element) => element.key.trim() === correctAnswer.trim()
+        ? findDocumentFieldIndexByAnswerText(
+            currentQuestion.specificData?.documentElements ?? [],
+            correctAnswer
           )
         : currentChoices.findIndex(
             (choice) => choice.trim() === correctAnswer.trim()
@@ -155,6 +161,11 @@ export default function QuizPlayer({
         correctAnswerIndex,
       },
     }));
+
+    if (isLastQuestion && onPrepareCompletion) {
+      await onPrepareCompletion();
+    }
+
     setIsEvaluating(false);
   };
 
@@ -179,16 +190,36 @@ export default function QuizPlayer({
     setPhase('passage');
   };
 
+  if (questions.length === 0 || !currentQuestion) {
+    return (
+      <main className="flex h-full min-h-0 items-center justify-center bg-white text-slate-900">
+        <p className="text-sm text-slate-400">문제 데이터가 없습니다.</p>
+      </main>
+    );
+  }
+
   return (
     <main className="flex h-full min-h-0 flex-col bg-white text-slate-900">
-      <QuizHeader title={chapterTitle} showCloseButton onCloseClick={onBack} />
+      <Header
+        title={chapterTitle}
+        subtitle="학습 퀴즈"
+        showCloseButton
+        onCloseClick={shouldConfirmExit ? handleRequestClose : onBack}
+      />
 
-      <QuizIndicator steps={indicatorSteps} />
+      {shouldConfirmExit ? (
+        <QuizExitDialog
+          open={isExitDialogOpen}
+          onOpenChange={setIsExitDialogOpen}
+          onConfirmExit={handleConfirmExit}
+        />
+      ) : null}
 
       {phase === 'passage' && (
         <QuizPassagePhase
           question={currentQuestion}
           currentIndex={currentIndex}
+          indicatorSteps={indicatorSteps}
           skipConversationAnimation={seenPassages.has(currentIndex)}
           onSolve={handleSolve}
         />
@@ -198,6 +229,7 @@ export default function QuizPlayer({
         <QuizChoicesPhase
           question={currentQuestion}
           currentIndex={currentIndex}
+          indicatorSteps={indicatorSteps}
           correctIndex={resolvedCorrectIndex}
           selectedChoice={selectedChoice}
           isChecking={isShowingEvaluation}
@@ -213,6 +245,7 @@ export default function QuizPlayer({
           question={currentQuestion}
           selectedChoice={selectedChoice}
           isCorrect={isCorrect}
+          indicatorSteps={indicatorSteps}
           overrideResult={currentResult}
           isLastQuestion={isLastQuestion}
           onNext={handleNext}

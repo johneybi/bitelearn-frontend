@@ -61,6 +61,7 @@ export type ChapterLearningResponse = {
   prologueSubtitle: string;
   prologueContent: string;
   currentGoal: string;
+  closingMessage: string | null;
   coreKeywords: string[];
   currentStatus: ChapterStatus;
   resumeQuizSequence: number | null;
@@ -85,6 +86,8 @@ export type SpecificDataInfo = {
   options: string[];
   dialogues: DialogueInfo[];
   documentElements: DocumentElementInfo[];
+  documentTitle?: string | null;
+  documentSubtitle?: string | null;
 };
 
 // 퀴즈 정답 제출
@@ -105,4 +108,7 @@ export type ChapterResultResponse = {
   totalCount: number;
   accuracyRate: number;
   earnedBytes: number;
+  lostBytes: number;
+  currentLevel: number;
+  currentTotalBytes: number;
 };

@@ -1,4 +1,7 @@
 import type { QuizInfo } from '@/api/learning/learning.types';
+import correctResultImage from '@/assets/character/correct_result.png';
+import incorrectResultImage from '@/assets/character/incorrect_result.png';
+import type { StepIndicatorInfo } from '../quiz.types';
 import { toDocumentCardData } from '../learningQuiz.utils';
 
 import ChoiceResultView from '../result/ChoiceResultView';
@@ -8,6 +11,7 @@ type Props = {
   question: QuizInfo;
   selectedChoice: string;
   isCorrect: boolean;
+  indicatorSteps: StepIndicatorInfo[];
   overrideResult?: {
     correct: boolean;
     explanation: string;
@@ -23,6 +27,7 @@ export default function QuizResultPhase({
   question,
   selectedChoice,
   isCorrect,
+  indicatorSteps,
   overrideResult,
   isLastQuestion,
   onNext,
@@ -37,36 +42,13 @@ export default function QuizResultPhase({
   const hasDocumentElements = documentElements.length > 0;
 
   const characterImageUrl = isCorrect
-    ? '/images/character/dog_perfect.png'
-    : '/images/character/dog_fail.png';
+    ? correctResultImage
+    : incorrectResultImage;
 
-  const isDocumentResult =
-    ((question.type === 'DOC_CLICK' || question.type === 'DOC_MCQ') &&
-      hasDocumentElements) ||
-    question.type === 'DOC_CLICK';
-
-  const findDocumentFieldIndex = (answerText: string) => {
-    const normalizedAnswer = answerText.trim();
-
-    if (!normalizedAnswer) return -1;
-
-    return documentElements.findIndex(
-      (element) =>
-        element.key.trim() === normalizedAnswer ||
-        element.value.trim() === normalizedAnswer
-    );
-  };
-
-  const resolvedCorrectIndex =
-    question.type === 'DOC_MCQ'
-      ? findDocumentFieldIndex(resolvedCorrectAnswer)
-      : overrideResult?.correctAnswerIndex ?? -1;
+  const isDocumentResult = question.type === 'DOC_CLICK' && hasDocumentElements;
+  const resolvedCorrectIndex = overrideResult?.correctAnswerIndex ?? -1;
   const resolvedSelectedAnswerIndex =
-    question.type === 'DOC_MCQ' && selectedIndex !== -1
-      ? findDocumentFieldIndex(choices[selectedIndex] ?? '')
-      : selectedIndex !== -1
-        ? selectedIndex
-        : undefined;
+    selectedIndex !== -1 ? selectedIndex : undefined;
 
   if (isDocumentResult && documentCard) {
     return (
@@ -77,6 +59,7 @@ export default function QuizResultPhase({
         correctIndex={resolvedCorrectIndex}
         selectedAnswerIndex={resolvedSelectedAnswerIndex}
         characterImageUrl={characterImageUrl}
+        indicatorSteps={indicatorSteps}
         isLastQuestion={isLastQuestion}
         onNext={onNext}
         nextLabel={nextLabel}
@@ -91,6 +74,7 @@ export default function QuizResultPhase({
       selectedAnswerText={selectedIndex !== -1 ? (choices[selectedIndex] ?? '') : ''}
       explanation={resolvedExplanation}
       characterImageUrl={characterImageUrl}
+      indicatorSteps={indicatorSteps}
       isLastQuestion={isLastQuestion}
       onNext={onNext}
       nextLabel={nextLabel}

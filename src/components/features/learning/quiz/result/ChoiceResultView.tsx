@@ -1,7 +1,10 @@
 import { motion } from 'framer-motion';
-import { Check, X } from 'lucide-react';
+import { Circle, X } from 'lucide-react';
 
 import QuizFooter from '@/components/common/QuizFooter';
+import ChapterIndicator from '@/components/features/learning/chapter/ChapterIndicator';
+import useIndicatorShadow from '@/hooks/useIndicatorShadow';
+import type { StepIndicatorInfo } from '../quiz.types';
 
 type ChoiceResultViewProps = {
   isCorrect: boolean;
@@ -9,6 +12,7 @@ type ChoiceResultViewProps = {
   selectedAnswerText: string;
   explanation: string;
   characterImageUrl?: string;
+  indicatorSteps: StepIndicatorInfo[];
   isLastQuestion: boolean;
   onNext: () => void;
   nextLabel?: string;
@@ -20,83 +24,94 @@ export default function ChoiceResultView({
   selectedAnswerText,
   explanation,
   characterImageUrl,
+  indicatorSteps,
   isLastQuestion,
   onNext,
   nextLabel,
 }: ChoiceResultViewProps) {
+  const title = isCorrect ? '정답이에요! 👌' : '오답이에요! 😔';
+  const footerLabel =
+    nextLabel ?? (isLastQuestion ? '전체보기' : '다음 퀴즈');
+  const { scrollRef, showIndicatorShadow } = useIndicatorShadow<HTMLElement>();
+
   return (
-    <div className="flex min-h-0 flex-1 flex-col duration-500 animate-in fade-in slide-in-from-right-8">
-      <section className="flex-1 overflow-y-auto px-6 pb-4">
-        {isCorrect ? (
-          <div className="flex flex-col items-center gap-2 pb-4 pt-4">
-            {characterImageUrl && (
-              <img
-                src={characterImageUrl}
-                alt="정답 캐릭터"
-                className="h-[120px] w-[120px] object-contain"
-              />
-            )}
-            <motion.div
-              initial={{ scale: 0.7, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-              className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900"
-            >
-              <Check className="text-white" size={22} strokeWidth={3} />
-            </motion.div>
-            <h2 className="text-xl font-bold text-slate-900">맞았어요!</h2>
-          </div>
-        ) : (
-          <div className="flex items-center justify-between pb-4 pt-4">
-            <div className="flex flex-col gap-3">
+    <div className="flex min-h-0 flex-1 flex-col bg-background pt-[74px] duration-500 animate-in fade-in slide-in-from-right-8">
+      <section
+        ref={scrollRef}
+        className="hide-scrollbar flex flex-1 flex-col overflow-y-auto"
+      >
+        <div className="relative px-5">
+          <div className="relative flex min-h-[132px] items-start justify-between overflow-hidden">
+            <div className="z-10 flex flex-col items-start gap-4 pl-3 pt-8">
               <motion.div
                 initial={{ scale: 0.7, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-200"
+                className={`flex h-[60px] w-[60px] items-center justify-center rounded-2xl ${
+                  isCorrect ? 'bg-primary' : 'bg-destructive'
+                }`}
               >
-                <X className="text-slate-500" size={22} />
+                {isCorrect ? (
+                  <Circle className="text-white" size={40} strokeWidth={2.75} />
+                ) : (
+                  <X className="text-white" size={40} strokeWidth={2.75} />
+                )}
               </motion.div>
-              <h2 className="text-xl font-bold text-slate-900">틀렸습니다.</h2>
+              <h2 className="text-xl font-bold leading-8 tracking-normal text-slate-950">
+                {title}
+              </h2>
             </div>
-            {characterImageUrl && (
-              <img
-                src={characterImageUrl}
-                alt="오답 캐릭터"
-                className="h-[120px] w-[120px] object-contain"
-              />
-            )}
           </div>
-        )}
-
-        {!isCorrect && (
-          <div className="mb-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-            <p className="mb-1.5 text-[10px] font-bold text-slate-400">
-              내가 선택한 답
-            </p>
-            <p className="text-sm text-slate-600 line-through">
-              {selectedAnswerText}
-            </p>
-          </div>
-        )}
-
-        <div className="mb-3 rounded-xl border border-slate-900 bg-slate-900 px-4 py-3">
-          <p className="mb-1.5 text-[10px] font-bold text-slate-400">정답</p>
-          <p className="text-sm font-semibold text-white">
-            {correctAnswerText}
-          </p>
+          {characterImageUrl ? (
+            <img
+              src={characterImageUrl}
+              alt={isCorrect ? '정답 결과 캐릭터' : '오답 결과 캐릭터'}
+              className="pointer-events-none absolute right-0 top-[-8px] h-[180px] w-[180px] object-contain"
+            />
+          ) : null}
         </div>
 
-        <div className="rounded-xl border border-slate-100 bg-white px-4 py-4">
-          <p className="mb-2 text-[10px] font-bold text-slate-400">해설</p>
-          <p className="text-sm leading-relaxed text-slate-600">
-            {explanation}
-          </p>
+        <div className="mt-6 flex-1 rounded-t-3xl bg-popover px-5 pb-8 pt-6 shadow-[0_-4px_20px_0_rgba(237,238,246,1)]">
+          <div className="flex flex-col gap-4">
+            {!isCorrect && (
+              <div className="rounded-xl bg-slate-100 px-4 py-3">
+                <p className="mb-1.5 text-xs font-bold leading-4 text-destructive">
+                  내가 선택한 답
+                </p>
+                <p className="break-words text-sm font-medium leading-5 text-slate-600">
+                  {selectedAnswerText}
+                </p>
+              </div>
+            )}
+
+            <div className="rounded-xl bg-green-50 px-[14px] py-3">
+              <p className="mb-1.5 text-xs font-semibold leading-4 text-primary-500">
+                정답
+              </p>
+              <p className="whitespace-pre-line break-words text-sm font-medium leading-5 text-slate-950">
+                {correctAnswerText}
+              </p>
+            </div>
+
+            <div className="rounded-xl bg-background px-[14px] py-3">
+              <p className="mb-1.5 text-xs font-semibold leading-4 text-primary-500">
+                해설
+              </p>
+              <p className="whitespace-pre-line break-words text-sm font-medium leading-5 text-slate-950">
+                {explanation}
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
-      <QuizFooter onClick={onNext}>
-        {nextLabel ?? (isLastQuestion ? '학습 끝내기' : '다음 문제')}
+      <ChapterIndicator
+        steps={indicatorSteps}
+        variant="quiz"
+        showShadow={showIndicatorShadow}
+      />
+      <QuizFooter onClick={onNext} showTrailingIcon={false}>
+        {footerLabel}
       </QuizFooter>
     </div>
   );

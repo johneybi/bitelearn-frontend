@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-import AuthHeader from '@/components/common/AuthHeader';
+import Header from '@/components/common/Header';
 import TermsAgreementForm from '@/components/features/auth/TermsAgreementForm';
 import { SIGNUP_TERMS_AGREED_STORAGE_KEY } from '@/constants/auth';
 
@@ -9,8 +9,8 @@ export default function TermsAgreementPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-dvh bg-background">
-      <AuthHeader
+    <div className="min-h-dvh bg-background pt-[60px]">
+      <Header
         showBackButton
         title="약관동의"
         onBackClick={() => navigate(-1)}

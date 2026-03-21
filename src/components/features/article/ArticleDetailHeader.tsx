@@ -3,8 +3,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
 import useShareArticle from '@/hooks/useShareArticle';
-import { Bookmark, ChevronLeft, Copy, Share2 } from 'lucide-react';
+import { ArrowLeft, Bookmark, Copy, Share2 } from 'lucide-react';
 
 type ArticleDetailHeaderProps = {
   onBack: () => void;
@@ -29,32 +30,40 @@ export default function ArticleDetailHeader({
   const canUseWebShare = typeof navigator !== 'undefined' && !!navigator.share;
 
   return (
-    <header className="z-10 flex h-14 shrink-0 items-center justify-between border-b border-slate-100 bg-white/90 px-2 backdrop-blur-md">
-      <button
+    <header className="fixed left-1/2 top-0 z-40 flex h-[60px] w-full max-w-app -translate-x-1/2 items-center justify-between bg-white px-1.5">
+      <Button
         type="button"
+        variant="ghost"
+        size="icon"
+        aria-label="이전"
         onClick={onBack}
-        className="flex h-10 w-10 items-center justify-center rounded-full text-slate-800 transition-colors hover:bg-slate-100"
+        className="size-11 rounded-xl"
       >
-        <ChevronLeft className="h-6 w-6" />
-      </button>
+        <ArrowLeft className="h-6 w-6" />
+      </Button>
 
-      <div className="flex gap-1">
-        <button
+      <div className="flex items-center">
+        <Button
           type="button"
-          className="flex h-10 w-10 items-center justify-center rounded-full text-slate-600 transition-colors hover:bg-slate-100"
+          variant="ghost"
+          size="icon"
+          aria-label="북마크"
+          className="size-11 rounded-xl"
         >
-          <Bookmark className="h-5 w-5" />
-        </button>
+          <Bookmark className="h-6 w-6" />
+        </Button>
 
         <Popover open={sharePopoverOpen}>
           <PopoverTrigger asChild>
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon"
               aria-label="아티클 공유"
-              className="flex h-10 w-10 items-center justify-center rounded-full text-slate-600 transition-colors hover:bg-slate-100"
+              className="size-11 rounded-xl"
             >
-              <Share2 className="h-5 w-5" />
-            </button>
+              <Share2 className="h-6 w-6" />
+            </Button>
           </PopoverTrigger>
 
           <PopoverContent

@@ -13,7 +13,7 @@ import LoginForm, {
 import { logError } from '@/lib/logError';
 import type { LoginFormValues } from '@/schemas/loginSchema';
 import { ChevronRight } from 'lucide-react';
-import AuthHeader from '@/components/common/AuthHeader';
+import Header from '@/components/common/Header';
 
 import logo from '@/assets/brand/logo.svg';
 import symbol from '@/assets/brand/symbol.svg';
@@ -71,13 +71,12 @@ export default function LoginPage() {
 
   return (
     <div className="relative flex min-h-dvh flex-col bg-background">
-      <AuthHeader
-        className="absolute inset-x-0 top-0 z-10"
+      <Header
         showCloseButton
         onCloseClick={() => navigate(-1)}
       />
 
-      <div className="flex flex-1 flex-col gap-6 bg-background px-5">
+      <div className="flex flex-1 flex-col gap-6 bg-background px-5 pt-[60px]">
         <div className="flex flex-col items-center justify-center gap-10 self-stretch px-[69px] pb-16 pt-24">
           <div className="flex items-center justify-center gap-3">
             <img

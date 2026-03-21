@@ -1,12 +1,15 @@
 import type { ReactNode } from 'react';
+import ChapterIndicator from '@/components/features/learning/chapter/ChapterIndicator';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Check, X } from 'lucide-react';
 import QuizFooter from '@/components/common/QuizFooter';
+import useIndicatorShadow from '@/hooks/useIndicatorShadow';
+import type { StepIndicatorInfo } from '../quiz.types';
 import QuizTitle from '../shared/QuizTitle';
 
 type MultipleChoiceViewProps = {
-  questionNumber: number;
   questionTitle: string;
+  indicatorSteps: StepIndicatorInfo[];
   choices: string[];
   selectedValue: string;
   onSelectChoice: (value: string) => void;
@@ -19,8 +22,8 @@ type MultipleChoiceViewProps = {
 };
 
 export default function MultipleChoiceView({
-  questionNumber,
   questionTitle,
+  indicatorSteps,
   choices,
   selectedValue,
   onSelectChoice,
@@ -32,72 +35,110 @@ export default function MultipleChoiceView({
   allowSubmitWhenChecking = false,
 }: MultipleChoiceViewProps) {
   const isCtaEnabled = selectedValue !== '';
+  const { scrollRef, showIndicatorShadow } = useIndicatorShadow<HTMLElement>();
 
   return (
     <>
-      <section className="flex-1 overflow-y-auto px-6">
-        <QuizTitle questionNumber={questionNumber} questionTitle={questionTitle} />
+      <section
+        ref={scrollRef}
+        className="hide-scrollbar flex-1 overflow-y-auto px-5 pt-[74px]"
+      >
+        <div className="flex min-h-full w-full flex-col justify-center">
+          <div className="flex flex-col gap-3">
+            <QuizTitle showQuestionPrefix questionTitle={questionTitle} />
 
-        <RadioGroup
-          value={selectedValue}
-          onValueChange={onSelectChoice}
-          className="flex flex-col gap-2"
-          disabled={isChecking}
-        >
-          {choices.map((choice, index) => {
-            const isSelected = selectedValue === String(index);
-            const isAnswer = index === correctIndex;
+            <RadioGroup
+              value={selectedValue}
+              onValueChange={onSelectChoice}
+              className="flex flex-col gap-3"
+              disabled={isChecking}
+            >
+              {choices.map((choice, index) => {
+                const isSelected = selectedValue === String(index);
+                const isAnswer = index === correctIndex;
 
-            let containerClass = 'border-slate-300 bg-white text-slate-900';
-            let radioClass = '';
-            let customIcon: ReactNode = undefined;
+                // 기본 스타일
+                let containerClass =
+                  'border-2 border-slate-100 bg-white text-slate-950 shadow-[0_12px_16px_0_rgba(237,238,246,1)]';
+                let radioClass = 'border-secondary text-slate-400';
+                let customIcon: ReactNode = undefined;
+                let showIconAlways = false;
 
-            if (isChecking) {
-              if (isAnswer) {
-                containerClass = `border-green-500 bg-green-50 text-green-700 font-semibold ${
-                  isSelected ? 'animate-pop' : ''
-                }`;
-                radioClass =
-                  'border-green-600 bg-green-600 text-white disabled:opacity-100';
-                customIcon = <Check className="h-3 w-3 stroke-[3]" />;
-              } else if (isSelected && !isAnswer) {
-                containerClass =
-                  'border-red-500 bg-red-50 text-red-700 font-medium animate-shake';
-                radioClass =
-                  'border-red-600 bg-red-600 text-white disabled:opacity-100';
-                customIcon = <X className="h-3 w-3 stroke-[3]" />;
-              } else {
-                containerClass = 'border-slate-200 bg-slate-50 text-slate-400';
-                radioClass = 'border-slate-300 disabled:opacity-40';
-              }
-            } else if (isSelected) {
-              containerClass =
-                'border-slate-900 bg-white text-slate-900 font-medium';
-            }
-
-            return (
-              <label
-                key={index}
-                className={`flex w-full items-center gap-3 rounded-md border px-4 py-3.5 text-sm transition-colors ${
-                  isChecking ? 'cursor-not-allowed' : 'cursor-pointer'
-                } ${containerClass}`}
-              >
-                <RadioGroupItem
-                  value={String(index)}
-                  id={`choice-${index}`}
-                  className={`shrink-0 ${radioClass}`}
-                  icon={customIcon}
-                  showIconAlways={
-                    isChecking && (isAnswer || (isSelected && !isAnswer))
+                // 정답 확인 후 스타일
+                if (isChecking) {
+                  if (isAnswer) {
+                    containerClass = `border-2 border-[rgba(74,222,128,0.5)] bg-green-50 text-foreground shadow-[0_12px_16px_0_rgba(237,238,246,1)] ${
+                      isSelected ? 'animate-pop' : ''
+                    }`;
+                    radioClass =
+                      'relative overflow-hidden border-transparent bg-primary text-white shadow-none disabled:opacity-100';
+                    customIcon = (
+                      <>
+                        <span className="absolute inset-0 rounded-full bg-success shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)]" />
+                        <Check className="relative z-10 h-3 w-3 stroke-[2.75]" />
+                      </>
+                    );
+                    showIconAlways = true;
+                  } else if (isSelected && !isAnswer) {
+                    containerClass =
+                      'animate-shake border-2 border-[rgba(248,113,113,0.5)] bg-red-50 text-foreground shadow-[0_12px_16px_0_rgba(237,238,246,1)]';
+                    radioClass =
+                      'relative overflow-hidden border-transparent bg-transparent text-white shadow-none disabled:opacity-100';
+                    customIcon = (
+                      <>
+                        <span className="absolute inset-0 rounded-full bg-destructive shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)]" />
+                        <X className="relative z-10 h-3 w-3 stroke-[2.75]" />
+                      </>
+                    );
+                    showIconAlways = true;
+                  } else {
+                    containerClass =
+                      'border-2 border-slate-100 bg-white text-slate-950 shadow-[0_12px_16px_0_rgba(237,238,246,1)]';
+                    radioClass =
+                      'border-secondary text-slate-400 disabled:opacity-100';
                   }
-                />
-                <span>{choice}</span>
-              </label>
-            );
-          })}
-        </RadioGroup>
+
+                  // 정답 확인 전 선택된 상세 스타일
+                } else if (isSelected) {
+                  containerClass =
+                    'border-2 border-[rgba(71,85,105,0.4)] bg-slate-100 text-foreground shadow-[0_12px_16px_0_rgba(237,238,246,1)]';
+                  radioClass =
+                    'border-slate-600 text-slate-600 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)]';
+                  customIcon = (
+                    <span className="block size-2.5 rounded-full bg-slate-600" />
+                  );
+                }
+
+                return (
+                  <label
+                    key={index}
+                    className={`flex w-full items-center gap-3 rounded-[6px] px-4 py-3 text-sm transition-colors ${
+                      isChecking ? 'cursor-not-allowed' : 'cursor-pointer'
+                    } ${containerClass}`}
+                  >
+                    <RadioGroupItem
+                      value={String(index)}
+                      id={`choice-${index}`}
+                      className={`size-4 shrink-0 ${radioClass}`}
+                      icon={customIcon}
+                      showIconAlways={showIconAlways}
+                    />
+                    <span className="text-sm font-medium leading-5 tracking-normal text-foreground">
+                      {choice}
+                    </span>
+                  </label>
+                );
+              })}
+            </RadioGroup>
+          </div>
+        </div>
       </section>
 
+      <ChapterIndicator
+        steps={indicatorSteps}
+        variant="quiz"
+        showShadow={showIndicatorShadow}
+      />
       <QuizFooter
         disabled={!isCtaEnabled || (isChecking && !allowSubmitWhenChecking)}
         previousDisabled={isChecking && !allowSubmitWhenChecking}
