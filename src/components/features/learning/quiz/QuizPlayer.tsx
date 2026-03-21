@@ -6,16 +6,19 @@ import type { QuizMetric, QuizPhase, StepIndicatorInfo } from './quiz.types';
 import QuizPassagePhase from './phases/QuizPassagePhase';
 import QuizChoicesPhase from './phases/QuizChoicesPhase';
 import QuizResultPhase from './phases/QuizResultPhase';
+import QuizExitDialog from './shared/QuizExitDialog';
 import type { QuizSubmitResponse } from '@/api/learning/learning.types';
 import { isAppError } from '@/api/error/appError';
 import { logError } from '@/lib/logError';
 import { toast } from 'sonner';
+import { findDocumentFieldIndexByAnswerText } from './learningQuiz.utils';
 
 type QuizPlayerProps = {
   questions: QuizInfo[];
   startIndex?: number;
   chapterTitle: string;
   onBack: () => void;
+  onPrepareCompletion?: () => Promise<boolean>;
   onComplete: () => void;
   indicatorSteps: StepIndicatorInfo[];
   onCurrentIndexChange: (index: number) => void;
@@ -31,6 +34,7 @@ export default function QuizPlayer({
   startIndex = 0,
   chapterTitle,
   onBack,
+  onPrepareCompletion,
   onComplete,
   indicatorSteps,
   onCurrentIndexChange,
@@ -49,6 +53,7 @@ export default function QuizPlayer({
   );
   const [seenPassages, setSeenPassages] = useState<Set<number>>(new Set());
   const [isEvaluating, setIsEvaluating] = useState(false);
+  const [isExitDialogOpen, setIsExitDialogOpen] = useState(false);
   const [resultByIndex, setResultByIndex] = useState<
     Record<
       number,
@@ -67,6 +72,7 @@ export default function QuizPlayer({
   const isCorrect = currentResult?.correct ?? false;
   const isLastQuestion = currentIndex === questions.length - 1;
   const resolvedCorrectIndex = currentResult?.correctAnswerIndex ?? -1;
+  const shouldConfirmExit = phase !== 'result';
 
   useEffect(() => {
     onCurrentIndexChange(currentIndex);
@@ -89,6 +95,15 @@ export default function QuizPlayer({
   const handleGoPassage = () => {
     setPhase('passage');
     setSelectedChoice('');
+  };
+
+  const handleRequestClose = () => {
+    setIsExitDialogOpen(true);
+  };
+
+  const handleConfirmExit = () => {
+    setIsExitDialogOpen(false);
+    onBack();
   };
 
   const handleCheckAnswer = async (selectedIndex?: number) => {
@@ -123,9 +138,10 @@ export default function QuizPlayer({
     }
 
     const correctAnswerIndex =
-      currentQuestion.type === 'DOC_CLICK'
-        ? (currentQuestion.specificData?.documentElements ?? []).findIndex(
-            (element) => element.key.trim() === correctAnswer.trim()
+      currentQuestion.type === 'DOC_CLICK' || currentQuestion.type === 'DOC_MCQ'
+        ? findDocumentFieldIndexByAnswerText(
+            currentQuestion.specificData?.documentElements ?? [],
+            correctAnswer
           )
         : currentChoices.findIndex(
             (choice) => choice.trim() === correctAnswer.trim()
@@ -145,6 +161,11 @@ export default function QuizPlayer({
         correctAnswerIndex,
       },
     }));
+
+    if (isLastQuestion && onPrepareCompletion) {
+      await onPrepareCompletion();
+    }
+
     setIsEvaluating(false);
   };
 
@@ -183,8 +204,16 @@ export default function QuizPlayer({
         title={chapterTitle}
         subtitle="학습 퀴즈"
         showCloseButton
-        onCloseClick={onBack}
+        onCloseClick={shouldConfirmExit ? handleRequestClose : onBack}
       />
+
+      {shouldConfirmExit ? (
+        <QuizExitDialog
+          open={isExitDialogOpen}
+          onOpenChange={setIsExitDialogOpen}
+          onConfirmExit={handleConfirmExit}
+        />
+      ) : null}
 
       {phase === 'passage' && (
         <QuizPassagePhase

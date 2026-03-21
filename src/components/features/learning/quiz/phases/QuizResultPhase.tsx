@@ -2,7 +2,10 @@ import type { QuizInfo } from '@/api/learning/learning.types';
 import correctResultImage from '@/assets/character/correct_result.png';
 import incorrectResultImage from '@/assets/character/incorrect_result.png';
 import type { StepIndicatorInfo } from '../quiz.types';
-import { toDocumentCardData } from '../learningQuiz.utils';
+import {
+  findDocumentFieldIndexByAnswerText,
+  toDocumentCardData,
+} from '../learningQuiz.utils';
 
 import ChoiceResultView from '../result/ChoiceResultView';
 import DocumentResultView from '../result/DocumentResultView';
@@ -48,25 +51,20 @@ export default function QuizResultPhase({
       hasDocumentElements) ||
     question.type === 'DOC_CLICK';
 
-  const findDocumentFieldIndex = (answerText: string) => {
-    const normalizedAnswer = answerText.trim();
-
-    if (!normalizedAnswer) return -1;
-
-    return documentElements.findIndex(
-      (element) =>
-        element.key.trim() === normalizedAnswer ||
-        element.value.trim() === normalizedAnswer
-    );
-  };
-
   const resolvedCorrectIndex =
     question.type === 'DOC_MCQ'
-      ? findDocumentFieldIndex(resolvedCorrectAnswer)
+      ? (overrideResult?.correctAnswerIndex ??
+          findDocumentFieldIndexByAnswerText(
+            documentElements,
+            resolvedCorrectAnswer
+          ))
       : overrideResult?.correctAnswerIndex ?? -1;
   const resolvedSelectedAnswerIndex =
     question.type === 'DOC_MCQ' && selectedIndex !== -1
-      ? findDocumentFieldIndex(choices[selectedIndex] ?? '')
+      ? findDocumentFieldIndexByAnswerText(
+          documentElements,
+          choices[selectedIndex] ?? ''
+        )
       : selectedIndex !== -1
         ? selectedIndex
         : undefined;
