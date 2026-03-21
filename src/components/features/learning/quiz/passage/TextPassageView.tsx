@@ -19,7 +19,11 @@ export default function TextPassageView({
 }: Props) {
   const passageTitle = question.passageTitle ?? '';
   const passageContent = question.passageContent ?? '';
-  const imageSrc = question.questionImageUrl ?? undefined;
+  const shouldHideImage =
+    question.type === 'DOC_MCQ' || question.type === 'DOC_CLICK';
+  const imageSrc = shouldHideImage
+    ? undefined
+    : (question.questionImageUrl ?? undefined);
   const hasPassageCard = passageContent.trim().length > 0 || Boolean(imageSrc);
   const { scrollRef, showIndicatorShadow } = useIndicatorShadow<HTMLElement>();
 
