@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 
 import type { VocabInfo } from '@/api/learning/learning.types';
+import defaultVocabImage from '@/assets/learning/vocab_default.png';
 
 type VocabCardProps = {
   vocab: VocabInfo;
@@ -13,6 +14,9 @@ export default function VocabCard({
   isFlipped,
   onFlip,
 }: VocabCardProps) {
+  const resolvedFrontImageUrl = vocab.frontImageUrl?.trim()
+    ? vocab.frontImageUrl
+    : defaultVocabImage;
   const descriptionLines = vocab.backMain
     .split('\n')
     .map((line) => line.trim())
@@ -28,17 +32,15 @@ export default function VocabCard({
       {/* Front */}
       <div className="backface-hidden group absolute inset-0 flex h-full w-full flex-col overflow-hidden rounded-[24px] border-2 border-slate-100 bg-white shadow-[0_12px_32px_rgba(15,23,42,0.08)]">
         <div className="flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-slate-100">
-          {vocab.frontImageUrl ? (
-            <img
-              src={vocab.frontImageUrl}
-              alt={`${vocab.frontMain} 이미지`}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          ) : (
-            <div className="flex flex-col items-center text-6xl opacity-40">
-              <span>📖</span>
-            </div>
-          )}
+          <img
+            src={resolvedFrontImageUrl}
+            alt={`${vocab.frontMain} 이미지`}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            onError={(event) => {
+              event.currentTarget.onerror = null;
+              event.currentTarget.src = defaultVocabImage;
+            }}
+          />
         </div>
 
         <div className="flex min-h-[190px] shrink-0 flex-col items-center justify-center gap-10 border-t border-slate-100 bg-white px-7 py-8 text-center">
