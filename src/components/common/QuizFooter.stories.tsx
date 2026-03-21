@@ -9,7 +9,7 @@ const meta: Meta<typeof QuizFooter> = {
     layout: 'fullscreen',
   },
   args: {
-    children: '다음',
+    children: '전체보기',
     onClick: () => {},
   },
 };

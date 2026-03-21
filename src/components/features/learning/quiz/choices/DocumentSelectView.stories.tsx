@@ -10,6 +10,8 @@ const documentSelectQuestion: QuizInfo = {
   questionImageUrl: '',
   questionTitle: '가장 중요한 항목은?',
   specificData: {
+    documentTitle: '임대차계약서',
+    documentSubtitle: '보증금 보호 확인용 예시 문서',
     options: ['소유자', '보증보험 특약', '도배 상태', '입주 가능일'],
     dialogues: [],
     documentElements: [

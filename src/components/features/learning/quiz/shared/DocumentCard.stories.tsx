@@ -4,7 +4,6 @@ import DocumentCard from './DocumentCard';
 const documentCardData = {
   header: '등 기 사 항 전 부 증 명 서',
   subHeader: '토지 및 건물 — 가상 문서',
-  sectionTitle: '▶ 갑구 (소유권에 관한 사항)',
   fields: [
     { label: '소재지', value: '햇살동 100번지 뼈다귀 하우스' },
     { label: '소유자', value: '불독 (800101-*******)' },
@@ -15,7 +14,6 @@ const documentCardData = {
       value: '채권자 개굴개굴은행\n청구금액 50,000,000원',
     },
   ],
-  footerNotice: '본 문서는 학습용 가상 서류입니다.',
 };
 
 const correctIndex = 3;
