@@ -144,6 +144,9 @@ export default function ChapterResult({
   }, [accuracyRate, correct, total]);
 
   const cfg = VARIANT_CONFIG[variant];
+  const contentBottomPaddingClass = cfg.secondaryButtonLabel
+    ? 'pb-[206px]'
+    : 'pb-[144px]';
 
   const levelState = useMemo(() => {
     const derivedLevel =
@@ -187,7 +190,9 @@ export default function ChapterResult({
 
       <Header showCloseButton onCloseClick={onBack} className="bg-background" />
 
-      <div className="hide-scrollbar flex-1 overflow-y-auto px-5 pb-[144px] pt-[60px]">
+      <div
+        className={`hide-scrollbar flex-1 overflow-y-auto px-5 pt-[60px] ${contentBottomPaddingClass}`}
+      >
         <section className="mx-auto flex w-full max-w-[335px] flex-col items-center pt-5 text-center">
           <motion.div
             initial={{ scale: 0.92, opacity: 0 }}
