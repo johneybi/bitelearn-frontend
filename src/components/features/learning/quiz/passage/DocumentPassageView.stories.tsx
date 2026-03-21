@@ -10,6 +10,8 @@ const documentPassageQuestion: QuizInfo = {
   questionImageUrl: '',
   questionTitle: '문서에서 가장 위험한 항목은?',
   specificData: {
+    documentTitle: '등기사항전부증명서',
+    documentSubtitle: '토지 및 건물 - 가상 문서',
     options: ['소유자', '가압류', '소재지', '접수일자'],
     dialogues: [],
     documentElements: [
@@ -34,6 +36,7 @@ type Story = StoryObj<typeof meta>;
 export const DocumentCardVisible: Story = {
   args: {
     question: documentPassageQuestion,
+    indicatorSteps: [],
     onSolve: () => {},
   },
 };

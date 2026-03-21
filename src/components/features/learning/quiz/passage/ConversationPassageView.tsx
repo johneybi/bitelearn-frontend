@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import bulldogProfileImage from '@/assets/character/bulldog_profile.png';
 import mungmungProfileImage from '@/assets/character/mungmung_profile.jpg';
 import QuizFooter from '@/components/common/QuizFooter';
 import ChapterIndicator from '@/components/features/learning/chapter/ChapterIndicator';
 import type { QuizInfo } from '@/api/learning/learning.types';
+import useIndicatorShadow from '@/hooks/useIndicatorShadow';
 import type { StepIndicatorInfo } from '../quiz.types';
 import QuizTitle from '../shared/QuizTitle';
 
@@ -120,7 +121,8 @@ export default function ConversationPassageView({
     skipAnimation ? conversations.length : 0
   );
   const [showTyping, setShowTyping] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const { scrollRef, showIndicatorShadow } =
+    useIndicatorShadow<HTMLDivElement>();
 
   const totalBubbles = conversations.length;
   const allVisible = visibleCount >= totalBubbles;
@@ -294,7 +296,11 @@ export default function ConversationPassageView({
         }
       `}</style>
 
-      <ChapterIndicator steps={indicatorSteps} variant="quiz" />
+      <ChapterIndicator
+        steps={indicatorSteps}
+        variant="quiz"
+        showShadow={showIndicatorShadow}
+      />
       <QuizFooter
         onClick={onSolve}
         disabled={!allVisible}

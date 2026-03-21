@@ -86,6 +86,8 @@ export type SpecificDataInfo = {
   options: string[];
   dialogues: DialogueInfo[];
   documentElements: DocumentElementInfo[];
+  documentTitle?: string | null;
+  documentSubtitle?: string | null;
 };
 
 // 퀴즈 정답 제출
