@@ -93,19 +93,33 @@ export default function ChapterPlayer({
     Array(quizzes.length).fill('none')
   );
 
+  const prepareQuizCompletion = async () => {
+    try {
+      const result = await onFetchResult();
+      setQuizResult(result);
+      return true;
+    } catch (error) {
+      logError('ChapterPlayer', '챕터 결과 조회 실패', error);
+      toast.error(
+        isAppError(error)
+          ? error.message
+          : '챕터 결과를 불러오지 못했습니다. 다시 시도해 주세요.'
+      );
+      return false;
+    }
+  };
+
   const handleQuizComplete = () => {
-    onFetchResult()
+    if (quizResult) {
+      setChapterPhase('done');
+      return;
+    }
+
+    prepareQuizCompletion()
       .then((result) => {
-        setQuizResult(result);
-        setChapterPhase('done');
-      })
-      .catch((error) => {
-        logError('ChapterPlayer', '챕터 결과 조회 실패', error);
-        toast.error(
-          isAppError(error)
-            ? error.message
-            : '챕터 결과를 불러오지 못했습니다. 다시 시도해 주세요.'
-        );
+        if (result) {
+          setChapterPhase('done');
+        }
       });
   };
 
@@ -187,6 +201,7 @@ export default function ChapterPlayer({
         questions={quizzes}
         chapterTitle={chapterTitle}
         onBack={onBack}
+        onPrepareCompletion={prepareQuizCompletion}
         onComplete={handleQuizComplete}
         indicatorSteps={quizIndicatorSteps}
         onCurrentIndexChange={setQuizCurrentIndex}
