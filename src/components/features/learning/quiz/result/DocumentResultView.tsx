@@ -17,6 +17,7 @@ type DocumentResultViewProps = {
   indicatorSteps: StepIndicatorInfo[];
   isLastQuestion: boolean;
   onNext: () => void;
+  nextLabel?: string;
 };
 
 export default function DocumentResultView({
@@ -29,6 +30,7 @@ export default function DocumentResultView({
   indicatorSteps,
   isLastQuestion,
   onNext,
+  nextLabel,
 }: DocumentResultViewProps) {
   const title = isCorrect ? '정답이에요! 👌' : '오답이에요! 😔';
   const footerLabel = isLastQuestion ? '전체보기' : '다음 퀴즈';

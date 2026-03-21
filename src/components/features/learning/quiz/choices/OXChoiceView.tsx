@@ -15,6 +15,8 @@ type OXChoiceViewProps = {
   onCheckAnswer: (selectedIndex: number) => void;
   isChecking?: boolean;
   onPrevious?: () => void;
+  ctaLabel?: string;
+  allowSubmitWhenChecking?: boolean;
 };
 
 export default function OXChoiceView({
@@ -26,10 +28,13 @@ export default function OXChoiceView({
   onCheckAnswer,
   isChecking = false,
   onPrevious,
+  ctaLabel,
+  allowSubmitWhenChecking = false,
 }: OXChoiceViewProps) {
   const selected =
     selectedValue === '' ? null : (Number(selectedValue) as 0 | 1);
-  const isCtaEnabled = selected !== null && !isChecking;
+  const isCtaEnabled =
+    selected !== null && (!isChecking || allowSubmitWhenChecking);
 
   const handleSelect = (value: 0 | 1) => {
     if (isChecking) return;
@@ -155,12 +160,12 @@ export default function OXChoiceView({
       <ChapterIndicator steps={indicatorSteps} variant="quiz" />
       <QuizFooter
         disabled={!isCtaEnabled}
-        previousDisabled={isChecking}
+        previousDisabled={isChecking && !allowSubmitWhenChecking}
         onClick={handleConfirm}
         onPrevious={onPrevious}
         showTrailingIcon={false}
       >
-        정답 확인
+        {ctaLabel ?? '정답 확인'}
       </QuizFooter>
     </>
   );

@@ -18,6 +18,8 @@ type DocumentSelectViewProps = {
   onCheckAnswer: (selectedIndex?: number) => void;
   isChecking?: boolean;
   onPrevious?: () => void;
+  ctaLabel?: string;
+  allowSubmitWhenChecking?: boolean;
 };
 
 export default function DocumentSelectView({
@@ -30,6 +32,8 @@ export default function DocumentSelectView({
   onSelectChoice,
   onCheckAnswer,
   onPrevious,
+  ctaLabel,
+  allowSubmitWhenChecking = false,
 }: DocumentSelectViewProps) {
   const documentCard = toDocumentCardData(question)!;
   const { scrollRef, showIndicatorShadow } = useIndicatorShadow<HTMLElement>();
@@ -64,13 +68,15 @@ export default function DocumentSelectView({
         showShadow={showIndicatorShadow}
       />
       <QuizFooter
-        disabled={selectedValue === '' || isChecking}
-        previousDisabled={isChecking}
+        disabled={
+          selectedValue === '' || (isChecking && !allowSubmitWhenChecking)
+        }
+        previousDisabled={isChecking && !allowSubmitWhenChecking}
         onClick={onCheckAnswer}
         onPrevious={onPrevious}
         showTrailingIcon={false}
       >
-        정답 확인
+        {ctaLabel ?? '정답 확인'}
       </QuizFooter>
     </>
   );

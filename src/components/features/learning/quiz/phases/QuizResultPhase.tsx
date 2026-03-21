@@ -20,6 +20,7 @@ type Props = {
   };
   isLastQuestion: boolean;
   onNext: () => void;
+  nextLabel?: string;
 };
 
 export default function QuizResultPhase({
@@ -30,6 +31,7 @@ export default function QuizResultPhase({
   overrideResult,
   isLastQuestion,
   onNext,
+  nextLabel,
 }: Props) {
   const choices = question.specificData?.options ?? [];
   const documentElements = question.specificData?.documentElements ?? [];
@@ -60,6 +62,7 @@ export default function QuizResultPhase({
         indicatorSteps={indicatorSteps}
         isLastQuestion={isLastQuestion}
         onNext={onNext}
+        nextLabel={nextLabel}
       />
     );
   }
@@ -74,6 +77,7 @@ export default function QuizResultPhase({
       indicatorSteps={indicatorSteps}
       isLastQuestion={isLastQuestion}
       onNext={onNext}
+      nextLabel={nextLabel}
     />
   );
 }

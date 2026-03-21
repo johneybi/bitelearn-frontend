@@ -16,6 +16,8 @@ type Props = {
   onCheckAnswer: () => void;
   onCheckAnswerWithIndex: (selectedIndex: number) => void;
   onPrevious?: () => void;
+  ctaLabel?: string;
+  allowSubmitWhenChecking?: boolean;
 };
 
 export default function QuizChoicesPhase({
@@ -29,6 +31,8 @@ export default function QuizChoicesPhase({
   onCheckAnswer,
   onCheckAnswerWithIndex,
   onPrevious,
+  ctaLabel,
+  allowSubmitWhenChecking = false,
 }: Props) {
   const questionNumber = question.sequence ?? currentIndex + 1;
   const hasDocumentElements = Boolean(
@@ -55,6 +59,8 @@ export default function QuizChoicesPhase({
         onSelectChoice={onSelectChoice}
         onCheckAnswer={onCheckAnswer}
         onPrevious={onPrevious}
+        ctaLabel={ctaLabel}
+        allowSubmitWhenChecking={allowSubmitWhenChecking}
       />
     );
   }
@@ -72,6 +78,8 @@ export default function QuizChoicesPhase({
         onCheckAnswer={onCheckAnswerWithIndex}
         isChecking={isChecking}
         onPrevious={onPrevious}
+        ctaLabel={ctaLabel}
+        allowSubmitWhenChecking={allowSubmitWhenChecking}
       />
     );
   }
@@ -87,6 +95,8 @@ export default function QuizChoicesPhase({
       isChecking={isChecking}
       correctIndex={correctIndex}
       onPrevious={onPrevious}
+      ctaLabel={ctaLabel}
+      allowSubmitWhenChecking={allowSubmitWhenChecking}
     />
   );
 }

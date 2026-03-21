@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
@@ -6,10 +6,9 @@ import ArticleCard from '@/components/features/article/ArticleCard';
 import ArticleHeroCard from '@/components/features/article/ArticleHeroCard';
 import {
   ARTICLE_CATEGORIES,
+  getMockArticleListItems,
   type ArticleCategory,
 } from '@/mock/article';
-import { fetchArticleListPage } from '@/mock/fetchArticleListPage';
-import useCursorInfiniteQuery from '@/hooks/useCursorInfiniteQuery';
 import { cn } from '@/lib/utils';
 
 export default function ArticleListPage() {
@@ -17,21 +16,9 @@ export default function ArticleListPage() {
   const [selectedCategory, setSelectedCategory] =
     useState<ArticleCategory>('전체');
 
-  const fetchArticlePage = useCallback(
-    (cursor?: string | null) =>
-      fetchArticleListPage({
-        cursor,
-        category: selectedCategory,
-      }),
-    [selectedCategory]
-  );
+  const articles = getMockArticleListItems(selectedCategory);
 
-  const articleFeed = useCursorInfiniteQuery({
-    queryKey: ['articles', selectedCategory],
-    queryFn: fetchArticlePage,
-  });
-
-  const [heroArticle, ...otherArticles] = articleFeed.items;
+  const [heroArticle, ...otherArticles] = articles;
 
   const handleSelectArticle = (articleId: string) => {
     navigate(`/articles/${articleId}`);
@@ -81,13 +68,7 @@ export default function ArticleListPage() {
 
       <section className="hide-scrollbar flex-1 overflow-y-auto bg-[radial-gradient(#f8fafc_2px,transparent_2px)] px-6 py-10 pb-32 [background-size:24px_24px]">
         <div className="flex flex-col gap-12">
-          {articleFeed.isPending ? (
-            <div className="rounded-[32px] border-2 border-dashed border-slate-100 bg-slate-50/50 py-20 text-center">
-              <p className="text-sm font-bold text-slate-400">
-                아티클을 불러오는 중이에요
-              </p>
-            </div>
-          ) : articleFeed.items.length > 0 ? (
+          {articles.length > 0 ? (
             <>
               {heroArticle && (
                 <ArticleHeroCard
@@ -110,21 +91,9 @@ export default function ArticleListPage() {
               )}
 
               <div className="pt-2 text-center">
-                {articleFeed.isFetchingNextPage && (
-                  <p className="text-xs font-bold text-slate-300">
-                    아티클을 더 불러오는 중이에요
-                  </p>
-                )}
-
-                {!articleFeed.hasNextPage && articleFeed.items.length > 0 && (
-                  <p className="text-xs font-bold text-slate-300">
-                    준비된 아티클을 모두 확인했어요
-                  </p>
-                )}
-
-                {articleFeed.hasNextPage && (
-                  <div ref={articleFeed.sentinelRef} className="h-4 w-full" />
-                )}
+                <p className="text-xs font-bold text-slate-300">
+                  준비된 아티클을 모두 확인했어요
+                </p>
               </div>
             </>
           ) : (

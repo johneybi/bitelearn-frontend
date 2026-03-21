@@ -2,8 +2,10 @@ import { ArrowRight, Clock } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import ArticleThumb from '@/components/features/article/ArticleThumb';
-import type { ArticleDetail } from '@/mock/article';
-import type { ArticleListItem } from '@/types/article';
+import type {
+  ArticleDetail,
+  ArticleListItem,
+} from '@/mock/article';
 
 type ArticleHeroCardProps = {
   article: ArticleListItem | ArticleDetail;
