@@ -92,6 +92,7 @@ export default function LearningChapterPage() {
         prologueSubtitle: chapterData.prologueSubtitle,
         goal: chapterData.currentGoal,
         prologueContent: chapterData.prologueContent,
+        closingMessage: chapterData.closingMessage,
         coreKeywords: chapterData.coreKeywords,
       }}
       initialStatus={chapterData.currentStatus}
@@ -103,6 +104,7 @@ export default function LearningChapterPage() {
       onFetchResult={() => getLearningChapterResult(chapterIdNumber)}
       onBack={() => navigate(-1)}
       onComplete={() => navigate(-1)}
+      onRetryWrongAnswers={() => navigate('/notes')}
     />
   );
 }

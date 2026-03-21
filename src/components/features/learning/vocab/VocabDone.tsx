@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 import QuizFooter from '@/components/common/QuizFooter';
 import Header from '@/components/common/Header';
-import mungmungProudImage from '@/assets/character/mungmung_proud.png';
+import VocabDoneImage from '@/assets/character/vocab_done.png';
 
 type VocabDoneProps = {
   chapterTitle: string;
@@ -27,7 +27,7 @@ export default function VocabDone({
       <div className="flex flex-1 flex-col items-center justify-center px-5 pb-36 pt-[74px] text-center">
         <div className="mx-auto mb-5 flex h-[148px] w-[148px] items-center justify-center rounded-full bg-gradient-to-b from-[#fff7ed] to-[#ffedd5]">
           <motion.img
-            src={mungmungProudImage}
+            src={VocabDoneImage}
             alt="자랑스러워하는 멍멍이"
             initial={{ opacity: 0, scale: 0.6 }}
             animate={{ opacity: 1, scale: 1 }}

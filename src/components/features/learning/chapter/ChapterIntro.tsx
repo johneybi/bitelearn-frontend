@@ -3,7 +3,7 @@ import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/common/Header';
 
-import chapterIntroCharacter from '@/assets/character/scene_first_home_mungmung.png';
+import chapterIntroCharacter from '@/assets/character/chapter_intro.png';
 
 type ChapterIntroMode = 'start' | 'resume' | 'retry';
 
@@ -59,7 +59,7 @@ export default function ChapterIntro({
         <div className="flex justify-center">
           <img
             src={chapterIntroCharacter}
-            alt=""
+            alt="chapter intro character"
             className="aspect-[102/127] w-[204px]"
           />
         </div>

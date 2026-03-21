@@ -11,6 +11,7 @@ import { ChevronsLeft, ChevronsRight, Pointer } from 'lucide-react';
 import Header from '@/components/common/Header';
 import QuizFooter from '@/components/common/QuizFooter';
 import ChapterIndicator from '@/components/features/learning/chapter/ChapterIndicator';
+import useIndicatorShadow from '@/hooks/useIndicatorShadow';
 import VocabCard from './VocabCard';
 
 import type { VocabInfo } from '@/api/learning/learning.types';
@@ -73,6 +74,8 @@ export default function VocabCardsPlayer({
   );
 
   const indicatorSteps = externalSteps ?? localSteps;
+  const { scrollRef, showIndicatorShadow } =
+    useIndicatorShadow<HTMLDivElement>();
 
   const slideVariants: Variants = {
     initial: (dir: number) => ({
@@ -142,7 +145,10 @@ export default function VocabCardsPlayer({
         />
       </div>
 
-      <div className="hide-scrollbar flex min-h-0 flex-1 flex-col items-center overflow-y-auto overflow-x-hidden px-5 pt-[37px]">
+      <div
+        ref={scrollRef}
+        className="hide-scrollbar flex min-h-0 flex-1 flex-col items-center overflow-y-auto overflow-x-hidden px-5 pt-[37px]"
+      >
         <div className="flex w-full flex-col items-center gap-7 px-4 pb-7">
           <div className="relative w-full shrink-0">
             {showPrevSwipeHint ? (
@@ -265,7 +271,11 @@ export default function VocabCardsPlayer({
           </div>
         </div>
       </div>
-      <ChapterIndicator steps={indicatorSteps} variant="vocab" />
+      <ChapterIndicator
+        steps={indicatorSteps}
+        variant="vocab"
+        showShadow={showIndicatorShadow}
+      />
       <div className="relative shrink-0">
         <QuizFooter
           disabled={!isFlipped || isCompleting}
