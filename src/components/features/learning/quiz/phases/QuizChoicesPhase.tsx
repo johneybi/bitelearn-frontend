@@ -1,4 +1,5 @@
 import type { QuizInfo } from '@/api/learning/learning.types';
+import type { StepIndicatorInfo } from '../quiz.types';
 
 import MultipleChoiceView from '../choices/MultipleChoiceView';
 import DocumentSelectView from '../choices/DocumentSelectView';
@@ -7,6 +8,7 @@ import OXChoiceView from '../choices/OXChoiceView';
 type Props = {
   question: QuizInfo;
   currentIndex: number;
+  indicatorSteps: StepIndicatorInfo[];
   correctIndex?: number;
   selectedChoice: string;
   isChecking: boolean;
@@ -19,6 +21,7 @@ type Props = {
 export default function QuizChoicesPhase({
   question,
   currentIndex,
+  indicatorSteps,
   correctIndex,
   selectedChoice,
   isChecking,
@@ -45,6 +48,7 @@ export default function QuizChoicesPhase({
         question={question}
         questionNumber={questionNumber}
         questionTitle={question.questionTitle}
+        indicatorSteps={indicatorSteps}
         correctIndex={correctIndex}
         selectedValue={selectedChoice}
         isChecking={isChecking}
@@ -61,6 +65,7 @@ export default function QuizChoicesPhase({
         key={questionNumber}
         questionNumber={questionNumber}
         questionTitle={question.questionTitle}
+        indicatorSteps={indicatorSteps}
         correctIndex={correctIndex}
         selectedValue={selectedChoice}
         onSelectChoice={onSelectChoice}
@@ -73,8 +78,8 @@ export default function QuizChoicesPhase({
 
   return (
     <MultipleChoiceView
-      questionNumber={questionNumber}
       questionTitle={question.questionTitle}
+      indicatorSteps={indicatorSteps}
       choices={choices}
       selectedValue={selectedChoice}
       onSelectChoice={onSelectChoice}

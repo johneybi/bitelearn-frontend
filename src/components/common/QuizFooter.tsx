@@ -10,6 +10,7 @@ type QuizFooterProps = {
   onClick: () => void;
   children: ReactNode;
   onPrevious?: () => void;
+  showTrailingIcon?: boolean;
 };
 
 export default function QuizFooter({
@@ -18,6 +19,7 @@ export default function QuizFooter({
   onClick,
   children,
   onPrevious,
+  showTrailingIcon = true,
 }: QuizFooterProps) {
   const hasPrevious = Boolean(onPrevious);
 
@@ -28,7 +30,7 @@ export default function QuizFooter({
           type="button"
           variant="ghost"
           size="icon"
-          className="h-14 w-14 shrink-0 rounded-2xl bg-input text-slate-900 shadow-none hover:bg-slate-300"
+          className="h-14 w-14 shrink-0 rounded-2xl bg-slate-100 text-slate-900 shadow-none hover:bg-slate-200"
           onClick={onPrevious}
           disabled={previousDisabled}
         >
@@ -47,7 +49,12 @@ export default function QuizFooter({
         onClick={onClick}
       >
         {children}
-        <ChevronRight className="absolute right-4 size-6" strokeWidth={2.2} />
+        {showTrailingIcon ? (
+          <ChevronRight
+            className="absolute right-4 size-6"
+            strokeWidth={2.2}
+          />
+        ) : null}
       </Button>
     </footer>
   );

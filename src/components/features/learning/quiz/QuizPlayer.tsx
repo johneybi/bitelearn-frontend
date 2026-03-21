@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import QuizHeader from '@/components/common/QuizHeader';
-import QuizIndicator from '@/components/features/learning/quiz/QuizIndicator';
+import Header from '@/components/common/Header';
 import type { QuizInfo } from '@/api/learning/learning.types';
 import type { QuizMetric, QuizPhase, StepIndicatorInfo } from './quiz.types';
 import QuizPassagePhase from './phases/QuizPassagePhase';
@@ -61,17 +60,8 @@ export default function QuizPlayer({
       }
     >
   >({});
-
-  if (questions.length === 0) {
-    return (
-      <main className="flex h-full min-h-0 items-center justify-center bg-white text-slate-900">
-        <p className="text-sm text-slate-400">문제 데이터가 없습니다.</p>
-      </main>
-    );
-  }
-
   const currentQuestion = questions[currentIndex];
-  const currentChoices = currentQuestion.specificData?.options ?? [];
+  const currentChoices = currentQuestion?.specificData?.options ?? [];
   const currentResult = resultByIndex[currentIndex];
   const isShowingEvaluation = phase === 'checking' && !isEvaluating;
   const isCorrect = currentResult?.correct ?? false;
@@ -179,16 +169,28 @@ export default function QuizPlayer({
     setPhase('passage');
   };
 
+  if (questions.length === 0 || !currentQuestion) {
+    return (
+      <main className="flex h-full min-h-0 items-center justify-center bg-white text-slate-900">
+        <p className="text-sm text-slate-400">문제 데이터가 없습니다.</p>
+      </main>
+    );
+  }
+
   return (
     <main className="flex h-full min-h-0 flex-col bg-white text-slate-900">
-      <QuizHeader title={chapterTitle} showCloseButton onCloseClick={onBack} />
-
-      <QuizIndicator steps={indicatorSteps} />
+      <Header
+        title={chapterTitle}
+        subtitle="학습 퀴즈"
+        showCloseButton
+        onCloseClick={onBack}
+      />
 
       {phase === 'passage' && (
         <QuizPassagePhase
           question={currentQuestion}
           currentIndex={currentIndex}
+          indicatorSteps={indicatorSteps}
           skipConversationAnimation={seenPassages.has(currentIndex)}
           onSolve={handleSolve}
         />
@@ -198,6 +200,7 @@ export default function QuizPlayer({
         <QuizChoicesPhase
           question={currentQuestion}
           currentIndex={currentIndex}
+          indicatorSteps={indicatorSteps}
           correctIndex={resolvedCorrectIndex}
           selectedChoice={selectedChoice}
           isChecking={isShowingEvaluation}
@@ -213,6 +216,7 @@ export default function QuizPlayer({
           question={currentQuestion}
           selectedChoice={selectedChoice}
           isCorrect={isCorrect}
+          indicatorSteps={indicatorSteps}
           overrideResult={currentResult}
           isLastQuestion={isLastQuestion}
           onNext={handleNext}

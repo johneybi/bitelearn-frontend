@@ -3,6 +3,7 @@ import { Circle, X } from 'lucide-react';
 
 import QuizFooter from '@/components/common/QuizFooter';
 import ChapterIndicator from '@/components/features/learning/chapter/ChapterIndicator';
+import useIndicatorShadow from '@/hooks/useIndicatorShadow';
 import type { StepIndicatorInfo } from '../quiz.types';
 
 type ChoiceResultViewProps = {
@@ -28,10 +29,11 @@ export default function ChoiceResultView({
 }: ChoiceResultViewProps) {
   const title = isCorrect ? '정답이에요! 👌' : '오답이에요! 😔';
   const footerLabel = isLastQuestion ? '전체보기' : '다음 퀴즈';
+  const { scrollRef, showIndicatorShadow } = useIndicatorShadow<HTMLElement>();
 
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-background pt-[74px] duration-500 animate-in fade-in slide-in-from-right-8">
-      <section className="flex flex-1 flex-col overflow-y-auto">
+      <section ref={scrollRef} className="flex flex-1 flex-col overflow-y-auto">
         <div className="relative px-5">
           <div className="relative flex min-h-[132px] items-start justify-between overflow-hidden">
             <div className="z-10 flex flex-col items-start gap-4 pl-3 pt-8">
@@ -97,7 +99,11 @@ export default function ChoiceResultView({
         </div>
       </section>
 
-      <ChapterIndicator steps={indicatorSteps} variant="quiz" />
+      <ChapterIndicator
+        steps={indicatorSteps}
+        variant="quiz"
+        showShadow={showIndicatorShadow}
+      />
       <QuizFooter onClick={onNext} showTrailingIcon={false}>
         {footerLabel}
       </QuizFooter>
