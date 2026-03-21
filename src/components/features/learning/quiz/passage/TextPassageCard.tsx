@@ -15,17 +15,19 @@ export default function TextPassageCard({
 }: TextPassageCardProps) {
   return (
     <article className="overflow-hidden rounded-2xl bg-white shadow-[0_12px_16px_0_rgba(237,238,246,1)]">
-      <div className="aspect-[335/220] w-full overflow-hidden bg-[#f6f7fb]">
-        <img
-          src={imageSrc || DEFAULT_PASSAGE_IMAGE}
-          alt={imageAlt}
-          className="h-full w-full object-cover"
-          onError={(event) => {
-            event.currentTarget.onerror = null;
-            event.currentTarget.src = DEFAULT_PASSAGE_IMAGE;
-          }}
-        />
-      </div>
+      {imageSrc ? (
+        <div className="aspect-[335/220] w-full overflow-hidden bg-[#f6f7fb]">
+          <img
+            src={imageSrc}
+            alt={imageAlt}
+            className="h-full w-full object-cover"
+            onError={(event) => {
+              event.currentTarget.onerror = null;
+              event.currentTarget.src = DEFAULT_PASSAGE_IMAGE;
+            }}
+          />
+        </div>
+      ) : null}
 
       <div className="px-5 pb-5 pt-8">
         <p className="whitespace-pre-line text-sm font-medium leading-[24px] text-slate-950">

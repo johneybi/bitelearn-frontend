@@ -1,6 +1,7 @@
 import QuizFooter from '@/components/common/QuizFooter';
 import ChapterIndicator from '@/components/features/learning/chapter/ChapterIndicator';
 import type { QuizInfo } from '@/api/learning/learning.types';
+import useIndicatorShadow from '@/hooks/useIndicatorShadow';
 import type { StepIndicatorInfo } from '../quiz.types';
 import QuizTitle from '../shared/QuizTitle';
 import TextPassageCard from './TextPassageCard';
@@ -19,10 +20,15 @@ export default function TextPassageView({
   const passageTitle = question.passageTitle ?? '';
   const passageContent = question.passageContent ?? '';
   const imageSrc = question.questionImageUrl ?? undefined;
+  const hasPassageCard = passageContent.trim().length > 0 || Boolean(imageSrc);
+  const { scrollRef, showIndicatorShadow } = useIndicatorShadow<HTMLElement>();
 
   return (
     <>
-      <section className="flex-1 overflow-y-auto bg-background px-5 pt-[74px]">
+      <section
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto bg-background px-5 pt-[74px]"
+      >
         <div className="flex min-h-full w-full flex-col justify-center">
           <div className="flex flex-col gap-3">
             {passageTitle && (
@@ -32,16 +38,22 @@ export default function TextPassageView({
               />
             )}
 
-            <TextPassageCard
-              content={passageContent}
-              imageAlt={question.questionTitle}
-              imageSrc={imageSrc}
-            />
+            {hasPassageCard ? (
+              <TextPassageCard
+                content={passageContent}
+                imageAlt={question.questionTitle}
+                imageSrc={imageSrc}
+              />
+            ) : null}
           </div>
         </div>
       </section>
 
-      <ChapterIndicator steps={indicatorSteps} variant="quiz" />
+      <ChapterIndicator
+        steps={indicatorSteps}
+        variant="quiz"
+        showShadow={showIndicatorShadow}
+      />
       <QuizFooter onClick={onSolve} showTrailingIcon={false}>
         퀴즈 풀기
       </QuizFooter>

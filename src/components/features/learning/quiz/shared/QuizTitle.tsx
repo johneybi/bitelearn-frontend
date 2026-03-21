@@ -14,9 +14,7 @@ export default function QuizTitle({
           <span className="mr-1.5 text-lg leading-7 text-primary">
             {`Q${questionNumber}.`}
           </span>
-        ) : (
-          <span className="mr-1.5 text-lg leading-7 text-primary">{`Q.`}</span>
-        )}
+        ) : null}
         {questionTitle}
       </h2>
     </div>
