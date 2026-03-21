@@ -1,6 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { QuizInfo } from '@/api/learning/learning.types';
+import type { StepIndicatorInfo } from '../quiz.types';
 import DocumentSelectView from './DocumentSelectView';
+
+const indicatorSteps: StepIndicatorInfo[] = [
+  { type: 'quiz', status: 'correct', isCurrent: false },
+  { type: 'quiz', status: 'none', isCurrent: true },
+  { type: 'quiz', status: 'none', isCurrent: false },
+];
+
 const documentSelectQuestion: QuizInfo = {
   quizId: 4,
   sequence: 4,
@@ -27,6 +35,7 @@ const baseArgs = {
   question: documentSelectQuestion,
   questionNumber: 4,
   questionTitle: documentSelectQuestion.questionTitle,
+  indicatorSteps,
   selectedValue: '',
   onSelectChoice: () => {},
   onCheckAnswer: () => {},

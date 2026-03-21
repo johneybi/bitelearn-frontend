@@ -2,13 +2,21 @@ import { useState } from 'react';
 import type { ComponentProps } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { userEvent, within } from 'storybook/test';
+import type { StepIndicatorInfo } from '../quiz.types';
 import OXChoiceView from './OXChoiceView';
 
 type OXChoiceViewProps = ComponentProps<typeof OXChoiceView>;
 
+const indicatorSteps: StepIndicatorInfo[] = [
+  { type: 'quiz', status: 'correct', isCurrent: false },
+  { type: 'quiz', status: 'none', isCurrent: true },
+  { type: 'quiz', status: 'none', isCurrent: false },
+];
+
 const baseArgs = {
   questionNumber: 6,
   questionTitle: '중개사의 말만 믿고 등기부등본을 확인하지 않아도 계약은 안전하다.',
+  indicatorSteps,
   correctIndex: 1,
   selectedValue: '',
   onSelectChoice: (_value: string) => {},

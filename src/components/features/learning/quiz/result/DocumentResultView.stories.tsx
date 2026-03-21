@@ -1,5 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { StepIndicatorInfo } from '../quiz.types';
 import DocumentResultView from './DocumentResultView';
+
+const indicatorSteps: StepIndicatorInfo[] = [
+  { type: 'quiz', status: 'correct', isCurrent: false },
+  { type: 'quiz', status: 'incorrect', isCurrent: true },
+  { type: 'quiz', status: 'none', isCurrent: false },
+];
 
 const documentCard = {
   header: '등 기 사 항 전 부 증 명 서',
@@ -23,6 +30,7 @@ const baseArgs = {
   correctIndex: 3,
   selectedAnswerIndex: 3,
   characterImageUrl: '/images/character/dog_perfect.png',
+  indicatorSteps,
   isLastQuestion: false,
   onNext: () => {},
 };
