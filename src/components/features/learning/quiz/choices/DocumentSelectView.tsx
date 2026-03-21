@@ -1,13 +1,17 @@
+import ChapterIndicator from '@/components/features/learning/chapter/ChapterIndicator';
 import QuizFooter from '@/components/common/QuizFooter';
 import DocumentCard from '../shared/DocumentCard';
 import type { QuizInfo } from '@/api/learning/learning.types';
+import useIndicatorShadow from '@/hooks/useIndicatorShadow';
 import { toDocumentCardData } from '../learningQuiz.utils';
+import type { StepIndicatorInfo } from '../quiz.types';
 import QuizTitle from '../shared/QuizTitle';
 
 type DocumentSelectViewProps = {
   question: QuizInfo;
   questionNumber: number;
   questionTitle: string;
+  indicatorSteps: StepIndicatorInfo[];
   correctIndex?: number;
   selectedValue: string;
   onSelectChoice: (value: string) => void;
@@ -18,8 +22,8 @@ type DocumentSelectViewProps = {
 
 export default function DocumentSelectView({
   question,
-  questionNumber,
   questionTitle,
+  indicatorSteps,
   correctIndex,
   selectedValue,
   isChecking,
@@ -28,31 +32,43 @@ export default function DocumentSelectView({
   onPrevious,
 }: DocumentSelectViewProps) {
   const documentCard = toDocumentCardData(question)!;
+  const { scrollRef, showIndicatorShadow } = useIndicatorShadow<HTMLElement>();
 
   return (
     <>
-      <section className="flex-1 overflow-y-auto px-6">
-        <QuizTitle
-          questionNumber={questionNumber}
-          questionTitle={questionTitle}
-        />
+      <section
+        ref={scrollRef}
+        className="hide-scrollbar flex-1 overflow-y-auto bg-background px-5 pt-[74px]"
+      >
+        <div className="flex min-h-full w-full flex-col justify-center">
+          <div className="flex flex-col gap-4">
+            <QuizTitle questionTitle={questionTitle} />
 
-        <DocumentCard
-          data={documentCard}
-          mode="interactive"
-          choiceMode="document_select"
-          selectedValue={selectedValue}
-          onSelectField={onSelectChoice}
-          isChecking={isChecking}
-          correctIndex={correctIndex}
-        />
+            <DocumentCard
+              data={documentCard}
+              mode="interactive"
+              choiceMode="document_select"
+              typography="serif"
+              selectedValue={selectedValue}
+              onSelectField={onSelectChoice}
+              isChecking={isChecking}
+              correctIndex={correctIndex}
+            />
+          </div>
+        </div>
       </section>
 
+      <ChapterIndicator
+        steps={indicatorSteps}
+        variant="quiz"
+        showShadow={showIndicatorShadow}
+      />
       <QuizFooter
         disabled={selectedValue === '' || isChecking}
         previousDisabled={isChecking}
         onClick={onCheckAnswer}
         onPrevious={onPrevious}
+        showTrailingIcon={false}
       >
         정답 확인
       </QuizFooter>

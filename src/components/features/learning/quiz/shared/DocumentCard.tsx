@@ -1,6 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check } from 'lucide-react';
 
 export type DocumentCardField = {
   label: string;
@@ -10,14 +9,11 @@ export type DocumentCardField = {
 export type DocumentCardData = {
   header: string;
   subHeader: string;
-  sectionTitle: string;
   fields: DocumentCardField[];
-  footerNotice?: string;
 };
 
 type InteractiveProps = {
   mode: 'interactive';
-  /** document_select 일 때만 클릭 가능 */
   choiceMode: 'multiple' | 'ox' | 'document_select';
   selectedValue?: string;
   onSelectField?: (value: string) => void;
@@ -28,12 +24,12 @@ type InteractiveProps = {
 type ResultProps = {
   mode: 'result';
   correctIndex?: number;
-  /** 유저가 선택한 필드 인덱스 */
   selectedAnswerIndex?: number;
 };
 
 type DocumentCardProps = {
   data: DocumentCardData;
+  typography?: 'sans' | 'serif';
 } & (InteractiveProps | ResultProps);
 
 export default function DocumentCard(props: DocumentCardProps) {
@@ -42,9 +38,15 @@ export default function DocumentCard(props: DocumentCardProps) {
   const [isWrappedMap, setIsWrappedMap] = useState<Record<number, boolean>>({});
 
   const isInteractive = props.mode === 'interactive';
+  const isSerif = props.typography === 'serif';
+  const isResult = props.mode === 'result';
+  const isDocumentSelect =
+    props.mode === 'interactive' && props.choiceMode === 'document_select';
   const isChecking = isInteractive && props.isChecking === true;
   const selectedValue = isInteractive ? (props.selectedValue ?? '') : '';
   const correctIndex = props.correctIndex;
+  const titleUsesSerif = isSerif || isResult;
+  const fieldUsesSerif = isSerif && !isResult && !isDocumentSelect;
 
   useLayoutEffect(() => {
     const measure = () => {
@@ -64,7 +66,7 @@ export default function DocumentCard(props: DocumentCardProps) {
   }, [data, selectedValue, isChecking]);
 
   return (
-    <div className="relative overflow-hidden rounded-[32px] border-2 border-slate-100 bg-slate-50 p-6 shadow-inner">
+    <div className="relative mx-auto w-full max-w-[340px] overflow-hidden bg-card p-5 shadow-[0_2px_4px_-2px_rgba(0,0,0,0.1),0_4px_6px_-1px_rgba(0,0,0,0.1)]">
       {isInteractive && (
         <AnimatePresence>
           {isChecking && (
@@ -91,73 +93,66 @@ export default function DocumentCard(props: DocumentCardProps) {
       )}
 
       {/* Header */}
-      <div className="mb-5 border-b border-slate-200 pb-4">
-        <p className="text-sm font-bold uppercase tracking-widest text-slate-900">
+      <div className="mb-4 flex flex-col items-center gap-2 border-b border-slate-300 pb-4 text-center">
+        <p
+          className={`text-lg leading-6 text-slate-900 ${
+            titleUsesSerif
+              ? 'font-serif font-bold tracking-[0.18em]'
+              : 'font-sans font-bold'
+          }`}
+        >
           {data.header}
         </p>
-        <p className="mt-1 text-xs font-medium text-slate-400">
+        <p
+          className={`text-sm leading-4 text-slate-500 ${
+            titleUsesSerif ? 'font-serif font-bold' : 'font-sans font-medium'
+          }`}
+        >
           {data.subHeader}
         </p>
       </div>
 
-      <p className="mb-4 text-xs font-bold uppercase tracking-tighter text-slate-400">
-        {data.sectionTitle}
-      </p>
-
       {/* Fields */}
-      <div className="space-y-3">
+      <div className={`w-full ${isResult || isDocumentSelect ? 'space-y-3' : ''}`}>
         {data.fields.map((field, index) => {
           const isSelected = selectedValue === String(index);
           const isAnswer = index === correctIndex;
           const isEmptyField = field.value.trim() === '';
+          const isSelectedWrong =
+            props.mode === 'result' &&
+            props.selectedAnswerIndex === index &&
+            !isAnswer;
+          const documentFieldBaseClass =
+            'rounded-lg border-2 border-slate-100 bg-slate-100 px-3 py-3 text-slate-900 shadow-[0_1px_0_0_rgba(0,0,0,0.05)]';
 
-          let fieldClass =
-            'w-full rounded-2xl border-2 px-4 py-3.5 text-left transition-all duration-200 ';
-          let showCheckIcon = false;
+          let fieldClass = 'w-full text-left transition-all duration-200 ';
           let showAnswerBadge = false;
 
           if (props.mode === 'interactive') {
             const { choiceMode } = props;
             if (choiceMode === 'document_select') {
-              if (isEmptyField) {
-                fieldClass +=
-                  'border-slate-100 bg-slate-50 text-slate-300 opacity-70 cursor-not-allowed';
-              } else if (isChecking) {
-                if (isAnswer) {
-                  fieldClass +=
-                    'border-slate-900 bg-slate-900 text-white shadow-lg';
-                } else if (isSelected) {
-                  fieldClass +=
-                    'border-slate-200 bg-white text-slate-400 line-through';
-                } else {
-                  fieldClass +=
-                    'border-slate-100 bg-white text-slate-500 opacity-80';
+              fieldClass += `${documentFieldBaseClass} `;
+              if (isChecking) {
+                if (isSelected) {
+                  fieldClass += 'border-slate-400';
                 }
               } else if (isSelected) {
-                fieldClass +=
-                  'border-slate-900 bg-white text-slate-900 shadow-xl shadow-slate-200 -translate-y-0.5 ring-4 ring-slate-100';
-                showCheckIcon = true;
-              } else {
-                fieldClass +=
-                  'border-white bg-white text-slate-900 hover:border-slate-200 shadow-sm';
+                fieldClass += 'border-slate-400';
               }
             } else {
-              fieldClass +=
-                'border-white bg-white text-slate-900 shadow-sm cursor-default';
+              fieldClass += 'border-b border-slate-100 px-0 py-3 text-slate-900 cursor-default';
             }
           } else {
             // result mode
-            const { selectedAnswerIndex } = props;
             if (isAnswer) {
               fieldClass +=
-                'border-slate-900 bg-slate-900 text-white shadow-lg scale-[1.02]';
+                'rounded-lg border-2 border-green-200 bg-green-50 px-3 py-3 text-slate-900 shadow-[0_1px_0_0_rgba(0,0,0,0.05)]';
               showAnswerBadge = true;
-            } else if (selectedAnswerIndex === index && !isAnswer) {
+            } else if (isSelectedWrong) {
               fieldClass +=
-                'border-slate-200 bg-white text-slate-400 line-through';
+                'rounded-lg border-2 border-slate-200 bg-slate-200 px-3 py-3 text-slate-900 shadow-[0_1px_0_0_rgba(0,0,0,0.05)]';
             } else {
-              fieldClass +=
-                'border-slate-100 bg-white text-slate-500 opacity-80';
+              fieldClass += `${documentFieldBaseClass} `;
             }
           }
 
@@ -191,31 +186,31 @@ export default function DocumentCard(props: DocumentCardProps) {
                         : 'flex items-start gap-3'
                     }
                   >
-                    <span className="shrink-0 text-xs font-bold uppercase tracking-wider opacity-60">
+                    <span
+                      className={`text-sm leading-5 text-slate-500 ${
+                        fieldUsesSerif
+                          ? 'font-serif font-bold'
+                          : 'font-sans font-medium'
+                      }`}
+                    >
                       {field.label}
                     </span>
                     <span
                       ref={(el) => {
                         valueRefs.current[index] = el;
                       }}
-                      className="min-w-0 flex-1 basis-0 break-words text-sm font-bold leading-snug"
+                      className={`min-w-0 flex-1 basis-0 break-words text-sm leading-5 ${
+                        fieldUsesSerif
+                          ? 'font-serif font-bold'
+                          : 'font-sans font-medium'
+                      }`}
                     >
                       {isEmptyField ? '-' : field.value}
                     </span>
                   </div>
 
-                  {showCheckIcon && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-900 text-white"
-                    >
-                      <Check size={14} strokeWidth={3} />
-                    </motion.div>
-                  )}
-
                   {showAnswerBadge && (
-                    <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-black uppercase text-slate-900">
+                    <span className="shrink-0 rounded-full bg-green-400 px-2.5 py-1.5 text-xs font-medium leading-4 text-foreground">
                       정답
                     </span>
                   )}
@@ -226,11 +221,11 @@ export default function DocumentCard(props: DocumentCardProps) {
         })}
       </div>
 
-      {data.footerNotice && (
-        <p className="mt-5 text-center text-[11px] font-bold uppercase tracking-widest text-slate-300">
-          {data.footerNotice}
-        </p>
-      )}
+      <p className="mt-5 text-center text-xs leading-4 font-serif font-bold text-slate-400">
+        본 문서는 학습용 가상 서류입니다.
+        <br />
+        개인정보는 포함되어 있지 않습니다.
+      </p>
     </div>
   );
 }
