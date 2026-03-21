@@ -2,10 +2,7 @@ import type { QuizInfo } from '@/api/learning/learning.types';
 import correctResultImage from '@/assets/character/correct_result.png';
 import incorrectResultImage from '@/assets/character/incorrect_result.png';
 import type { StepIndicatorInfo } from '../quiz.types';
-import {
-  findDocumentFieldIndexByAnswerText,
-  toDocumentCardData,
-} from '../learningQuiz.utils';
+import { toDocumentCardData } from '../learningQuiz.utils';
 
 import ChoiceResultView from '../result/ChoiceResultView';
 import DocumentResultView from '../result/DocumentResultView';
@@ -46,28 +43,10 @@ export default function QuizResultPhase({
     ? correctResultImage
     : incorrectResultImage;
 
-  const isDocumentResult =
-    ((question.type === 'DOC_CLICK' || question.type === 'DOC_MCQ') &&
-      hasDocumentElements) ||
-    question.type === 'DOC_CLICK';
-
-  const resolvedCorrectIndex =
-    question.type === 'DOC_MCQ'
-      ? (overrideResult?.correctAnswerIndex ??
-          findDocumentFieldIndexByAnswerText(
-            documentElements,
-            resolvedCorrectAnswer
-          ))
-      : overrideResult?.correctAnswerIndex ?? -1;
+  const isDocumentResult = question.type === 'DOC_CLICK' && hasDocumentElements;
+  const resolvedCorrectIndex = overrideResult?.correctAnswerIndex ?? -1;
   const resolvedSelectedAnswerIndex =
-    question.type === 'DOC_MCQ' && selectedIndex !== -1
-      ? findDocumentFieldIndexByAnswerText(
-          documentElements,
-          choices[selectedIndex] ?? ''
-        )
-      : selectedIndex !== -1
-        ? selectedIndex
-        : undefined;
+    selectedIndex !== -1 ? selectedIndex : undefined;
 
   if (isDocumentResult && documentCard) {
     return (

@@ -138,7 +138,7 @@ export default function QuizPlayer({
     }
 
     const correctAnswerIndex =
-      currentQuestion.type === 'DOC_CLICK' || currentQuestion.type === 'DOC_MCQ'
+      currentQuestion.type === 'DOC_CLICK'
         ? findDocumentFieldIndexByAnswerText(
             currentQuestion.specificData?.documentElements ?? [],
             correctAnswer
