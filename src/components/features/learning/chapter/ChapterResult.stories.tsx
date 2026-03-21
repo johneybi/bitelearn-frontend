@@ -14,6 +14,9 @@ const meta = {
     total: 10,
     accuracyRate: 100,
     earnedBytes: 500,
+    lostBytes: 0,
+    currentLevel: 2,
+    currentTotalBytes: 3200,
     chapterTitle: '[2단계: 계약] 도장 찍기 전, 멍멍이의 마지막 방어선!',
     onBack: () => {},
     onFinish: () => {},
@@ -32,6 +35,9 @@ export const Close: Story = {
     total: 10,
     accuracyRate: 70,
     earnedBytes: 260,
+    lostBytes: 240,
+    currentLevel: 2,
+    currentTotalBytes: 2760,
   },
 };
 
@@ -41,5 +47,8 @@ export const Fail: Story = {
     total: 10,
     accuracyRate: 30,
     earnedBytes: 0,
+    lostBytes: 500,
+    currentLevel: 1,
+    currentTotalBytes: 480,
   },
 };

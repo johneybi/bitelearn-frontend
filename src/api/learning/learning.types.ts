@@ -61,6 +61,7 @@ export type ChapterLearningResponse = {
   prologueSubtitle: string;
   prologueContent: string;
   currentGoal: string;
+  closingMessage: string | null;
   coreKeywords: string[];
   currentStatus: ChapterStatus;
   resumeQuizSequence: number | null;
@@ -105,4 +106,7 @@ export type ChapterResultResponse = {
   totalCount: number;
   accuracyRate: number;
   earnedBytes: number;
+  lostBytes: number;
+  currentLevel: number;
+  currentTotalBytes: number;
 };
