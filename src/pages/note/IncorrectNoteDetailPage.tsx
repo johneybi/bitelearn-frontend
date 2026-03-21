@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
-import QuizHeader from '@/components/common/QuizHeader';
+import Header from '@/components/common/Header';
 import IncorrectNoteQuizViewer from '@/components/features/note/IncorrectNoteQuizViewer';
 import { useIncorrectNoteDetailQuery } from '@/api/notes/notes.query';
 
@@ -41,7 +41,7 @@ export default function IncorrectNoteDetailPage() {
 
   return (
     <main className="flex h-full min-h-0 flex-col bg-white text-slate-900">
-      <QuizHeader
+      <Header
         title="오답노트"
         showCloseButton
         onCloseClick={() => navigate(-1)}

@@ -33,7 +33,8 @@ export default function DocumentResultView({
   nextLabel,
 }: DocumentResultViewProps) {
   const title = isCorrect ? '정답이에요! 👌' : '오답이에요! 😔';
-  const footerLabel = isLastQuestion ? '전체보기' : '다음 퀴즈';
+  const footerLabel =
+    nextLabel ?? (isLastQuestion ? '전체보기' : '다음 퀴즈');
   const { scrollRef, showIndicatorShadow } = useIndicatorShadow<HTMLElement>();
 
   return (
