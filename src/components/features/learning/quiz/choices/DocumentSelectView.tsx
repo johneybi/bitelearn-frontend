@@ -42,7 +42,7 @@ export default function DocumentSelectView({
       >
         <div className="flex min-h-full w-full flex-col justify-center">
           <div className="flex flex-col gap-4">
-            <QuizTitle questionTitle={questionTitle} />
+            <QuizTitle showQuestionPrefix questionTitle={questionTitle} />
 
             <DocumentCard
               data={documentCard}

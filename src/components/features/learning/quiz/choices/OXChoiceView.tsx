@@ -142,7 +142,7 @@ export default function OXChoiceView({
       <section className="flex flex-1 flex-col overflow-hidden px-5 pt-[74px]">
         <div className="flex min-h-full w-full flex-col justify-center">
           <div className="flex flex-col gap-3">
-            <QuizTitle questionTitle={questionTitle} />
+            <QuizTitle showQuestionPrefix questionTitle={questionTitle} />
 
             <div className="flex gap-5">
               {renderButton(0, 'O')}

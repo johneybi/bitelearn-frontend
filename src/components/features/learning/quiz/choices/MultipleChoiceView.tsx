@@ -41,7 +41,7 @@ export default function MultipleChoiceView({
       >
         <div className="flex min-h-full w-full flex-col justify-center">
           <div className="flex flex-col gap-3">
-            <QuizTitle questionTitle={questionTitle} />
+            <QuizTitle showQuestionPrefix questionTitle={questionTitle} />
 
             <RadioGroup
               value={selectedValue}
