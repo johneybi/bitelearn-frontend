@@ -1,4 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import correctResultImage from '@/assets/character/correct_result.png';
+import incorrectResultImage from '@/assets/character/incorrect_result.png';
 import ChoiceResultView from './ChoiceResultView';
 
 const baseArgs = {
@@ -7,7 +9,14 @@ const baseArgs = {
   selectedAnswerText: '잔금 입금 후 당일 전입신고 + 확정일자',
   explanation:
     '이사 당일 잔금을 치르고, 같은 날 주민센터에서 전입신고와 확정일자를 모두 받아야 우선순위를 지킬 수 있습니다.',
-  characterImageUrl: '/images/character/dog_perfect.png',
+  characterImageUrl: correctResultImage,
+  indicatorSteps: [
+    { type: 'quiz' as const, status: 'correct' as const, isCurrent: false },
+    { type: 'quiz' as const, status: 'correct' as const, isCurrent: true },
+    { type: 'quiz' as const, status: 'none' as const, isCurrent: false },
+    { type: 'quiz' as const, status: 'none' as const, isCurrent: false },
+    { type: 'quiz' as const, status: 'none' as const, isCurrent: false },
+  ],
   isLastQuestion: false,
   onNext: () => {},
 };
@@ -34,7 +43,7 @@ export const IncorrectAnswerState: Story = {
     ...baseArgs,
     isCorrect: false,
     selectedAnswerText: '짐 정리 후 며칠 안에 전입신고',
-    characterImageUrl: '/images/character/dog_fail.png',
+    characterImageUrl: incorrectResultImage,
     isLastQuestion: true,
   },
 };
