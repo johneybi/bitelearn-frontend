@@ -8,9 +8,17 @@ export default function QuizTitle({
   questionTitle,
 }: QuizTitleProps) {
   return (
-    <h2 className="mb-4 text-base font-semibold text-slate-600">
-      {questionNumber ? `Q${questionNumber}. ` : ''}
-      {questionTitle}
-    </h2>
+    <div className="px-1">
+      <h2 className="text-base font-semibold leading-6 tracking-tight text-foreground">
+        {questionNumber ? (
+          <span className="mr-1.5 text-lg leading-7 text-primary">
+            {`Q${questionNumber}.`}
+          </span>
+        ) : (
+          <span className="mr-1.5 text-lg leading-7 text-primary">{`Q.`}</span>
+        )}
+        {questionTitle}
+      </h2>
+    </div>
   );
 }
