@@ -5,6 +5,7 @@ export default {
   theme: {
     fontFamily: {
       sans: ['"A2Z"', 'sans-serif'],
+      serif: ['var(--family-serif)', 'serif'],
     },
     extend: {
       maxWidth: {
