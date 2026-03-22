@@ -7,7 +7,7 @@ import {
   formatTime,
 } from '@/utils/formatDate';
 
-type MistakeCardProps = {
+type IncorrectCardProps = {
   categoryName: string;
   createdAt: string;
   topic: Topic;
@@ -22,14 +22,14 @@ const TOPIC_LABEL: Record<Topic, string> = {
   BUYING: '매매',
 };
 
-export default function MistakeCard({
+export default function IncorrectCard({
   categoryName,
   createdAt,
   topic,
   questionTitle,
   onSelect,
   onRetry,
-}: MistakeCardProps) {
+}: IncorrectCardProps) {
   return (
     <article
       className="group relative flex cursor-pointer flex-col items-start rounded-[28px] border-2 border-slate-100 bg-white p-6 shadow-sm transition-all hover:border-slate-300 active:scale-[0.98]"

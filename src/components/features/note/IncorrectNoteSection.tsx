@@ -3,16 +3,16 @@ import type {
   Category,
 } from '@/api/learning/learning.types';
 import type { Note } from '@/api/notes/notes.types';
-import ReviewSummary from '@/components/features/note/ReviewSummary';
-import ReviewMistakeList from '@/components/features/note/ReviewMistakeList';
-import ReviewCategoryChip from '@/components/features/note/ReviewCategoryChip';
+import IncorrectSummary from '@/components/features/note/IncorrectSummary';
+import IncorrectNoteList from '@/components/features/note/IncorrectNoteList';
+import IncorrectCategoryChip from '@/components/features/note/IncorrectCategoryChip';
 
 type NoteCategory = {
   category: Category;
   categoryName: string;
 };
 
-type ReviewNoteSectionProps = {
+type IncorrectNoteSectionProps = {
   selectedCategory: Category | null;
   onChangeCategory: (category: Category | null) => void;
   categories: NoteCategory[];
@@ -25,7 +25,7 @@ type ReviewNoteSectionProps = {
   sentinelRef?: RefCallback<HTMLDivElement>;
 };
 
-export default function ReviewNoteSection({
+export default function IncorrectNoteSection({
   selectedCategory,
   onChangeCategory,
   categories,
@@ -36,25 +36,25 @@ export default function ReviewNoteSection({
   isLoadingMore = false,
   hasNext = false,
   sentinelRef,
-}: ReviewNoteSectionProps) {
-  const reviewCategories = [
+}: IncorrectNoteSectionProps) {
+  const noteCategories = [
     { category: null, categoryName: '전체' },
     ...categories,
   ];
 
   return (
     <>
-      <ReviewSummary
+      <IncorrectSummary
         pendingReviewCount={totalNoteCount}
         totalBytes={totalBytes}
       />
       <div className="px-6 py-3">
         <div className="hide-scrollbar -mx-2 flex gap-2 overflow-x-auto px-2">
-          {reviewCategories.map((category) => {
+          {noteCategories.map((category) => {
             const isActive = selectedCategory === category.category;
 
             return (
-              <ReviewCategoryChip
+              <IncorrectCategoryChip
                 key={category.category ?? 'ALL'}
                 label={category.categoryName}
                 isActive={isActive}
@@ -66,7 +66,7 @@ export default function ReviewNoteSection({
       </div>
 
       <div className="px-6 pb-6 pt-4">
-        <ReviewMistakeList
+        <IncorrectNoteList
           categories={categories}
           notes={notes}
           isLoading={isLoading}

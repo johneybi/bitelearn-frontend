@@ -1,17 +1,17 @@
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-type ReviewCategoryChipProps = {
+type IncorrectCategoryChipProps = {
   label: string;
   isActive?: boolean;
   onClick?: () => void;
 };
 
-export default function ReviewCategoryChip({
+export default function IncorrectCategoryChip({
   label,
   isActive = false,
   onClick,
-}: ReviewCategoryChipProps) {
+}: IncorrectCategoryChipProps) {
   return (
     <Button
       type="button"

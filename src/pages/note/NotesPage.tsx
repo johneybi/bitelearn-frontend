@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import NoteTopNav from '@/components/features/note/NoteTopNav';
-import ReviewNoteSection from '@/components/features/note/ReviewNoteSection';
+import IncorrectNoteSection from '@/components/features/note/IncorrectNoteSection';
 import BookmarkSection from '@/components/features/note/BookmarkSection';
 import useNotesCategorySearchParam from '@/hooks/useNotesCategorySearchParam';
 
@@ -9,7 +9,7 @@ import { useIncorrectNotesQuery } from '@/api/notes/notes.query';
 import { LEARNING_NAVIGATION } from '@/constants/learningNavigation';
 import { getMockBookmarkedArticles } from '@/mock/bookmarkedArticle';
 
-export type NoteTab = 'review' | 'bookmark';
+export type NoteTab = 'incorrect' | 'bookmark';
 
 // 오답노트 카테고리 필터에 사용할 API 기준 카테고리 목록
 const NOTE_CATEGORIES = LEARNING_NAVIGATION.map((category) => ({
@@ -18,21 +18,21 @@ const NOTE_CATEGORIES = LEARNING_NAVIGATION.map((category) => ({
 }));
 
 export default function NotesPage() {
-  const [activeTab, setActiveTab] = useState<NoteTab>('review');
+  const [activeTab, setActiveTab] = useState<NoteTab>('incorrect');
   // 선택 카테고리를 URL 쿼리스트링 기준으로 관리
   const { selectedCategory, setSelectedCategory } =
     useNotesCategorySearchParam(NOTE_CATEGORIES);
 
-  // 리뷰 탭 활성화 시에만 오답노트 무한스크롤 조회 실행
-  const reviewFeed = useIncorrectNotesQuery({
+  // 복습 탭 활성화 시에만 오답노트 무한스크롤 조회 실행
+  const incorrectNotesFeed = useIncorrectNotesQuery({
     category: selectedCategory,
-    enabled: activeTab === 'review',
+    enabled: activeTab === 'incorrect',
   });
   const bookmarkArticles = getMockBookmarkedArticles();
 
   // 요약 카드에는 첫 페이지 응답의 집계 값 사용
-  const totalNoteCount = reviewFeed.data?.pages[0]?.totalCount ?? 0;
-  const totalBytes = reviewFeed.data?.pages[0]?.totalBytes ?? 0;
+  const totalNoteCount = incorrectNotesFeed.data?.pages[0]?.totalCount ?? 0;
+  const totalBytes = incorrectNotesFeed.data?.pages[0]?.totalBytes ?? 0;
 
   return (
     <div className="flex h-full flex-col overflow-hidden bg-white text-slate-900">
@@ -40,18 +40,18 @@ export default function NotesPage() {
         <NoteTopNav activeTab={activeTab} onChangeTab={setActiveTab} />
 
         <section className="pb-32 pt-6">
-          {activeTab === 'review' && (
-            <ReviewNoteSection
+          {activeTab === 'incorrect' && (
+            <IncorrectNoteSection
               selectedCategory={selectedCategory}
               onChangeCategory={setSelectedCategory}
               categories={NOTE_CATEGORIES}
-              notes={reviewFeed.notes}
+              notes={incorrectNotesFeed.notes}
               totalBytes={totalBytes}
               totalNoteCount={totalNoteCount}
-              isLoading={reviewFeed.isPending}
-              isLoadingMore={reviewFeed.isFetchingNextPage}
-              hasNext={Boolean(reviewFeed.hasNextPage)}
-              sentinelRef={reviewFeed.sentinelRef}
+              isLoading={incorrectNotesFeed.isPending}
+              isLoadingMore={incorrectNotesFeed.isFetchingNextPage}
+              hasNext={Boolean(incorrectNotesFeed.hasNextPage)}
+              sentinelRef={incorrectNotesFeed.sentinelRef}
             />
           )}
 

@@ -7,7 +7,7 @@ type NoteTopNavProps = {
 };
 
 const NOTE_TABS: { value: NoteTab; label: string }[] = [
-  { value: 'review', label: '오답 복습' },
+  { value: 'incorrect', label: '오답 복습' },
   { value: 'bookmark', label: '저장한 글' },
 ];
 

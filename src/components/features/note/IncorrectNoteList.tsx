@@ -4,14 +4,14 @@ import { RotateCcw } from 'lucide-react';
 import type { Category } from '@/api/learning/learning.types';
 import type { Note } from '@/api/notes/notes.types';
 
-import MistakeCard from '@/components/features/note/MistakeCard';
+import IncorrectCard from '@/components/features/note/IncorrectCard';
 
 type NoteCategory = {
   category: Category;
   categoryName: string;
 };
 
-type ReviewMistakeListProps = {
+type IncorrectNoteListProps = {
   categories: NoteCategory[];
   notes: Note[];
   isLoading?: boolean;
@@ -20,14 +20,14 @@ type ReviewMistakeListProps = {
   sentinelRef?: RefCallback<HTMLDivElement>;
 };
 
-export default function ReviewMistakeList({
+export default function IncorrectNoteList({
   categories,
   notes,
   isLoading = false,
   isLoadingMore = false,
   hasNext = false,
   sentinelRef,
-}: ReviewMistakeListProps) {
+}: IncorrectNoteListProps) {
   const navigate = useNavigate();
 
   if (isLoading) {
@@ -54,7 +54,7 @@ export default function ReviewMistakeList({
   return (
     <div className="flex flex-col gap-6">
       {notes.map((note) => (
-        <MistakeCard
+        <IncorrectCard
           key={note.noteId}
           categoryName={
             categories.find((category) => category.category === note.category)

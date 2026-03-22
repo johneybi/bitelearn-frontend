@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import ReviewSummary from './ReviewSummary';
+import IncorrectSummary from './IncorrectSummary';
 
 const meta = {
-  title: 'Note/ReviewSummary',
-  component: ReviewSummary,
+  title: 'Note/IncorrectSummary',
+  component: IncorrectSummary,
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
@@ -14,17 +14,17 @@ const meta = {
     totalBytes: 1250,
     animateCharacter: false,
   },
-} satisfies Meta<typeof ReviewSummary>;
+} satisfies Meta<typeof IncorrectSummary>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: (args) => <ReviewSummary {...args} />,
+  render: (args) => <IncorrectSummary {...args} />,
 };
 
-export const EmptyReview: Story = {
-  render: (args) => <ReviewSummary {...args} />,
+export const EmptyIncorrect: Story = {
+  render: (args) => <IncorrectSummary {...args} />,
   args: {
     pendingReviewCount: 0,
   },

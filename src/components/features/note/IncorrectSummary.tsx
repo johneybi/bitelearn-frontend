@@ -1,17 +1,17 @@
 import BiteCharacter from '@/components/features/character/BiteCharacter';
 
-type ReviewSummaryProps = {
+type IncorrectSummaryProps = {
   pendingReviewCount: number;
   totalBytes: number;
   animateCharacter?: boolean;
 };
 
-export default function ReviewSummary({
+export default function IncorrectSummary({
   pendingReviewCount,
   totalBytes,
   animateCharacter = true,
-}: ReviewSummaryProps) {
-  const reviewMessage =
+}: IncorrectSummaryProps) {
+  const summaryMessage =
     pendingReviewCount === 0
       ? '복습 대기가 없어요! 지금 흐름 아주 좋아요! 🐾'
       : pendingReviewCount < 5
@@ -24,7 +24,7 @@ export default function ReviewSummary({
     <div className="mt-6 bg-white px-6 pb-4 pt-6">
       <BiteCharacter
         exp={totalBytes}
-        messageOverride={reviewMessage}
+        messageOverride={summaryMessage}
         animate={animateCharacter}
       />
 
