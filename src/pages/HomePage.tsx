@@ -47,7 +47,7 @@ function HomePage() {
     <div className="flex h-full flex-col overflow-hidden">
       <HomeLogoHeader />
 
-      <section className="hide-scrollbar flex-1 overflow-y-auto bg-background pb-40 pt-[60px]">
+      <section className="hide-scrollbar flex-1 overflow-y-auto bg-background pb-20 pt-[60px]">
         <div className="mb-8 flex flex-col gap-8 px-5 pt-5">
           {user ? (
             <MemberHeroSection

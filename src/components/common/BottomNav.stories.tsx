@@ -18,8 +18,8 @@ type Story = StoryObj<typeof meta>;
 function renderBottomNav(path: string) {
   return (
     <MemoryRouter initialEntries={[path]}>
-      <div className="relative h-[120px] bg-slate-50">
-        <BottomNav isFixed={false} />
+      <div className="min-h-dvh bg-slate-50 pb-32">
+        <BottomNav />
       </div>
     </MemoryRouter>
   );
