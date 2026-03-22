@@ -6,8 +6,12 @@ const LEVEL_BYTE_RANGES = [
   { level: 3, minBytes: 4000, maxBytes: 6000 },
 ] as const;
 
+export function formatByteCount(value: number) {
+  return new Intl.NumberFormat('ko-KR').format(Math.abs(value));
+}
+
 export function formatBytes(value: number) {
-  return `${new Intl.NumberFormat('ko-KR').format(Math.abs(value))} B`;
+  return `${formatByteCount(value)} B`;
 }
 
 export function getLevelState(level?: number) {
