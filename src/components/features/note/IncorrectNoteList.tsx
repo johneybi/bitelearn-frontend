@@ -1,6 +1,6 @@
 import type { RefCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { RotateCcw } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import type { Category } from '@/api/learning/learning.types';
 import type { Note } from '@/api/notes/notes.types';
 
@@ -32,7 +32,7 @@ export default function IncorrectNoteList({
 
   if (isLoading) {
     return (
-      <div className="rounded-[32px] border-2 border-dashed border-slate-100 py-20 text-center">
+      <div className="border-slate-100 py-20 text-center">
         <p className="text-sm font-bold text-slate-400">
           오답노트를 불러오는 중이에요
         </p>
@@ -42,17 +42,17 @@ export default function IncorrectNoteList({
 
   if (notes.length === 0) {
     return (
-      <div className="rounded-[32px] border-2 border-dashed border-slate-100 py-20 text-center">
-        <RotateCcw size={32} className="mx-auto mb-4 text-slate-200" />
+      <div className="border-slate-100 py-20 text-center">
+        <CheckCircle2 size={32} className="mx-auto mb-4 text-slate-200" />
         <p className="text-sm font-bold text-slate-400">
-          모든 오답을 정복했어요!
+          아직 오답이 없어요
         </p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4 pt-6">
       {notes.map((note) => (
         <IncorrectCard
           key={note.noteId}
@@ -61,6 +61,7 @@ export default function IncorrectNoteList({
               ?.categoryName || '미분류'
           }
           createdAt={note.createdAt}
+          chapterId={note.chapterId}
           topic={note.topic}
           questionTitle={note.questionTitle}
           onSelect={() => navigate(`/notes/incorrect/${note.noteId}`)}

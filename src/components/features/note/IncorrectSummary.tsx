@@ -1,64 +1,70 @@
-import BiteCharacter from '@/components/features/character/BiteCharacter';
+import correctResultImage from '@/assets/character/correct_result.png';
+import incorrectResultImage from '@/assets/character/incorrect_result.png';
 
 type IncorrectSummaryProps = {
   pendingReviewCount: number;
   totalBytes: number;
-  animateCharacter?: boolean;
 };
 
 export default function IncorrectSummary({
   pendingReviewCount,
   totalBytes,
-  animateCharacter = true,
 }: IncorrectSummaryProps) {
-  const summaryMessage =
-    pendingReviewCount === 0
-      ? '복습 대기가 없어요! 지금 흐름 아주 좋아요! 🐾'
-      : pendingReviewCount < 5
-        ? '복습할 게 조금 남았어요. 금방 끝낼 수 있어요! 🐾'
-        : pendingReviewCount < 10
-          ? '멍멍이가 열심히 공부하고 있어요! 🐾'
-          : '복습 대기가 많이 쌓였어요. 하나씩 같이 정리해봐요! 🦴';
+  const hasPendingIncorrect = pendingReviewCount > 0;
+  const summaryTitle = hasPendingIncorrect
+    ? '아직 회수하지 못한\n바이트가 남아있어요..'
+    : '회수하지 못한\n바이트가 없어요!';
+  const summaryDescription = hasPendingIncorrect
+    ? '오답 문제를 복습해\n바이트를 되찾아보아요!'
+    : '지금 흐름 아주 좋아요.\n이대로 학습을 이어가봐요!';
+  const summaryImage = hasPendingIncorrect
+    ? incorrectResultImage
+    : correctResultImage;
 
   return (
-    <div className="mt-6 bg-white px-6 pb-4 pt-6">
-      <BiteCharacter
-        exp={totalBytes}
-        messageOverride={summaryMessage}
-        animate={animateCharacter}
-      />
+    <section className="mb-3 px-5 pt-8">
+      <div className="overflow-hidden rounded-2xl border-2 border-border bg-card p-0.5 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]">
+        <div className="px-4 pb-4 pt-4">
+          <div className="relative flex min-h-[140px] items-center overflow-hidden">
+            <div className="relative z-[1] max-w-[168px]">
+              <h2 className="whitespace-pre-line text-base font-bold leading-6 text-slate-900">
+                {summaryTitle}
+              </h2>
+              <p className="mt-2 whitespace-pre-line text-[13px] font-bold leading-[16.25px] text-slate-600">
+                {summaryDescription}
+              </p>
+            </div>
 
-      <div className="grid grid-cols-2 gap-2">
-        <div className="rounded-2xl border-2 border-slate-100 bg-slate-50/50 p-3">
-          <p className="mb-1 text-[10px] font-bold text-slate-400">복습 대기</p>
-
-          <div className="flex items-baseline gap-0.5">
-            <span className="text-lg font-bold text-slate-900">
-              {pendingReviewCount}
-            </span>
-
-            <span className="ml-0.5 text-[10px] font-bold text-slate-300">
-              개
-            </span>
+            <img
+              src={summaryImage}
+              alt=""
+              className="pointer-events-none absolute right-[-18px] top-1/2 z-0 h-[162px] w-[162px] -translate-y-1/2 object-contain"
+            />
           </div>
         </div>
 
-        <div className="rounded-2xl border-2 border-slate-900 bg-slate-900 p-3 shadow-md">
-          <p className="mb-1 text-[10px] font-bold text-slate-400">
-            보유 바이트
-          </p>
+        <div className="px-4 pb-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="rounded-2xl bg-slate-50 px-2">
+              <p className="pb-1 pt-2.5 text-center text-xs leading-4 text-slate-600">
+                복습 대기 문제
+              </p>
+              <p className="pb-1.5 text-center text-base font-bold leading-6 text-foreground">
+                {pendingReviewCount}개
+              </p>
+            </div>
 
-          <div className="flex items-baseline gap-0.5">
-            <span className="text-lg font-bold text-white">
-              {totalBytes.toLocaleString()}
-            </span>
-
-            <span className="ml-0.5 text-[10px] font-bold italic text-white/60">
-              B
-            </span>
+            <div className="rounded-2xl bg-slate-50 px-2">
+              <p className="pb-1 pt-2.5 text-center text-xs leading-4 text-slate-600">
+                현재 바이트
+              </p>
+              <p className="pb-1.5 text-center text-base font-bold leading-6 text-foreground">
+                {totalBytes.toLocaleString()} B
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

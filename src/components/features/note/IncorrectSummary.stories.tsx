@@ -12,7 +12,6 @@ const meta = {
   args: {
     pendingReviewCount: 5,
     totalBytes: 1250,
-    animateCharacter: false,
   },
 } satisfies Meta<typeof IncorrectSummary>;
 
