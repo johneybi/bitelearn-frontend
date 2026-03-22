@@ -35,7 +35,7 @@ export default function RoadmapCurve({
     >
       <path
         d={d}
-        className="stroke-white/60"
+        className="stroke-white/40"
         strokeWidth="16"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -43,7 +43,7 @@ export default function RoadmapCurve({
       />
       <path
         d={d}
-        className="stroke-white"
+        className="stroke-white/60"
         strokeWidth="8"
         strokeLinecap="round"
         strokeLinejoin="round"
