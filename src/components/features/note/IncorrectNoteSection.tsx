@@ -1,7 +1,5 @@
 import type { RefCallback } from 'react';
-import type {
-  Category,
-} from '@/api/learning/learning.types';
+import type { Category } from '@/api/learning/learning.types';
 import type { Note } from '@/api/notes/notes.types';
 import IncorrectSummary from '@/components/features/note/IncorrectSummary';
 import IncorrectNoteList from '@/components/features/note/IncorrectNoteList';
@@ -48,8 +46,8 @@ export default function IncorrectNoteSection({
         pendingReviewCount={totalNoteCount}
         totalBytes={totalBytes}
       />
-      <div className="px-6 py-3">
-        <div className="hide-scrollbar -mx-2 flex gap-2 overflow-x-auto px-2">
+      <div className="sticky top-[50px] z-10 bg-none px-5 py-3.5">
+        <div className="hide-scrollbar flex gap-2.5 overflow-x-auto">
           {noteCategories.map((category) => {
             const isActive = selectedCategory === category.category;
 
@@ -65,7 +63,7 @@ export default function IncorrectNoteSection({
         </div>
       </div>
 
-      <div className="px-6 pb-6 pt-4">
+      <div className="px-5">
         <IncorrectNoteList
           categories={categories}
           notes={notes}
