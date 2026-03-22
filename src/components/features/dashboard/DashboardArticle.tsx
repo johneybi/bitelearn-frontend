@@ -24,7 +24,7 @@ export default function DashboardArticle({ articles }: DashboardArticleProps) {
           <ArticleCard
             key={article.articleId}
             article={article}
-            variant="compact"
+            variant="home"
           />
         ))}
       </div>

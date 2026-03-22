@@ -45,7 +45,7 @@ const meta = {
   },
   args: {
     article: sampleArticle,
-    variant: 'relaxed',
+    variant: 'article',
   },
 } satisfies Meta<typeof ArticleCard>;
 
@@ -63,18 +63,18 @@ function renderInWidth(widthClassName: string, args: ArticleCardProps) {
   );
 }
 
-export const RelaxedBase: Story = {
+export const ArticleBase: Story = {
   render: (args) => renderInWidth('max-w-sm', args),
 };
 
-export const CompactBase: Story = {
+export const HomeBase: Story = {
   render: (args) => renderInWidth('max-w-sm', args),
   args: {
-    variant: 'compact',
+    variant: 'home',
   },
 };
 
-export const RelaxedWithoutThumbnail: Story = {
+export const ArticleWithoutThumbnail: Story = {
   render: (args) => renderInWidth('max-w-sm', args),
   args: {
     article: {

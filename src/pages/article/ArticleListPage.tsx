@@ -83,7 +83,7 @@ export default function ArticleListPage() {
                     <ArticleCard
                       key={article.articleId}
                       article={article}
-                      variant="relaxed"
+                      variant="article"
                     />
                   ))}
                 </div>
