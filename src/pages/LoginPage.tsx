@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -33,8 +33,13 @@ const LOGIN_ERROR_FALLBACK_MESSAGE =
   '로그인에 실패했습니다. 다시 시도해주세요.';
 
 export default function LoginPage() {
+  const location = useLocation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const redirectTo =
+    typeof location.state?.from?.pathname === 'string'
+      ? location.state.from.pathname
+      : '/';
 
   // 로컬 로그인 핸들러
   const handleLocalLogin = async (
@@ -51,7 +56,7 @@ export default function LoginPage() {
       const me = await fetchMe();
       queryClient.setQueryData(authQueryKeys.me, me);
 
-      navigate('/');
+      navigate(redirectTo, { replace: true });
     } catch (error) {
       logError('LoginPage', '로그인 실패', error);
 
