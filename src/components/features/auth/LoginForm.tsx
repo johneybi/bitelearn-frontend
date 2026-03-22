@@ -74,7 +74,7 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
             <FormField
               control={form.control}
               name="password"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem className="space-y-2">
                   <FormControl>
                     <Input
@@ -83,7 +83,10 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
                       placeholder="비밀번호"
                       className={cn(
                         'h-10 rounded-md border-input bg-popover px-3 py-2 text-sm text-foreground shadow-sm',
-                        'placeholder:text-placeholder focus-visible:ring-0 focus-visible:ring-offset-0'
+                        'placeholder:text-placeholder focus-visible:ring-0 focus-visible:ring-offset-0',
+                        fieldState.error
+                          ? 'border-destructive focus-visible:border-destructive'
+                          : 'border-input'
                       )}
                       {...field}
                     />
