@@ -42,7 +42,7 @@ export const DASHBOARD_RECOMMENDATIONS: DashboardRecommendation[] = [
     categoryId: 'finance',
     chapterId: '2001',
     categoryName: '생활금융 · 고용',
-    topicName: '월급',
+    topicName: '월급 관리',
     chapterTitle: '사회초년생을 위한 월급 관리 기초',
   },
 ];

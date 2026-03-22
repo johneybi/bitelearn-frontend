@@ -10,8 +10,25 @@ export type QuizType =
   | 'DIALOGUE_OX';
 
 // 카테고리 / 토픽
-export type Category = 'REAL_ESTATE' | 'FINANCE' | 'LAW';
-export type Topic = 'JEONSE' | 'MONTHLY_RENT' | 'BUYING';
+export type Category =
+  | 'REAL_ESTATE'
+  | 'FINANCE'
+  | 'CAREER'
+  | 'INVESTMENT'
+  | 'LAW';
+export type Topic =
+  | 'JEONSE'
+  | 'MONTHLY_RENT'
+  | 'BUYING'
+  | 'SALARY'
+  | 'CREDIT'
+  | 'EMPLOYMENT'
+  | 'SALARY_NEGOTIATION'
+  | 'YEAR_END_TAX'
+  | 'INCOME_TAX'
+  | 'ETF'
+  | 'STOCK'
+  | 'PENSION';
 
 // 챕터 목록 조회
 export type ChapterListRequest = {

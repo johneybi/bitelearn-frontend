@@ -6,6 +6,7 @@ import GuestHeroSection from '@/components/features/dashboard/GuestHeroSection';
 import MemberHeroSection from '@/components/features/dashboard/MemberHeroSection';
 import type { DashboardRecommendation } from '@/components/features/dashboard/dashboard.types';
 import { mockArticles } from '@/mock/article';
+import { DASHBOARD_RECOMMENDATIONS } from '@/mock/dashboard';
 import { formatDisplayName } from '@/utils/formatUser';
 
 function HomePage() {
@@ -17,30 +18,16 @@ function HomePage() {
   // 최근 학습 데이터 (임시)
   const recentLearning = {
     categoryId: 'real-estate',
-    chapterId: '1',
+    chapterId: '1002',
     categoryName: '부동산 · 주거',
-    topicName: '월세',
-    chapterTitle: '아주 길고 길고 길고 긴 챕터이름',
+    topicName: '전세',
+    chapterTitle: '등기부등본에서 위험 신호 읽기',
     progressPercent: 68,
   };
 
   // 추천 학습 데이터 (임시)
-  const dashboardRecommendations: DashboardRecommendation[] = [
-    {
-      categoryId: 'real-estate',
-      chapterId: '2',
-      categoryName: '부동산 · 주거',
-      topicName: '전세',
-      chapterTitle: '전세 계약 전 꼭 확인해야 할 체크리스트',
-    },
-    {
-      categoryId: 'finance',
-      chapterId: '1',
-      categoryName: '생활금융 · 고용',
-      topicName: '월급',
-      chapterTitle: '사회초년생을 위한 월급 관리 기초',
-    },
-  ];
+  const dashboardRecommendations: DashboardRecommendation[] =
+    DASHBOARD_RECOMMENDATIONS;
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
