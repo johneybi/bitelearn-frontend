@@ -92,8 +92,18 @@ export default function LearningRoadmapPage() {
   const roadmapHeight = getRoadmapLayoutHeight(count);
 
   return (
-    <div className="flex h-full flex-col bg-slate-50 text-slate-900">
-      <div className="shrink-0 border-b border-slate-100 bg-white px-4">
+    <div className="relative flex h-full flex-col overflow-hidden">
+      {/* 
+        로드맵 배경 이미지 레이어 
+        - pointer-events-none: 클릭 간섭 방지
+        - bg-[length:auto_100%]: 비율 유지하며 "세로 100% 길이"에 딱 맞게 꽉 채움 (또는 bg-cover 혼용 가능)
+      */}
+      <div 
+        className="absolute inset-0 pointer-events-none bg-[length:auto_100%] bg-top bg-no-repeat"
+        style={{ backgroundImage: "url('/assets/roadmap-bg.png')" }}
+      />
+
+      <div className="relative z-10 shrink-0 border-b border-slate-100 bg-white px-4">
         <div className="flex h-14 items-center">
           <Button
             variant="ghost"
@@ -112,7 +122,7 @@ export default function LearningRoadmapPage() {
         </div>
       </div>
 
-      <section className="hide-scrollbar flex-1 overflow-y-auto px-6 pb-10 pt-10">
+      <section className="relative z-10 flex-1 overflow-y-auto px-6 pb-10 pt-10 hide-scrollbar">
         <div
           className="relative mx-auto w-full"
           style={{ height: roadmapHeight }}
