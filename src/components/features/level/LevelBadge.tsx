@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import LevelInfoDialog from './LevelInfoDialog';
-import { getLevelMeta, normalizeLevel } from './levelMeta';
+import { getLevelState } from './level.utils';
 
 type LevelBadgeProps = {
   currentLevel?: number;
@@ -17,8 +17,7 @@ export default function LevelBadge({
   imageClassName,
 }: LevelBadgeProps) {
   const [open, setOpen] = useState(false);
-  const normalizedLevel = normalizeLevel(currentLevel);
-  const levelMeta = getLevelMeta(normalizedLevel);
+  const { normalizedLevel, levelMeta } = getLevelState(currentLevel);
 
   return (
     <>

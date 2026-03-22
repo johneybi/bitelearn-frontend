@@ -7,6 +7,10 @@ import chapterResultFailImage from '@/assets/character/chapter_result_fail.png';
 import chapterResultPerfectImage from '@/assets/character/chapter_result_perfect.png';
 import Header from '@/components/common/Header';
 import LevelBadge from '@/components/features/level/LevelBadge';
+import {
+  formatBytes,
+  getLevelByteProgress,
+} from '@/components/features/level/level.utils';
 import { Button } from '@/components/ui/button';
 
 type ResultVariant = 'perfect' | 'close' | 'fail';
@@ -24,12 +28,6 @@ type ChapterResultProps = {
   onFinish: () => void;
   onRetryWrongAnswers?: () => void;
 };
-
-const LEVEL_RANGES = [
-  { level: 1, minBytes: 0, maxBytes: 2000 },
-  { level: 2, minBytes: 2000, maxBytes: 4000 },
-  { level: 3, minBytes: 4000, maxBytes: 6000 },
-] as const;
 
 const PROGRESS_BAR_CLASS_NAME = 'from-[#fed7aa] to-[#fb923c]';
 const EARNED_TEXT_CLASS_NAME = 'text-[#4ade80]';
@@ -64,10 +62,6 @@ const VARIANT_CONFIG = {
     showCelebration: false,
   },
 } as const;
-
-function formatBytes(value: number) {
-  return `${new Intl.NumberFormat('ko-KR').format(Math.abs(value))} B`;
-}
 
 // 코인 애니메이션 컴포넌트
 function CelebrationParticles() {
@@ -139,36 +133,14 @@ export default function ChapterResult({
     ? 'pb-[206px]'
     : 'pb-[144px]';
 
-  const levelState = useMemo(() => {
-    const derivedLevel =
-      LEVEL_RANGES.find(
-        ({ minBytes, maxBytes }) =>
-          currentTotalBytes >= minBytes && currentTotalBytes < maxBytes
-      ) ?? LEVEL_RANGES[LEVEL_RANGES.length - 1];
-    const levelRange =
-      LEVEL_RANGES.find(({ level }) => level === currentLevel) ?? derivedLevel;
-    const clampedBytes = Math.min(currentTotalBytes, levelRange.maxBytes);
-    const remainingBytes = Math.max(0, levelRange.maxBytes - clampedBytes);
-    const progressPercentage = Math.min(
-      100,
-      Math.max(
-        0,
-        ((clampedBytes - levelRange.minBytes) /
-          Math.max(1, levelRange.maxBytes - levelRange.minBytes)) *
-          100
-      )
-    );
-
-    return {
-      currentLevel: levelRange.level,
-      title: levelRange.level === 3 ? '3레벨 완성까지' : '다음 레벨까지',
-      remainingLabel:
-        levelRange.level === 3 && currentTotalBytes >= levelRange.maxBytes
-          ? 'MAX'
-          : formatBytes(remainingBytes),
-      progressPercentage,
-    };
-  }, [currentLevel, currentTotalBytes]);
+  const levelState = useMemo(
+    () =>
+      getLevelByteProgress({
+        currentLevel,
+        currentTotalBytes,
+      }),
+    [currentLevel, currentTotalBytes]
+  );
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsProgressVisible(true), 250);
