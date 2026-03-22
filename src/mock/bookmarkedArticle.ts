@@ -1,4 +1,7 @@
-import { mockArticles } from '@/mock/article';
+import {
+  type ArticleListItem,
+  mockArticles,
+} from '@/mock/article';
 
 export type BookmarkedArticleItem = {
   id: string;
@@ -6,12 +9,8 @@ export type BookmarkedArticleItem = {
   bookmarkedAt: string;
 };
 
-export type BookmarkedArticleCardItem = {
+export type BookmarkedArticleCardItem = ArticleListItem & {
   id: string;
-  articleId: string;
-  category: string;
-  title: string;
-  thumbnailUrl: string;
   bookmarkedAt: string;
 };
 
@@ -45,6 +44,8 @@ export function getMockBookmarkedArticles(): BookmarkedArticleCardItem[] {
         category: article.category,
         title: article.title,
         thumbnailUrl: article.thumbnailUrl,
+        publishedAt: article.publishedAt,
+        authorName: article.author.name,
         bookmarkedAt: bookmark.bookmarkedAt,
       };
     })

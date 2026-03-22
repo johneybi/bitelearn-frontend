@@ -56,9 +56,7 @@ export default function NotesPage() {
           )}
 
           {activeTab === 'bookmark' && (
-            <div className="px-6">
-              <BookmarkSection articles={bookmarkArticles} />
-            </div>
+            <BookmarkSection articles={bookmarkArticles} />
           )}
         </section>
       </div>

@@ -26,6 +26,8 @@ const meta = {
       category: article.category,
       title: article.title,
       thumbnailUrl: article.thumbnailUrl,
+      publishedAt: article.publishedAt,
+      authorName: article.author.name,
       bookmarkedAt: article.publishedAt,
     })),
   },
