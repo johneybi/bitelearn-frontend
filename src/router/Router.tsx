@@ -16,7 +16,6 @@ import LearningPage from '@/pages/learning/LearningPage';
 import NotesPage from '@/pages/note/NotesPage';
 import IncorrectNoteDetailPage from '@/pages/note/IncorrectNoteDetailPage';
 import MyPage from '@/pages/MyPage';
-import AccountInfoPage from '@/pages/AccountInfoPage';
 import ArticleListPage from '@/pages/article/ArticleListPage';
 import ArticleDetailPage from '@/pages/article/ArticleDetailPage';
 import LearningRoadmapPage from '@/pages/learning/LearningRoadmapPage';
@@ -52,7 +51,6 @@ export default function Router() {
               path="/notes/incorrect/:noteId"
               element={<IncorrectNoteDetailPage />}
             />
-            <Route path="/mypage/account" element={<AccountInfoPage />} />
           </Route>
 
           {/* 비로그인 사용자만 접근할 수 있는 페이지 */}
