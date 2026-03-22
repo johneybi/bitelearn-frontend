@@ -34,15 +34,15 @@ export const DASHBOARD_RECOMMENDATIONS: DashboardRecommendation[] = [
   {
     categoryId: 'real-estate',
     chapterId: '1001',
-    category: '부동산 · 주거',
-    title: '전세 계약 전 꼭 확인해야 할 체크리스트',
-    estimatedMinutes: 5,
+    categoryName: '부동산 · 주거',
+    topicName: '전세',
+    chapterTitle: '전세 계약 전 꼭 확인해야 할 체크리스트',
   },
   {
     categoryId: 'finance',
     chapterId: '2001',
-    category: '생활금융 · 고용',
-    title: '사회초년생을 위한 월급 관리 기초',
-    estimatedMinutes: 4,
+    categoryName: '생활금융 · 고용',
+    topicName: '월급',
+    chapterTitle: '사회초년생을 위한 월급 관리 기초',
   },
 ];
