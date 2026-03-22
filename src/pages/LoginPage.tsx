@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -33,8 +33,13 @@ const LOGIN_ERROR_FALLBACK_MESSAGE =
   '로그인에 실패했습니다. 다시 시도해주세요.';
 
 export default function LoginPage() {
+  const location = useLocation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const redirectTo =
+    typeof location.state?.from?.pathname === 'string'
+      ? location.state.from.pathname
+      : '/';
 
   // 로컬 로그인 핸들러
   const handleLocalLogin = async (
@@ -51,7 +56,7 @@ export default function LoginPage() {
       const me = await fetchMe();
       queryClient.setQueryData(authQueryKeys.me, me);
 
-      navigate('/');
+      navigate(redirectTo, { replace: true });
     } catch (error) {
       logError('LoginPage', '로그인 실패', error);
 
@@ -71,12 +76,9 @@ export default function LoginPage() {
 
   return (
     <div className="relative flex min-h-dvh flex-col bg-background">
-      <Header
-        showCloseButton
-        onCloseClick={() => navigate(-1)}
-      />
+      <Header showCloseButton onCloseClick={() => navigate(-1)} />
 
-      <div className="flex flex-1 flex-col gap-6 bg-background px-5 pt-[60px]">
+      <div className="flex flex-1 flex-col gap-6 bg-background px-5 pb-44 pt-[60px]">
         <div className="flex flex-col items-center justify-center gap-10 self-stretch px-[69px] pb-16 pt-24">
           <div className="flex items-center justify-center gap-3">
             <img

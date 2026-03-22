@@ -1,20 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import MyProfileCard from './MyProfileCard';
+import MyBadgeSummaryCard from './MyBadgeSummaryCard';
 
 const meta = {
-  title: 'MyPage/MyProfileCard',
-  component: MyProfileCard,
+  title: 'MyPage/MyBadgeSummaryCard',
+  component: MyBadgeSummaryCard,
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',
   },
   args: {
-    nickname: 'BiteLearn',
-    email: 'bitelearn@bitelearn.com',
-    onClick: () => {},
+    currentLevel: 1,
+    currentBytes: 1250,
   },
-} satisfies Meta<typeof MyProfileCard>;
+} satisfies Meta<typeof MyBadgeSummaryCard>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -22,7 +21,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: (args) => (
     <div className="mx-auto w-full max-w-sm">
-      <MyProfileCard {...args} />
+      <MyBadgeSummaryCard {...args} />
     </div>
   ),
 };

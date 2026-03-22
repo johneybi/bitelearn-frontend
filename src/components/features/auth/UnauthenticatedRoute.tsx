@@ -2,7 +2,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import AppLoading from '@/components/common/AppLoading';
 import { useMeQuery } from '@/api/auth/auth.query';
 
-export default function PublicRoute() {
+export default function UnauthenticatedRoute() {
   const { data: user, isPending } = useMeQuery();
 
   if (isPending) {

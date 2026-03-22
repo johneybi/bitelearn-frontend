@@ -1,12 +1,18 @@
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
 
 import Header from '@/components/common/Header';
 import TermsAgreementForm from '@/components/features/auth/TermsAgreementForm';
 import { SIGNUP_TERMS_AGREED_STORAGE_KEY } from '@/constants/auth';
+import {
+  PRIVACY_TERMS_URL,
+  SERVICE_TERMS_URL,
+} from '@/constants/terms';
 
 export default function TermsAgreementPage() {
   const navigate = useNavigate();
+  const openExternalLink = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <div className="min-h-dvh bg-background pt-[60px]">
@@ -21,12 +27,8 @@ export default function TermsAgreementPage() {
           sessionStorage.setItem(SIGNUP_TERMS_AGREED_STORAGE_KEY, 'true');
           navigate('/signup');
         }}
-        onOpenServiceTerms={() =>
-          toast.info('서비스 이용약관 상세 페이지는 준비 중입니다.')
-        }
-        onOpenPrivacyTerms={() =>
-          toast.info('개인정보 처리방침 상세 페이지는 준비 중입니다.')
-        }
+        onOpenServiceTerms={() => openExternalLink(SERVICE_TERMS_URL)}
+        onOpenPrivacyTerms={() => openExternalLink(PRIVACY_TERMS_URL)}
       />
     </div>
   );

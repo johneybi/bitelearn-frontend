@@ -1,5 +1,13 @@
 import * as z from 'zod';
 
+export const nicknameFieldSchema = z
+  .string()
+  .trim()
+  .min(1, '닉네임을 입력해주세요.')
+  .regex(/^[a-zA-Z0-9가-힣]{2,10}$/, {
+    message: '닉네임은 특수문자 제외 2~10자리여야 합니다.',
+  });
+
 export const signupSchema = z
   .object({
     email: z
@@ -10,13 +18,7 @@ export const signupSchema = z
 
     password: z.string().min(1, '비밀번호를 입력해주세요.'),
 
-    nickname: z
-      .string()
-      .trim()
-      .min(1, '닉네임을 입력해주세요.')
-      .regex(/^[a-zA-Z0-9가-힣]{2,10}$/, {
-        message: '닉네임은 특수문자 제외 2~10자리여야 합니다.',
-      }),
+    nickname: nicknameFieldSchema,
 
     passwordConfirm: z
       .string()
