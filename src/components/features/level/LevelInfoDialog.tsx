@@ -1,38 +1,12 @@
-import level1Image from '@/assets/level/level_1.png';
-import level2Image from '@/assets/level/level_2.png';
-import level3Image from '@/assets/level/level_3.png';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { LEVEL_META } from './levelMeta';
 
 type LevelInfoDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   currentLevel: number;
 };
-
-const LEVEL_CARD_ITEMS = [
-  {
-    level: 1,
-    name: '하룻강아지',
-    description: '아직은 미숙한 하룻강아지',
-    image: level1Image,
-    badgeClassName: 'border-[#ffedd5] bg-[#fff7ed]',
-  },
-  {
-    level: 2,
-    name: '서당개',
-    description: '이제는 알 건 알아요',
-    image: level2Image,
-    badgeClassName: 'border-[#fdba74] bg-[#ffedd5]',
-  },
-  {
-    level: 3,
-    name: '탐지견',
-    description: '함정은 내가 다 찾아주마',
-    image: level3Image,
-    badgeClassName: 'border-[#bbf7d0] bg-[#dcfce7]',
-  },
-] as const;
 
 function LevelCard({
   level,
@@ -41,7 +15,7 @@ function LevelCard({
   image,
   badgeClassName,
   isCurrent,
-}: (typeof LEVEL_CARD_ITEMS)[number] & { isCurrent: boolean }) {
+}: (typeof LEVEL_META)[number] & { isCurrent: boolean }) {
   return (
     <div
       className={cn(
@@ -94,7 +68,7 @@ export default function LevelInfoDialog({
         </DialogTitle>
 
         <div className="flex flex-col gap-4">
-          {LEVEL_CARD_ITEMS.map((item) => (
+          {LEVEL_META.map((item) => (
             <LevelCard
               key={item.level}
               {...item}

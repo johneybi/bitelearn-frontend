@@ -5,12 +5,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  .tossface {
-    font-family: 'Tossface';
-  }
-}
-
 /* Custom animation utilities */
 @layer utilities {
   .perspective-1000 {

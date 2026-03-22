@@ -3,19 +3,19 @@ import { MemoryRouter } from 'react-router-dom';
 
 import { DASHBOARD_RECOMMENDATIONS } from '@/mock/dashboard';
 
-import DashboardTodayRecommendation from './DashboardTodayRecommendation';
+import DashboardRecommendationCard from './DashboardRecommendationCard';
 
 const meta = {
-  title: 'Dashboard/DashboardTodayRecommendation',
-  component: DashboardTodayRecommendation,
+  title: 'Dashboard/DashboardRecommendationCard',
+  component: DashboardRecommendationCard,
   tags: ['autodocs'],
   parameters: {
-    layout: 'fullscreen',
+    layout: 'padded',
   },
   args: {
-    recommendations: DASHBOARD_RECOMMENDATIONS,
+    recommendation: DASHBOARD_RECOMMENDATIONS[0],
   },
-} satisfies Meta<typeof DashboardTodayRecommendation>;
+} satisfies Meta<typeof DashboardRecommendationCard>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -23,8 +23,8 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: (args) => (
     <MemoryRouter initialEntries={['/']}>
-      <div className="px-6">
-        <DashboardTodayRecommendation {...args} />
+      <div className="mx-auto w-full max-w-sm">
+        <DashboardRecommendationCard {...args} />
       </div>
     </MemoryRouter>
   ),

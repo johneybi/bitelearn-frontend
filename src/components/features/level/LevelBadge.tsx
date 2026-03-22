@@ -1,0 +1,50 @@
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
+import LevelInfoDialog from './LevelInfoDialog';
+import { getLevelMeta, normalizeLevel } from './levelMeta';
+
+type LevelBadgeProps = {
+  currentLevel?: number;
+  label?: string;
+  className?: string;
+  imageClassName?: string;
+};
+
+export default function LevelBadge({
+  currentLevel = 1,
+  label,
+  className,
+  imageClassName,
+}: LevelBadgeProps) {
+  const [open, setOpen] = useState(false);
+  const normalizedLevel = normalizeLevel(currentLevel);
+  const levelMeta = getLevelMeta(normalizedLevel);
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label={label ?? `현재 ${normalizedLevel}레벨`}
+        className={cn(
+          'inline-flex size-[60px] shrink-0 items-center justify-center rounded-full border p-px shadow-[0px_4px_8px_0px_rgba(237,238,246,1)]',
+          levelMeta.badgeClassName,
+          className
+        )}
+      >
+        <img
+          src={levelMeta.image}
+          alt=""
+          aria-hidden="true"
+          className={cn('size-[52px] object-cover', imageClassName)}
+        />
+      </button>
+
+      <LevelInfoDialog
+        open={open}
+        onOpenChange={setOpen}
+        currentLevel={normalizedLevel}
+      />
+    </>
+  );
+}

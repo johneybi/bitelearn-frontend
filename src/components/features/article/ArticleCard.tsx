@@ -1,26 +1,60 @@
+import { Link } from 'react-router-dom';
 import { ChevronRight, FileText } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import type {
-  ArticleDetail,
-  ArticleListItem,
-} from '@/mock/article';
+import { formatDate } from '@/utils/formatDate';
+import type { ArticleDetail, ArticleListItem } from '@/mock/article';
 
 type ArticleCardProps = {
   article: ArticleListItem | ArticleDetail;
-  onSelect: (articleId: string) => void;
   variant?: 'relaxed' | 'compact';
 };
 
+function getAuthorName(article: ArticleListItem | ArticleDetail) {
+  return 'authorName' in article ? article.authorName : article.author.name;
+}
+
 export default function ArticleCard({
   article,
-  onSelect,
   variant = 'relaxed',
 }: ArticleCardProps) {
+  if (variant === 'compact') {
+    return (
+      <Link
+        to={`/articles/${article.articleId}`}
+        className="group flex h-auto w-full flex-col items-start overflow-hidden rounded-3xl border-none bg-white p-0 text-left shadow-[0_12px_16px_rgba(237,238,246,1)] transition-all active:scale-[0.98]"
+      >
+        <div className="flex w-full items-center justify-between px-4 py-4">
+          <span className="text-sm font-medium leading-5 text-slate-600">
+            {getAuthorName(article)}
+          </span>
+          <span className="text-sm font-medium leading-5 text-slate-400">
+            {formatDate(article.publishedAt)}
+          </span>
+        </div>
+
+        <div className="flex w-full items-center gap-4 px-4 pb-4">
+          <div className="flex h-[88px] w-[88px] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-300">
+            {article.thumbnailUrl ? (
+              <img
+                src={article.thumbnailUrl}
+                className="h-full w-full object-cover"
+                alt=""
+              />
+            ) : (
+              <FileText size={24} className="text-white/80" />
+            )}
+          </div>
+
+          <h3 className="line-clamp-3 flex-1 whitespace-normal break-keep text-base font-semibold leading-6 text-slate-950">
+            {article.title}
+          </h3>
+        </div>
+      </Link>
+    );
+  }
+
   return (
-    <Button
-      type="button"
-      variant="outline"
-      onClick={() => onSelect(article.articleId)}
+    <Link
+      to={`/articles/${article.articleId}`}
       className="group flex h-auto min-h-[120px] w-full items-start gap-4 overflow-hidden rounded-[28px] border-2 border-slate-100 bg-white p-5 text-left shadow-sm transition-all hover:border-slate-300 active:scale-[0.98]"
     >
       <div className="flex h-full min-w-0 flex-1 flex-col">
@@ -53,6 +87,6 @@ export default function ArticleCard({
           <FileText size={24} className="text-slate-300" />
         )}
       </div>
-    </Button>
+    </Link>
   );
 }

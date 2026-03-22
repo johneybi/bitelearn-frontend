@@ -1,46 +1,44 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { BOTTOM_NAV_TABS } from '@/constants/bottomNavTabs';
 
-type BottomNavProps = {
-  isFixed?: boolean;
-};
-
-export default function BottomNav({ isFixed = true }: BottomNavProps) {
+export default function BottomNav() {
   const location = useLocation();
 
   return (
-    <div
-      className={`pointer-events-none inset-x-0 bottom-0 z-30 flex justify-center ${
-        isFixed ? 'fixed' : 'absolute'
-      }`}
-    >
+    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center">
       <div
         className="relative w-full max-w-app"
         style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       >
         <div className="absolute inset-x-0 bottom-0">
-          <div className="h-8 bg-white/60 backdrop-blur-md" />
-
-          <nav className="pointer-events-auto absolute inset-x-4 bottom-4 rounded-[32px] border-2 border-slate-100 bg-white p-2 shadow-xl shadow-slate-200/50">
-            <ul className="flex items-center justify-between gap-1 px-1">
+          <nav
+            aria-label="하단 탭 바"
+            className="pointer-events-auto rounded-t-[20px] bg-white px-7 pb-6 pt-2.5 shadow-[0px_-4px_20px_0px_rgba(237,238,246,1)]"
+          >
+            <ul className="flex items-center justify-between">
               {BOTTOM_NAV_TABS.map((tab) => {
-                const Icon = tab.icon;
-                const isActive = location.pathname === tab.path;
+                const isActive =
+                  tab.path === '/'
+                    ? location.pathname === '/'
+                    : location.pathname.startsWith(tab.path);
 
                 return (
-                  <li key={tab.path} className="flex-1">
+                  <li key={tab.path} className="flex justify-center">
                     <NavLink
                       to={tab.path}
-                      className={`flex w-full flex-col items-center justify-center gap-1.5 rounded-3xl py-3.5 transition-all active:scale-95 ${
-                        isActive
-                          ? 'bg-slate-900 text-white shadow-md shadow-slate-400/20'
-                          : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'
-                      }`}
+                      className="flex w-11 flex-col items-center justify-center gap-0.5"
                     >
-                      <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+                      <img
+                        src={isActive ? tab.activeIconSrc : tab.iconSrc}
+                        alt={tab.label}
+                        aria-hidden="true"
+                        className="h-7 w-7 object-contain"
+                      />
                       <span
-                        className={`text-xs font-bold uppercase tracking-tighter ${
-                          isActive ? 'opacity-100' : 'opacity-80'
+                        className={`text-xs leading-4 tracking-normal ${
+                          isActive
+                            ? 'font-bold text-neutral-700'
+                            : 'font-normal text-slate-600'
                         }`}
                       >
                         {tab.label}

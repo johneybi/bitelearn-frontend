@@ -77,7 +77,7 @@ export default function ChapterIntro({
           <div className="my-5 h-px w-full bg-slate-100" />
 
           <div className="flex items-center gap-4">
-            <span className="tossface text-2xl leading-8">🎯</span>
+            <span className="text-2xl leading-8">🎯</span>
             <div className="flex flex-col items-start gap-1">
               <p className="text-xs font-bold leading-4 text-primary-600">
                 이번 목표
@@ -91,7 +91,7 @@ export default function ChapterIntro({
           <div className="my-5 h-px w-full bg-slate-100" />
 
           <div className="flex items-start gap-4">
-            <span className="tossface text-2xl leading-8">📖</span>
+            <span className="text-2xl leading-8">📖</span>
             <div className="flex flex-col items-start gap-2">
               <p className="text-xs font-bold leading-4 text-primary-600">
                 핵심 내용

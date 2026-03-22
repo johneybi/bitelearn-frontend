@@ -83,7 +83,6 @@ export default function ArticleListPage() {
                     <ArticleCard
                       key={article.articleId}
                       article={article}
-                      onSelect={handleSelectArticle}
                       variant="relaxed"
                     />
                   ))}
