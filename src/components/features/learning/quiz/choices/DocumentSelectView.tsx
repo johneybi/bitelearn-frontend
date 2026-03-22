@@ -1,5 +1,5 @@
 import ChapterIndicator from '@/components/features/learning/chapter/ChapterIndicator';
-import QuizFooter from '@/components/common/QuizFooter';
+import Footer from '@/components/common/Footer';
 import DocumentCard from '../shared/DocumentCard';
 import type { QuizInfo } from '@/api/learning/learning.types';
 import useIndicatorShadow from '@/hooks/useIndicatorShadow';
@@ -67,7 +67,7 @@ export default function DocumentSelectView({
         variant="quiz"
         showShadow={showIndicatorShadow}
       />
-      <QuizFooter
+      <Footer
         disabled={
           selectedValue === '' || (isChecking && !allowSubmitWhenChecking)
         }
@@ -77,7 +77,7 @@ export default function DocumentSelectView({
         showTrailingIcon={false}
       >
         {ctaLabel ?? '정답 확인'}
-      </QuizFooter>
+      </Footer>
     </>
   );
 }

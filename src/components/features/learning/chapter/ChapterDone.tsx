@@ -3,7 +3,7 @@ import { animate, motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 
 import chapterDoneImage from '@/assets/character/chapter_done.png';
-import QuizFooter from '@/components/common/QuizFooter';
+import Footer from '@/components/common/Footer';
 import Header from '@/components/common/Header';
 
 type ChapterDoneProps = {
@@ -106,7 +106,7 @@ export default function ChapterDone({
       </div>
 
       <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-app -translate-x-1/2 bg-white shadow-[0_-8px_24px_rgba(15,23,42,0.04)]">
-        <QuizFooter onClick={onFinish}>챕터 결과 확인하기</QuizFooter>
+        <Footer onClick={onFinish}>챕터 결과 확인하기</Footer>
       </div>
     </main>
   );

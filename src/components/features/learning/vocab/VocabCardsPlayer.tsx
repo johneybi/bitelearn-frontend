@@ -9,7 +9,7 @@ import {
 import { ChevronsLeft, ChevronsRight, Pointer } from 'lucide-react';
 
 import Header from '@/components/common/Header';
-import QuizFooter from '@/components/common/QuizFooter';
+import Footer from '@/components/common/Footer';
 import ChapterIndicator from '@/components/features/learning/chapter/ChapterIndicator';
 import useIndicatorShadow from '@/hooks/useIndicatorShadow';
 import VocabCard from './VocabCard';
@@ -277,14 +277,14 @@ export default function VocabCardsPlayer({
         showShadow={showIndicatorShadow}
       />
       <div className="relative shrink-0">
-        <QuizFooter
+        <Footer
           disabled={!isFlipped || isCompleting}
           previousDisabled={false}
           onPrevious={isFirstVocab ? undefined : handlePrev}
           onClick={handleNext}
         >
           {isLastVocab ? '단어 학습 완료' : '다음 단어'}
-        </QuizFooter>
+        </Footer>
       </div>
     </main>
   );

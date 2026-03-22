@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import QuizFooter from './QuizFooter';
+import Footer from './Footer';
 
-const meta: Meta<typeof QuizFooter> = {
-  title: 'Common/QuizFooter',
-  component: QuizFooter,
+const meta: Meta<typeof Footer> = {
+  title: 'Common/Footer',
+  component: Footer,
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
@@ -16,7 +16,7 @@ const meta: Meta<typeof QuizFooter> = {
 
 export default meta;
 
-type Story = StoryObj<typeof QuizFooter>;
+type Story = StoryObj<typeof Footer>;
 
 export const NextEnabledWithoutPrevious: Story = {};
 
@@ -38,5 +38,13 @@ export const AllButtonsDisabled: Story = {
     onPrevious: () => {},
     previousDisabled: true,
     disabled: true,
+  },
+};
+
+export const SecondaryAction: Story = {
+  args: {
+    children: '지금 시작하기',
+    buttonVariant: 'secondary',
+    containerClassName: 'border-t border-slate-100 bg-white/95 pb-4 backdrop-blur-md',
   },
 };

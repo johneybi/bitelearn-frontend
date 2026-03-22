@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import ChapterIndicator from '@/components/features/learning/chapter/ChapterIndicator';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Check, X } from 'lucide-react';
-import QuizFooter from '@/components/common/QuizFooter';
+import Footer from '@/components/common/Footer';
 import useIndicatorShadow from '@/hooks/useIndicatorShadow';
 import type { StepIndicatorInfo } from '../quiz.types';
 import QuizTitle from '../shared/QuizTitle';
@@ -139,14 +139,14 @@ export default function MultipleChoiceView({
         variant="quiz"
         showShadow={showIndicatorShadow}
       />
-      <QuizFooter
+      <Footer
         disabled={!isCtaEnabled || (isChecking && !allowSubmitWhenChecking)}
         previousDisabled={isChecking && !allowSubmitWhenChecking}
         onClick={() => onCheckAnswer(Number(selectedValue))}
         onPrevious={onPrevious}
       >
         {ctaLabel ?? '정답 확인'}
-      </QuizFooter>
+      </Footer>
     </>
   );
 }

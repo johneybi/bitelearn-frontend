@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Circle, X } from 'lucide-react';
 
-import QuizFooter from '@/components/common/QuizFooter';
+import Footer from '@/components/common/Footer';
 import ChapterIndicator from '@/components/features/learning/chapter/ChapterIndicator';
 import useIndicatorShadow from '@/hooks/useIndicatorShadow';
 import type { StepIndicatorInfo } from '../quiz.types';
@@ -110,9 +110,9 @@ export default function ChoiceResultView({
         variant="quiz"
         showShadow={showIndicatorShadow}
       />
-      <QuizFooter onClick={onNext} showTrailingIcon={false}>
+      <Footer onClick={onNext} showTrailingIcon={false}>
         {footerLabel}
-      </QuizFooter>
+      </Footer>
     </div>
   );
 }

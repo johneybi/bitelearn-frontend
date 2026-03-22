@@ -4,27 +4,36 @@ import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-type QuizFooterProps = {
+type FooterProps = {
   disabled?: boolean;
   previousDisabled?: boolean;
   onClick: () => void;
   children: ReactNode;
   onPrevious?: () => void;
   showTrailingIcon?: boolean;
+  containerClassName?: string;
+  buttonVariant?: 'primary' | 'secondary';
 };
 
-export default function QuizFooter({
+export default function Footer({
   disabled = false,
   previousDisabled = false,
   onClick,
   children,
   onPrevious,
   showTrailingIcon = true,
-}: QuizFooterProps) {
+  containerClassName,
+  buttonVariant = 'primary',
+}: FooterProps) {
   const hasPrevious = Boolean(onPrevious);
 
   return (
-    <footer className="flex shrink-0 gap-3 bg-card px-5 pb-8 pt-4">
+    <footer
+      className={cn(
+        'flex shrink-0 gap-3 bg-card px-5 pb-8 pt-4',
+        containerClassName
+      )}
+    >
       {hasPrevious && onPrevious && (
         <Button
           type="button"
@@ -43,7 +52,10 @@ export default function QuizFooter({
         type="button"
         disabled={disabled}
         className={cn(
-          'relative h-14 rounded-2xl bg-primary text-base font-semibold text-slate-950 shadow-none hover:bg-primary/90',
+          'relative h-14 rounded-2xl text-base font-semibold shadow-none',
+          buttonVariant === 'primary'
+            ? 'bg-primary text-slate-950 hover:bg-primary/90'
+            : 'bg-slate-900 text-white hover:bg-slate-800',
           hasPrevious ? 'flex-1' : 'w-full'
         )}
         onClick={onClick}

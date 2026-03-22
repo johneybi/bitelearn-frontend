@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-import QuizFooter from '@/components/common/QuizFooter';
+import Footer from '@/components/common/Footer';
 import Header from '@/components/common/Header';
 import VocabDoneImage from '@/assets/character/vocab_done.png';
 
@@ -52,7 +52,7 @@ export default function VocabDone({
       </div>
 
       <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-app -translate-x-1/2 bg-white shadow-[0_-8px_24px_rgba(15,23,42,0.04)]">
-        <QuizFooter onClick={onStartQuiz}>학습 퀴즈 풀러 가기</QuizFooter>
+        <Footer onClick={onStartQuiz}>학습 퀴즈 풀러 가기</Footer>
       </div>
     </main>
   );
