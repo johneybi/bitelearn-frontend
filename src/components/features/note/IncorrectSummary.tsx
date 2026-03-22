@@ -4,20 +4,28 @@ import incorrectResultImage from '@/assets/character/incorrect_result.png';
 type IncorrectSummaryProps = {
   pendingReviewCount: number;
   totalBytes: number;
+  isLoading?: boolean;
 };
 
 export default function IncorrectSummary({
   pendingReviewCount,
   totalBytes,
+  isLoading = false,
 }: IncorrectSummaryProps) {
   const hasPendingIncorrect = pendingReviewCount > 0;
-  const summaryTitle = hasPendingIncorrect
+  const summaryTitle = isLoading
+    ? '오답노트를\n불러오고 있어요'
+    : hasPendingIncorrect
     ? '아직 회수하지 못한\n바이트가 남아있어요..'
     : '회수하지 못한\n바이트가 없어요!';
-  const summaryDescription = hasPendingIncorrect
+  const summaryDescription = isLoading
+    ? '잠시만 기다리면\n정리된 내용을 보여드릴게요!'
+    : hasPendingIncorrect
     ? '오답 문제를 복습해\n바이트를 되찾아보아요!'
     : '지금 흐름 아주 좋아요.\n이대로 학습을 이어가봐요!';
-  const summaryImage = hasPendingIncorrect
+  const summaryImage = isLoading
+    ? null
+    : hasPendingIncorrect
     ? incorrectResultImage
     : correctResultImage;
 
@@ -35,11 +43,13 @@ export default function IncorrectSummary({
               </p>
             </div>
 
-            <img
-              src={summaryImage}
-              alt=""
-              className="pointer-events-none absolute right-[-18px] top-1/2 z-0 h-[162px] w-[162px] -translate-y-1/2 object-contain"
-            />
+            {summaryImage ? (
+              <img
+                src={summaryImage}
+                alt=""
+                className="pointer-events-none absolute right-[-18px] top-1/2 z-0 h-[162px] w-[162px] -translate-y-1/2 object-contain"
+              />
+            ) : null}
           </div>
         </div>
 
@@ -50,7 +60,7 @@ export default function IncorrectSummary({
                 복습 대기 문제
               </p>
               <p className="pb-1.5 text-center text-base font-bold leading-6 text-foreground">
-                {pendingReviewCount}개
+                {isLoading ? '-' : `${pendingReviewCount}개`}
               </p>
             </div>
 
@@ -59,7 +69,7 @@ export default function IncorrectSummary({
                 현재 바이트
               </p>
               <p className="pb-1.5 text-center text-base font-bold leading-6 text-foreground">
-                {totalBytes.toLocaleString()} B
+                {isLoading ? '-' : `${totalBytes.toLocaleString()} B`}
               </p>
             </div>
           </div>

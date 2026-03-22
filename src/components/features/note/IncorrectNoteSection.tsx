@@ -45,6 +45,7 @@ export default function IncorrectNoteSection({
       <IncorrectSummary
         pendingReviewCount={totalNoteCount}
         totalBytes={totalBytes}
+        isLoading={isLoading}
       />
       <div className="sticky top-[50px] z-10 bg-none px-5 py-3.5">
         <div className="hide-scrollbar flex gap-2.5 overflow-x-auto">
