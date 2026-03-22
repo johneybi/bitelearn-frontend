@@ -1,7 +1,8 @@
 export type RecentLearning = {
   categoryId: string;
   chapterId: string;
-  category: string;
+  categoryName: string;
+  topicName: string;
   chapterTitle: string;
   progressPercent: number;
 };
@@ -16,7 +17,7 @@ export type DashboardCategory = {
 export type DashboardRecommendation = {
   categoryId: string;
   chapterId: string;
-  category: string;
-  title: string;
-  estimatedMinutes: number;
+  categoryName: string;
+  topicName: string;
+  chapterTitle: string;
 };

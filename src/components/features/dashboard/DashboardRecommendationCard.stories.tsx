@@ -2,28 +2,27 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { DASHBOARD_RECOMMENDATIONS } from '@/mock/dashboard';
 
-import DashboardTodayRecommendationHeroCard from './DashboardTodayRecommendationHeroCard';
+import DashboardRecommendationCard from './DashboardRecommendationCard';
 
 const meta = {
-  title: 'Dashboard/DashboardTodayRecommendationHeroCard',
-  component: DashboardTodayRecommendationHeroCard,
+  title: 'Dashboard/DashboardRecommendationCard',
+  component: DashboardRecommendationCard,
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',
   },
   args: {
     recommendation: DASHBOARD_RECOMMENDATIONS[0],
-    onClick: () => {},
   },
-} satisfies Meta<typeof DashboardTodayRecommendationHeroCard>;
+} satisfies Meta<typeof DashboardRecommendationCard>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const HeroOnly: Story = {
+export const Default: Story = {
   render: (args) => (
     <div className="mx-auto w-full max-w-sm">
-      <DashboardTodayRecommendationHeroCard {...args} />
+      <DashboardRecommendationCard {...args} />
     </div>
   ),
 };
