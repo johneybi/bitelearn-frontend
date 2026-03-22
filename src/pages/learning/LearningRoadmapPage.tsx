@@ -166,7 +166,7 @@ export default function LearningRoadmapPage() {
                   type="mungmung"
                   anchorY={0 * STEP_Y + HALF_BTN - 5}
                   side="right"
-                  sideOffset={-16}
+                  sideOffset={-24}
                 />
               )}
               {count > 0 && (
@@ -190,7 +190,7 @@ export default function LearningRoadmapPage() {
                   type="bulldog"
                   anchorY={2 * STEP_Y + HALF_BTN + 37}
                   side="left"
-                  sideOffset={-16}
+                  sideOffset={-29}
                 />
               )}
               {count > 3 && (
@@ -198,7 +198,7 @@ export default function LearningRoadmapPage() {
                   type="tree"
                   anchorY={3 * STEP_Y + HALF_BTN + 72}
                   side="right"
-                  sideOffset={-16}
+                  sideOffset={-59}
                 />
               )}
             </>
