@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import ReviewCategoryChip from './ReviewCategoryChip';
+import IncorrectCategoryChip from './IncorrectCategoryChip';
 
 const categoryLabels = [
   '전체',
@@ -11,8 +11,8 @@ const categoryLabels = [
 ];
 
 const meta = {
-  title: 'Note/ReviewCategoryChip',
-  component: ReviewCategoryChip,
+  title: 'Note/IncorrectCategoryChip',
+  component: IncorrectCategoryChip,
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',
@@ -22,16 +22,16 @@ const meta = {
     isActive: false,
     onClick: () => {},
   },
-} satisfies Meta<typeof ReviewCategoryChip>;
+} satisfies Meta<typeof IncorrectCategoryChip>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const AllChips: Story = {
   render: () => (
-    <div className="hide-scrollbar flex gap-2 overflow-x-auto p-2">
+    <div className="hide-scrollbar flex gap-2.5 overflow-x-auto p-5">
       {categoryLabels.map((label, index) => (
-        <ReviewCategoryChip
+        <IncorrectCategoryChip
           key={label}
           label={label}
           isActive={index === 0}

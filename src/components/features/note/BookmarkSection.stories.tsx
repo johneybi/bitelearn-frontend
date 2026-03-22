@@ -23,9 +23,10 @@ const meta = {
     articles: mockArticles.slice(0, 2).map((article) => ({
       id: `bookmark-story-${article.articleId}`,
       articleId: article.articleId,
-      category: article.category,
       title: article.title,
       thumbnailUrl: article.thumbnailUrl,
+      publishedAt: article.publishedAt,
+      authorName: article.author.name,
       bookmarkedAt: article.publishedAt,
     })),
   },
@@ -40,9 +41,6 @@ export const Default: Story = {
       <BookmarkSection {...args} />
     </div>
   ),
-  args: {
-    hasNext: true,
-  },
 };
 
 export const Empty: Story = {
@@ -53,40 +51,5 @@ export const Empty: Story = {
   ),
   args: {
     articles: [],
-  },
-};
-
-export const Loading: Story = {
-  render: (args) => (
-    <div className="px-6">
-      <BookmarkSection {...args} />
-    </div>
-  ),
-  args: {
-    isLoading: true,
-    articles: [],
-  },
-};
-
-export const LoadingMore: Story = {
-  render: (args) => (
-    <div className="px-6">
-      <BookmarkSection {...args} />
-    </div>
-  ),
-  args: {
-    isLoadingMore: true,
-    hasNext: true,
-  },
-};
-
-export const EndOfList: Story = {
-  render: (args) => (
-    <div className="px-6">
-      <BookmarkSection {...args} />
-    </div>
-  ),
-  args: {
-    hasNext: false,
   },
 };

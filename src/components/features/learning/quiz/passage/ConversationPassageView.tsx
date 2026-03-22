@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import bulldogProfileImage from '@/assets/character/bulldog_profile.png';
 import mungmungProfileImage from '@/assets/character/mungmung_profile.jpg';
-import QuizFooter from '@/components/common/QuizFooter';
+import Footer from '@/components/common/Footer';
 import ChapterIndicator from '@/components/features/learning/chapter/ChapterIndicator';
 import type { QuizInfo } from '@/api/learning/learning.types';
 import useIndicatorShadow from '@/hooks/useIndicatorShadow';
@@ -301,13 +301,13 @@ export default function ConversationPassageView({
         variant="quiz"
         showShadow={showIndicatorShadow}
       />
-      <QuizFooter
+      <Footer
         onClick={onSolve}
         disabled={!allVisible}
         showTrailingIcon={false}
       >
         문제 풀기
-      </QuizFooter>
+      </Footer>
     </>
   );
 }

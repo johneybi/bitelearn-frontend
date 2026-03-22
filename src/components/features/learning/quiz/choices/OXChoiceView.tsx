@@ -1,5 +1,5 @@
 import ChapterIndicator from '@/components/features/learning/chapter/ChapterIndicator';
-import QuizFooter from '@/components/common/QuizFooter';
+import Footer from '@/components/common/Footer';
 import { cn } from '@/lib/utils';
 import type { StepIndicatorInfo } from '../quiz.types';
 import QuizTitle from '../shared/QuizTitle';
@@ -158,7 +158,7 @@ export default function OXChoiceView({
       </section>
 
       <ChapterIndicator steps={indicatorSteps} variant="quiz" />
-      <QuizFooter
+      <Footer
         disabled={!isCtaEnabled}
         previousDisabled={isChecking && !allowSubmitWhenChecking}
         onClick={handleConfirm}
@@ -166,7 +166,7 @@ export default function OXChoiceView({
         showTrailingIcon={false}
       >
         {ctaLabel ?? '정답 확인'}
-      </QuizFooter>
+      </Footer>
     </>
   );
 }

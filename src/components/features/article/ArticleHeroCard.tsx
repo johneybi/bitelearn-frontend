@@ -1,11 +1,10 @@
-import { ArrowRight, Clock } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
+import TextBadge from '@/components/common/TextBadge';
 import { Button } from '@/components/ui/button';
 import ArticleThumb from '@/components/features/article/ArticleThumb';
-import type {
-  ArticleDetail,
-  ArticleListItem,
-} from '@/mock/article';
+import type { ArticleDetail, ArticleListItem } from '@/mock/article';
+import { formatDate } from '@/utils/formatDate';
 
 type ArticleHeroCardProps = {
   article: ArticleListItem | ArticleDetail;
@@ -22,35 +21,35 @@ export default function ArticleHeroCard({
 }: ArticleHeroCardProps) {
   return (
     <article
-      className="group relative cursor-pointer overflow-hidden rounded-[32px] border-2 border-slate-100 bg-white shadow-xl shadow-slate-200/30 transition-all duration-200 hover:border-slate-900 active:scale-[0.98]"
+      className="group relative cursor-pointer overflow-hidden rounded-3xl border-2 border-slate-100 bg-white shadow-[0_20px_25px_-5px_rgba(226,232,240,0.3),0_8px_10px_-6px_rgba(226,232,240,0.3)] transition-all duration-200 hover:border-primary/40 active:scale-[0.98]"
       onClick={onSelect}
     >
-      {/* 썸네일 */}
-      <div className="h-56 w-full overflow-hidden">
-        <ArticleThumb category={article.category} />
+      <div className="h-[220px] w-full overflow-hidden bg-slate-100">
+        {article.thumbnailUrl ? (
+          <img
+            src={article.thumbnailUrl}
+            alt={article.title}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <ArticleThumb />
+        )}
       </div>
 
-      {/* 콘텐츠 */}
-      <div className="p-8">
-        {/* 상단 meta */}
-        <div className="mb-4 flex items-center justify-between">
-          <span className="rounded-full bg-slate-900 px-3 py-1 text-[10px] font-bold text-white">
-            추천 콘텐츠
-          </span>
+      <div className="flex flex-col gap-3 px-7 py-6">
+        <div className="flex items-center justify-between">
+          <TextBadge variant="primary">추천 콘텐츠</TextBadge>
 
-          <div className="flex items-center gap-1.5 text-slate-400">
-            <Clock size={12} />
-            <span className="text-xs font-bold text-slate-500">3분 분량</span>
-          </div>
+          <span className="text-sm font-medium leading-5 text-slate-400">
+            {formatDate(article.publishedAt)}
+          </span>
         </div>
 
-        {/* 제목 */}
-        <h2 className="line-clamp-2 text-xl font-bold leading-tight text-slate-900">
+        <h2 className="line-clamp-3 min-h-[84px] break-keep text-lg font-semibold leading-7 text-slate-900">
           {article.title}
         </h2>
 
-        {/* 하단 */}
-        <div className="mt-6 flex items-center justify-between border-t border-slate-50 pt-6">
+        <div className="flex items-center justify-between border-t border-slate-50 pt-6">
           <p className="text-sm font-medium text-slate-500">
             {getAuthorName(article)} 에디터
           </p>
@@ -59,7 +58,7 @@ export default function ArticleHeroCard({
             type="button"
             size="icon"
             variant="secondary"
-            className="h-10 w-10 rounded-full bg-slate-50 transition-all group-hover:bg-slate-900 group-hover:text-white"
+            className="h-11 w-11 rounded-full bg-slate-100 text-slate-500 shadow-none transition-all group-hover:bg-primary group-hover:text-slate-950"
           >
             <ArrowRight size={20} />
           </Button>

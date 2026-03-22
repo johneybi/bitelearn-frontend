@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import type { Note } from '@/api/notes/notes.types';
 import type { Category } from '@/api/learning/learning.types';
 
-import ReviewMistakeList from './ReviewMistakeList';
+import IncorrectNoteList from './IncorrectNoteList';
 
 const sampleCategories: {
   category: Category;
@@ -28,8 +28,8 @@ const sampleNotes: Note[] = [
 ];
 
 const meta = {
-  title: 'Note/ReviewMistakeList',
-  component: ReviewMistakeList,
+  title: 'Note/IncorrectNoteList',
+  component: IncorrectNoteList,
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
@@ -45,7 +45,7 @@ const meta = {
     categories: sampleCategories,
     notes: sampleNotes,
   },
-} satisfies Meta<typeof ReviewMistakeList>;
+} satisfies Meta<typeof IncorrectNoteList>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -56,7 +56,7 @@ export const Default: Story = {
   },
   render: (args) => (
     <div className="px-6">
-      <ReviewMistakeList {...args} />
+      <IncorrectNoteList {...args} />
     </div>
   ),
 };
@@ -67,7 +67,7 @@ export const Empty: Story = {
   },
   render: (args) => (
     <div className="px-6">
-      <ReviewMistakeList {...args} />
+      <IncorrectNoteList {...args} />
     </div>
   ),
 };
@@ -79,7 +79,7 @@ export const Loading: Story = {
   },
   render: (args) => (
     <div className="px-6">
-      <ReviewMistakeList {...args} />
+      <IncorrectNoteList {...args} />
     </div>
   ),
 };
@@ -91,7 +91,7 @@ export const LoadingMore: Story = {
   },
   render: (args) => (
     <div className="px-6">
-      <ReviewMistakeList {...args} />
+      <IncorrectNoteList {...args} />
     </div>
   ),
 };
@@ -102,7 +102,7 @@ export const EndOfList: Story = {
   },
   render: (args) => (
     <div className="px-6">
-      <ReviewMistakeList {...args} />
+      <IncorrectNoteList {...args} />
     </div>
   ),
 };

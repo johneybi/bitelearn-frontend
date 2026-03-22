@@ -11,7 +11,7 @@ const meta = {
     layout: 'fullscreen',
   },
   args: {
-    activeTab: 'review',
+    activeTab: 'incorrect',
     onChangeTab: () => {},
   },
 } satisfies Meta<typeof NoteTopNav>;
@@ -28,7 +28,7 @@ function renderTopNav(args: NoteTopNavProps) {
   );
 }
 
-export const ReviewActive: Story = {
+export const IncorrectActive: Story = {
   render: (args) => renderTopNav(args),
 };
 
