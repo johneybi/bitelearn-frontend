@@ -15,11 +15,11 @@ export default function ArticleListPage() {
   };
 
   return (
-    <div className="flex h-full flex-col overflow-hidden bg-background pt-[60px] text-slate-900">
-      <section className="hide-scrollbar flex-1 overflow-y-auto bg-[radial-gradient(#f8fafc_2px,transparent_2px)] px-6 py-8 pb-32 [background-size:24px_24px]">
+    <div className="flex h-full flex-col overflow-hidden bg-background pt-[60px] text-foreground">
+      <section className="hide-scrollbar flex-1 overflow-y-auto px-5 pb-32 pt-5">
         <div className="flex flex-col gap-5">
           <div className="pb-5">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
               아티클
             </h1>
             <p className="mt-1 text-sm font-medium text-slate-400">
