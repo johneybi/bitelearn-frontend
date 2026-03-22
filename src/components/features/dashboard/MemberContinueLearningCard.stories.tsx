@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { MemoryRouter } from 'react-router-dom';
 
 import MemberContinueLearningCard from './MemberContinueLearningCard';
 
@@ -26,17 +27,21 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: (args) => (
-    <div className="mx-auto w-full max-w-sm">
-      <MemberContinueLearningCard {...args} />
-    </div>
+    <MemoryRouter initialEntries={['/']}>
+      <div className="mx-auto w-full max-w-sm">
+        <MemberContinueLearningCard {...args} />
+      </div>
+    </MemoryRouter>
   ),
 };
 
 export const WithoutProgress: Story = {
   render: (args) => (
-    <div className="mx-auto w-full max-w-sm">
-      <MemberContinueLearningCard {...args} />
-    </div>
+    <MemoryRouter initialEntries={['/']}>
+      <div className="mx-auto w-full max-w-sm">
+        <MemberContinueLearningCard {...args} />
+      </div>
+    </MemoryRouter>
   ),
   args: {
     recentLearning: {

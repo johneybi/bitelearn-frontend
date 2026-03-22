@@ -1,5 +1,6 @@
 import type { ComponentProps } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { MemoryRouter } from 'react-router-dom';
 
 import type { ArticleDetail } from '@/mock/article';
 
@@ -54,9 +55,11 @@ type ArticleCardProps = ComponentProps<typeof ArticleCard>;
 
 function renderInWidth(widthClassName: string, args: ArticleCardProps) {
   return (
-    <div className={`mx-auto w-full ${widthClassName}`}>
-      <ArticleCard {...args} />
-    </div>
+    <MemoryRouter initialEntries={['/articles']}>
+      <div className={`mx-auto w-full ${widthClassName}`}>
+        <ArticleCard {...args} />
+      </div>
+    </MemoryRouter>
   );
 }
 

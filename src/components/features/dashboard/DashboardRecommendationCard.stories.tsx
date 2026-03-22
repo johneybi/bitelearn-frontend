@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { MemoryRouter } from 'react-router-dom';
 
 import { DASHBOARD_RECOMMENDATIONS } from '@/mock/dashboard';
 
@@ -21,8 +22,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: (args) => (
-    <div className="mx-auto w-full max-w-sm">
-      <DashboardRecommendationCard {...args} />
-    </div>
+    <MemoryRouter initialEntries={['/']}>
+      <div className="mx-auto w-full max-w-sm">
+        <DashboardRecommendationCard {...args} />
+      </div>
+    </MemoryRouter>
   ),
 };
