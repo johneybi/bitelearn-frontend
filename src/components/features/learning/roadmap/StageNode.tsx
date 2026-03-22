@@ -114,8 +114,8 @@ export default function StageNode({
 
       <div
         className={cn(
-          'mt-3 text-center rounded-xl border border-white px-3 py-2 shadow-sm backdrop-blur-md transition-colors',
-          isCompleted || isLocked ? 'bg-white/90' : 'bg-white/60'
+          'mt-3 text-center rounded-xl px-3 py-2 transition-colors',
+          isCompleted || isLocked ? 'glass-label-dim' : 'glass-label'
         )}
       >
         <p
