@@ -1,32 +1,17 @@
 import type { ComponentProps } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import type { ArticleDetail } from '@/mock/article';
+import type { ArticleCardItem } from '@/mock/article';
 
 import ArticleHeroCard from './ArticleHeroCard';
 
-const featuredArticle: ArticleDetail = {
+const featuredArticle: ArticleCardItem = {
   articleId: 'article-story-hero',
   title:
     '전세사기 방지 필수 체크리스트 | 계약 전 확인, 특약 작성, 보증보험까지',
   thumbnailUrl: '/images/article/article_thumbnail.png',
-  author: {
-    name: '에디터 샐리',
-    profileImageUrl: '/images/article/article_author_avatar.png',
-  },
+  authorName: '에디터 샐리',
   publishedAt: '2026-03-05T10:00:00Z',
-  viewCount: 12504,
-  tags: ['전세사기', '보증보험'],
-  summary: {
-    title: '내 보증금 완벽하게 지켜내는 TIP!',
-    points: ['계약 전 핵심 체크 포인트를 빠르게 살펴봐요.'],
-  },
-  contentBlocks: [
-    {
-      type: 'paragraph',
-      content: '대표 카드 레이아웃을 보기 위한 스토리북용 예시 데이터입니다.',
-    },
-  ],
 };
 
 const meta = {

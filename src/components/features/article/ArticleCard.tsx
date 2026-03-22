@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom';
 import { FileText } from 'lucide-react';
 import { formatDate } from '@/utils/formatDate';
-import type { ArticleDetail, ArticleListItem } from '@/mock/article';
+import type { ArticleCardItem, ArticleDetail } from '@/mock/article';
 
 type ArticleCardProps = {
-  article: ArticleListItem | ArticleDetail;
+  article: ArticleCardItem | ArticleDetail;
   variant?: 'article' | 'home';
 };
 
-function getAuthorName(article: ArticleListItem | ArticleDetail) {
+function getAuthorName(article: ArticleCardItem | ArticleDetail) {
   return 'authorName' in article ? article.authorName : article.author.name;
 }
 

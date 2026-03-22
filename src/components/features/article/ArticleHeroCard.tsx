@@ -25,14 +25,11 @@ export default function ArticleHeroCard({
       className="group relative cursor-pointer overflow-hidden rounded-[32px] border-2 border-slate-100 bg-white shadow-xl shadow-slate-200/30 transition-all duration-200 hover:border-slate-900 active:scale-[0.98]"
       onClick={onSelect}
     >
-      {/* 썸네일 */}
       <div className="h-56 w-full overflow-hidden">
-        <ArticleThumb category={article.category} />
+        <ArticleThumb />
       </div>
 
-      {/* 콘텐츠 */}
       <div className="p-8">
-        {/* 상단 meta */}
         <div className="mb-4 flex items-center justify-between">
           <span className="rounded-full bg-slate-900 px-3 py-1 text-[10px] font-bold text-white">
             추천 콘텐츠
@@ -44,12 +41,10 @@ export default function ArticleHeroCard({
           </div>
         </div>
 
-        {/* 제목 */}
         <h2 className="line-clamp-2 text-xl font-bold leading-tight text-slate-900">
           {article.title}
         </h2>
 
-        {/* 하단 */}
         <div className="mt-6 flex items-center justify-between border-t border-slate-50 pt-6">
           <p className="text-sm font-medium text-slate-500">
             {getAuthorName(article)} 에디터
