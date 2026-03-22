@@ -6,7 +6,7 @@ export default function AppLayout() {
   return (
     <div className="flex min-h-dvh flex-1 flex-col">
       <AppLogoHeader />
-      <main className="flex-1 overflow-hidden pt-[60px]">
+      <main className="min-h-0 flex-1 overflow-hidden">
         <Outlet />
       </main>
       <BottomNav />

@@ -36,7 +36,7 @@ export default function NotesPage() {
 
   return (
     <div className="flex h-full flex-col overflow-hidden bg-white text-slate-900">
-      <div className="hide-scrollbar flex-1 overflow-y-auto pb-8">
+      <div className="hide-scrollbar flex-1 overflow-y-auto pb-8 pt-[60px]">
         <NoteTopNav activeTab={activeTab} onChangeTab={setActiveTab} />
 
         <section className="pb-32 pt-6">

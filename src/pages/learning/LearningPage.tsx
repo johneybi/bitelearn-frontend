@@ -163,7 +163,7 @@ export default function LearningPage() {
   };
 
   return (
-    <div className="flex h-full flex-col bg-white text-slate-900">
+    <div className="flex h-full flex-col bg-white pt-[60px] text-slate-900">
       <header className="shrink-0 border-b border-slate-50 bg-white px-6 pb-8 pt-12">
         <div className="flex items-end justify-between">
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">
