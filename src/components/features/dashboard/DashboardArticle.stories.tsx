@@ -13,8 +13,6 @@ const meta = {
   },
   args: {
     articles: mockArticles,
-    onMoreClick: () => {},
-    onSelectArticle: () => {},
   },
 } satisfies Meta<typeof DashboardArticle>;
 

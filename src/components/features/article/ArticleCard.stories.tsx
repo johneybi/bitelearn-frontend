@@ -44,7 +44,6 @@ const meta = {
   },
   args: {
     article: sampleArticle,
-    onSelect: () => {},
     variant: 'relaxed',
   },
 } satisfies Meta<typeof ArticleCard>;
