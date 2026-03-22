@@ -41,7 +41,7 @@ export default function ChapterIntro({
     <main className="flex h-full min-h-0 flex-col overflow-hidden bg-background text-slate-900">
       <Header showCloseButton onCloseClick={onBack} />
 
-      <section className="hide-scrollbar flex-1 overflow-y-auto bg-[radial-gradient(circle_at_center,_rgba(255,237,213,0.92)_0%,_rgba(250,250,250,1)_58%)] pt-[60px]">
+      <section className="hide-scrollbar flex flex-1 flex-col overflow-y-auto bg-[radial-gradient(circle_at_center,_rgba(255,237,213,0.92)_0%,_rgba(250,250,250,1)_58%)] pt-[60px]">
         <div className="px-5 pb-8 pt-4">
           <div className="flex flex-col items-center gap-4 text-center">
             <div className="inline-flex items-center rounded-full bg-secondary px-3 py-1.5 text-xs font-semibold leading-4 text-slate-100">
@@ -64,7 +64,7 @@ export default function ChapterIntro({
           />
         </div>
 
-        <div className="relative z-10 -mt-[80px] flex flex-1 flex-col rounded-t-3xl bg-white px-9 pb-28 pt-7">
+        <div className="relative z-10 -mt-20 flex flex-1 flex-col rounded-t-3xl bg-white px-9 pb-28 pt-7">
           <div>
             <h2 className="text-base font-bold leading-6 text-foreground">
               {prologueSubtitle}
