@@ -3,7 +3,6 @@ import { useMeQuery } from '@/api/auth/auth.query';
 import DashboardArticle from '@/components/features/dashboard/DashboardArticle';
 import DashboardTodayRecommendation from '@/components/features/dashboard/DashboardTodayRecommendation';
 import GuestHeroSection from '@/components/features/dashboard/GuestHeroSection';
-import HomeLogoHeader from '@/components/features/dashboard/HomeLogoHeader';
 import MemberHeroSection from '@/components/features/dashboard/MemberHeroSection';
 import type { DashboardRecommendation } from '@/components/features/dashboard/dashboard.types';
 import { mockArticles } from '@/mock/article';
@@ -45,9 +44,7 @@ function HomePage() {
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      <HomeLogoHeader />
-
-      <section className="hide-scrollbar flex-1 overflow-y-auto bg-background pb-20 pt-[60px]">
+      <section className="hide-scrollbar flex-1 overflow-y-auto bg-background pb-20">
         <div className="mb-8 flex flex-col gap-8 px-5 pt-5">
           {user ? (
             <MemberHeroSection

@@ -29,18 +29,8 @@ export default function MyPage() {
   const { data: user } = useMeQuery();
 
   return (
-    <div className="relative flex min-h-dvh flex-col overflow-hidden text-slate-900">
-      <header className="absolute inset-x-0 top-0 z-20 border-b border-slate-100 bg-white">
-        <div className="flex h-14 items-center px-4">
-          <div className="h-8 w-8" />
-          <h1 className="flex-1 text-center text-sm font-bold text-slate-900">
-            마이페이지
-          </h1>
-          <div className="h-8 w-8" />
-        </div>
-      </header>
-
-      <section className="hide-scrollbar flex-1 overflow-y-auto px-5 pb-24 pt-20">
+    <div className="flex h-full flex-col overflow-hidden text-slate-900">
+      <section className="hide-scrollbar flex-1 overflow-y-auto px-5 pb-24 pt-6">
         <MyProfileCard
           nickname={formatDisplayName(user?.nickname)}
           email={user?.email ?? ''}
