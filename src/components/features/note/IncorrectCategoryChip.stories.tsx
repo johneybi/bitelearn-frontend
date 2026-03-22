@@ -29,7 +29,7 @@ type Story = StoryObj<typeof meta>;
 
 export const AllChips: Story = {
   render: () => (
-    <div className="hide-scrollbar flex gap-2 overflow-x-auto p-2">
+    <div className="hide-scrollbar flex gap-2.5 overflow-x-auto p-5">
       {categoryLabels.map((label, index) => (
         <IncorrectCategoryChip
           key={label}
