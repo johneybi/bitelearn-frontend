@@ -5,12 +5,9 @@ import { motion } from 'framer-motion';
 import chapterResultCloseImage from '@/assets/character/chapter_result_close.png';
 import chapterResultFailImage from '@/assets/character/chapter_result_fail.png';
 import chapterResultPerfectImage from '@/assets/character/chapter_result_perfect.png';
-import level1Image from '@/assets/level/level_1.png';
-import level2Image from '@/assets/level/level_2.png';
-import level3Image from '@/assets/level/level_3.png';
 import Header from '@/components/common/Header';
+import LevelBadge from '@/components/features/level/LevelBadge';
 import { Button } from '@/components/ui/button';
-import LevelInfoDialog from './LevelInfoDialog';
 
 type ResultVariant = 'perfect' | 'close' | 'fail';
 
@@ -34,16 +31,9 @@ const LEVEL_RANGES = [
   { level: 3, minBytes: 4000, maxBytes: 6000 },
 ] as const;
 
-const LEVEL_BADGE_CLASS_NAME =
-  'relative flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full border border-[#ffedd5] bg-[#fff7ed] shadow-[0_4px_8px_rgba(237,238,246,0.95)]';
 const PROGRESS_BAR_CLASS_NAME = 'from-[#fed7aa] to-[#fb923c]';
 const EARNED_TEXT_CLASS_NAME = 'text-[#4ade80]';
 const LOST_TEXT_CLASS_NAME = 'text-[#f87171]';
-const LEVEL_IMAGES = {
-  1: level1Image,
-  2: level2Image,
-  3: level3Image,
-} as const;
 
 const VARIANT_CONFIG = {
   perfect: {
@@ -135,7 +125,6 @@ export default function ChapterResult({
   void chapterTitle;
 
   const [isProgressVisible, setIsProgressVisible] = useState(false);
-  const [isLevelDialogOpen, setIsLevelDialogOpen] = useState(false);
 
   // 결과 분기 기준
   const variant: ResultVariant = useMemo(() => {
@@ -231,18 +220,7 @@ export default function ChapterResult({
           className="mx-auto mt-7 w-full max-w-[335px] rounded-2xl border-2 border-slate-100 bg-card p-4 shadow-[0_12px_16px_rgba(237,238,246,0.95)]"
         >
           <div className="flex items-center gap-3">
-            <button
-              type="button"
-              className={LEVEL_BADGE_CLASS_NAME}
-              aria-label={`현재 ${levelState.currentLevel}레벨`}
-              onClick={() => setIsLevelDialogOpen(true)}
-            >
-              <img
-                src={LEVEL_IMAGES[levelState.currentLevel]}
-                alt=""
-                className="h-[52px] w-[52px] object-contain"
-              />
-            </button>
+            <LevelBadge currentLevel={levelState.currentLevel} />
 
             <div className="min-w-0 flex-1">
               <div className="mb-3 flex items-center justify-between gap-3">
@@ -317,12 +295,6 @@ export default function ChapterResult({
           ) : null}
         </div>
       </footer>
-
-      <LevelInfoDialog
-        open={isLevelDialogOpen}
-        onOpenChange={setIsLevelDialogOpen}
-        currentLevel={levelState.currentLevel}
-      />
     </main>
   );
 }
