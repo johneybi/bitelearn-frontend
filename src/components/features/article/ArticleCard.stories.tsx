@@ -8,12 +8,10 @@ import ArticleCard from './ArticleCard';
 
 const sampleArticle: ArticleDetail = {
   articleId: 'article-story-001',
-  category: '생활금융·고용',
   title: '신용점수 800 만들기 - 지금 당장 할 수 있는 5가지',
   thumbnailUrl: '/images/article/article_thumbnail.png',
   author: {
     name: '에디터 민준',
-    role: '금융 리터러시 큐레이터',
     profileImageUrl: '',
   },
   publishedAt: '2026-03-10T09:00:00Z',
@@ -29,11 +27,6 @@ const sampleArticle: ArticleDetail = {
       content: '스토리북에서 카드 UI를 확인하기 위한 샘플 본문입니다.',
     },
   ],
-  callToAction: {
-    text: '챕터 바로 시작하기',
-    url: '/learn',
-    style: 'primary',
-  },
 };
 
 const meta = {

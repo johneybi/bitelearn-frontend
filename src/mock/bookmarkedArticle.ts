@@ -1,53 +1,43 @@
-import {
-  type ArticleListItem,
-  mockArticles,
-} from '@/mock/article';
+import type { ArticleCardItem } from '@/mock/article';
 
-export type BookmarkedArticleItem = {
-  id: string;
-  articleId: string;
-  bookmarkedAt: string;
-};
-
-export type BookmarkedArticleCardItem = ArticleListItem & {
+export type BookmarkedArticleCardItem = ArticleCardItem & {
   id: string;
   bookmarkedAt: string;
 };
 
-export const BOOKMARKED_ARTICLES: BookmarkedArticleItem[] = Array.from(
-  { length: 24 },
-  (_, i) => ({
-    id: `bookmark-${i + 1}`,
-    articleId: `article-2026-00${(i % 8) + 1}`,
-    bookmarkedAt: new Date(Date.now() - i * 1000 * 60 * 60 * 6).toISOString(),
-  })
-);
-
-// 북마크 mock 데이터를 화면용 카드 형태로 동기 변환
-export function getMockBookmarkedArticles(): BookmarkedArticleCardItem[] {
-  const sortedBookmarks = [...BOOKMARKED_ARTICLES].sort(
-    (a, b) =>
-      new Date(b.bookmarkedAt).getTime() - new Date(a.bookmarkedAt).getTime()
-  );
-
-  return sortedBookmarks
-    .map((bookmark) => {
-      const article = mockArticles.find(
-        (articleItem) => articleItem.articleId === bookmark.articleId
-      );
-
-      if (!article) return null;
-
-      return {
-        id: bookmark.id,
-        articleId: article.articleId,
-        category: article.category,
-        title: article.title,
-        thumbnailUrl: article.thumbnailUrl,
-        publishedAt: article.publishedAt,
-        authorName: article.author.name,
-        bookmarkedAt: bookmark.bookmarkedAt,
-      };
-    })
-    .filter((item): item is BookmarkedArticleCardItem => item !== null);
-}
+export const mockBookmarkedArticles: BookmarkedArticleCardItem[] = [
+  {
+    id: 'bookmark-1',
+    articleId: 'article-2026-001',
+    title:
+      '전세사기 방지 필수 체크리스트 | 계약 전 확인, 특약 작성, 보증보험까지',
+    thumbnailUrl: '/images/article/article_thumbnail.png',
+    publishedAt: '2026-03-05T10:00:00Z',
+    authorName: '에디터 샐리',
+    bookmarkedAt: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(),
+  },
+  {
+    id: 'bookmark-2',
+    articleId: 'article-2026-003',
+    title: '계약서 도장 찍기 1분 전! - 내 보증금 지키는 마법의 특약',
+    publishedAt: '2026-02-18T10:00:00Z',
+    authorName: '에디터 민준',
+    bookmarkedAt: new Date(Date.now() - 1000 * 60 * 60 * 18).toISOString(),
+  },
+  {
+    id: 'bookmark-3',
+    articleId: 'article-2026-006',
+    title: '연말정산 13월의 월급? - 놓치면 손해 보는 공제 항목 TOP 5',
+    publishedAt: '2026-01-22T10:00:00Z',
+    authorName: '에디터 지수',
+    bookmarkedAt: new Date(Date.now() - 1000 * 60 * 60 * 30).toISOString(),
+  },
+  {
+    id: 'bookmark-4',
+    articleId: 'article-2026-008',
+    title: '주린이를 위한 포트폴리오 가이드 - 분산 투자의 핵심 노하우',
+    publishedAt: '2026-01-08T09:00:00Z',
+    authorName: '에디터 현우',
+    bookmarkedAt: new Date(Date.now() - 1000 * 60 * 60 * 42).toISOString(),
+  },
+];

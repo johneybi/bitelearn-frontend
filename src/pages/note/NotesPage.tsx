@@ -7,7 +7,7 @@ import useNotesCategorySearchParam from '@/hooks/useNotesCategorySearchParam';
 
 import { useIncorrectNotesQuery } from '@/api/notes/notes.query';
 import { LEARNING_NAVIGATION } from '@/constants/learningNavigation';
-import { getMockBookmarkedArticles } from '@/mock/bookmarkedArticle';
+import { mockBookmarkedArticles } from '@/mock/bookmarkedArticle';
 
 export type NoteTab = 'incorrect' | 'bookmark';
 
@@ -28,7 +28,7 @@ export default function NotesPage() {
     category: selectedCategory,
     enabled: activeTab === 'incorrect',
   });
-  const bookmarkArticles = getMockBookmarkedArticles();
+  const bookmarkArticles = mockBookmarkedArticles;
 
   // 요약 카드에는 첫 페이지 응답의 집계 값 사용
   const totalNoteCount = incorrectNotesFeed.data?.pages[0]?.totalCount ?? 0;

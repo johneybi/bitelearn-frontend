@@ -1,22 +1,12 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Button } from '@/components/ui/button';
 import ArticleCard from '@/components/features/article/ArticleCard';
 import ArticleHeroCard from '@/components/features/article/ArticleHeroCard';
-import {
-  ARTICLE_CATEGORIES,
-  getMockArticleListItems,
-  type ArticleCategory,
-} from '@/mock/article';
-import { cn } from '@/lib/utils';
+import { mockArticleCards } from '@/mock/article';
 
 export default function ArticleListPage() {
   const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] =
-    useState<ArticleCategory>('전체');
-
-  const articles = getMockArticleListItems(selectedCategory);
+  const articles = mockArticleCards;
 
   const [heroArticle, ...otherArticles] = articles;
 
@@ -40,29 +30,6 @@ export default function ArticleListPage() {
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-50 text-xl shadow-inner">
             ✨
           </div>
-        </div>
-
-        <div className="hide-scrollbar -mx-2 flex gap-2 overflow-x-auto px-2">
-          {ARTICLE_CATEGORIES.map((category) => {
-            const isActive = selectedCategory === category;
-
-            return (
-              <Button
-                key={category}
-                type="button"
-                variant={isActive ? 'default' : 'secondary'}
-                onClick={() => setSelectedCategory(category)}
-                className={cn(
-                  'h-9 whitespace-nowrap rounded-full px-5 text-xs font-bold transition-all',
-                  isActive
-                    ? 'bg-slate-900 text-white shadow-md'
-                    : 'border-none bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600'
-                )}
-              >
-                {category}
-              </Button>
-            );
-          })}
         </div>
       </header>
 

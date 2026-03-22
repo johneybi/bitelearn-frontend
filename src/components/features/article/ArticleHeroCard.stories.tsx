@@ -7,13 +7,11 @@ import ArticleHeroCard from './ArticleHeroCard';
 
 const featuredArticle: ArticleDetail = {
   articleId: 'article-story-hero',
-  category: '부동산/주거',
   title:
     '전세사기 방지 필수 체크리스트 | 계약 전 확인, 특약 작성, 보증보험까지',
   thumbnailUrl: '/images/article/article_thumbnail.png',
   author: {
     name: '에디터 샐리',
-    role: '주거 안전 어드바이저',
     profileImageUrl: '/images/article/article_author_avatar.png',
   },
   publishedAt: '2026-03-05T10:00:00Z',
@@ -29,11 +27,6 @@ const featuredArticle: ArticleDetail = {
       content: '대표 카드 레이아웃을 보기 위한 스토리북용 예시 데이터입니다.',
     },
   ],
-  callToAction: {
-    text: '내 전세집 안전도 진단하기',
-    url: '/safety-check',
-    style: 'primary',
-  },
 };
 
 const meta = {
