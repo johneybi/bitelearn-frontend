@@ -92,7 +92,7 @@ export default function LearningRoadmapPage() {
   const roadmapHeight = getRoadmapLayoutHeight(count);
 
   return (
-    <div className="flex h-full flex-col bg-white text-slate-900">
+    <div className="flex h-full flex-col bg-slate-50 text-slate-900">
       <div className="shrink-0 border-b border-slate-100 bg-white px-4">
         <div className="flex h-14 items-center">
           <Button
@@ -134,6 +134,7 @@ export default function LearningRoadmapPage() {
                   <StageNode
                     chapter={chapter}
                     index={index}
+                    categoryCode={category.code}
                     onSelect={() => handleSelectChapter(chapter.chapterId)}
                   />
                 </div>
