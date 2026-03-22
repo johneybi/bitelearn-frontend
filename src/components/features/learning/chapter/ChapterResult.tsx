@@ -101,7 +101,7 @@ function CelebrationParticles() {
             left: coin.left,
           }}
         >
-          <span className="tossface">🪙</span>
+          <span>🪙</span>
         </motion.div>
       ))}
     </div>

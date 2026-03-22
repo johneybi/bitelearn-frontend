@@ -4,7 +4,7 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     fontFamily: {
-      sans: ['"A2Z"', 'sans-serif'],
+      sans: ['"A2Z"', '"Tossface"', 'sans-serif'],
       serif: ['var(--family-serif)', 'serif'],
     },
     extend: {

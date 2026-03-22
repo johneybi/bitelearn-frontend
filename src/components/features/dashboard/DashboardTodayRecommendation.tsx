@@ -13,7 +13,7 @@ export default function DashboardTodayRecommendation({
   return (
     <section>
       <div className="mb-4 flex items-end gap-2">
-        <span className="tossface">🌟</span>
+        <span>🌟</span>
         <h3 className="text-lg font-bold leading-7 text-slate-900">
           오늘의 추천 학습
         </h3>

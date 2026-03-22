@@ -13,7 +13,7 @@ export default function DashboardArticle({ articles }: DashboardArticleProps) {
   return (
     <section>
       <div className="mb-4 flex items-end gap-2">
-        <span className="tossface">📰</span>
+        <span>📰</span>
         <h3 className="text-lg font-bold leading-7 text-slate-900">
           유용한 지식 아티클
         </h3>
