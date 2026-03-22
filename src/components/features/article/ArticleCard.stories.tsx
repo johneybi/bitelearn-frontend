@@ -2,6 +2,7 @@ import type { ComponentProps } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { MemoryRouter } from 'react-router-dom';
 
+import articleHeroThumbnail from '@/assets/article/hero/thumbnail_article_2026_001.png';
 import type { ArticleCardItem } from '@/mock/article';
 
 import ArticleCard from './ArticleCard';
@@ -9,7 +10,7 @@ import ArticleCard from './ArticleCard';
 const sampleArticle: ArticleCardItem = {
   articleId: 'article-story-001',
   title: '신용점수 800 만들기 - 지금 당장 할 수 있는 5가지',
-  thumbnailUrl: '/images/article/article_thumbnail.png',
+  thumbnailUrl: articleHeroThumbnail,
   authorName: '에디터 민준',
   publishedAt: '2026-03-10T09:00:00Z',
 };

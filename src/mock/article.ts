@@ -1,3 +1,15 @@
+import articleHeroThumbnail from '@/assets/article/hero/thumbnail_article_2026_001.png';
+import articleAuthorSallyAvatar from '@/assets/article/hero/avatar_sally.png';
+import articleJeonseDocumentImage from '@/assets/article/hero/content_jeonse_document.png';
+import articleThumbnail002 from '@/assets/article/thumbnail/thumbnail_article_2026_002.png';
+import articleThumbnail003 from '@/assets/article/thumbnail/thumbnail_article_2026_003.png';
+import articleThumbnail004 from '@/assets/article/thumbnail/thumbnail_article_2026_004.png';
+import articleThumbnail005 from '@/assets/article/thumbnail/thumbnail_article_2026_005.png';
+import articleThumbnail006 from '@/assets/article/thumbnail/thumbnail_article_2026_006.png';
+import articleThumbnail007 from '@/assets/article/thumbnail/thumbnail_article_2026_007.png';
+import articleThumbnail008 from '@/assets/article/thumbnail/thumbnail_article_2026_008.png';
+import articleThumbnail009 from '@/assets/article/thumbnail/thumbnail_article_2026_009.png';
+
 export type ContentBlock =
   | {
       /** 일반 텍스트 문단 */
@@ -79,10 +91,10 @@ export const mockArticles: ArticleDetail[] = [
     articleId: 'article-2026-001',
     title:
       '전세사기 방지 필수 체크리스트 | 계약 전 확인, 특약 작성, 보증보험까지',
-    thumbnailUrl: '/images/article/article_thumbnail.png',
+    thumbnailUrl: articleHeroThumbnail,
     author: {
       name: '에디터 샐리',
-      profileImageUrl: '/images/article/article_author_avatar.png',
+      profileImageUrl: articleAuthorSallyAvatar,
     },
     publishedAt: '2026-03-05T10:00:00Z',
     viewCount: 12504,
@@ -113,7 +125,7 @@ export const mockArticles: ArticleDetail[] = [
       },
       {
         type: 'image',
-        url: '/images/article/article_content_doc.png',
+        url: articleJeonseDocumentImage,
         altText: '복잡한 서류를 보며 고민하는 사람의 모습',
         caption: '어려운 부동산 서류, 꼼꼼히 확인하는 것만이 정답일까요?',
       },
@@ -136,6 +148,7 @@ export const mockArticles: ArticleDetail[] = [
   {
     articleId: 'article-2026-002',
     title: '등기부등본 혼자 읽는 법 - 갑구·을구·표제부 완벽 정리',
+    thumbnailUrl: articleThumbnail002,
     author: {
       name: '에디터 도윤',
     },
@@ -144,6 +157,7 @@ export const mockArticles: ArticleDetail[] = [
   {
     articleId: 'article-2026-003',
     title: '계약서 도장 찍기 1분 전! - 내 보증금 지키는 마법의 특약',
+    thumbnailUrl: articleThumbnail003,
     author: {
       name: '에디터 서윤',
     },
@@ -152,6 +166,7 @@ export const mockArticles: ArticleDetail[] = [
   {
     articleId: 'article-2026-004',
     title: '내 연봉에 맞는 대출 한도 - DSR 계산기로 미리 확인하기',
+    thumbnailUrl: articleThumbnail004,
     author: {
       name: '에디터 지안',
     },
@@ -160,6 +175,7 @@ export const mockArticles: ArticleDetail[] = [
   {
     articleId: 'article-2026-005',
     title: '권고사직 vs 자진퇴사 - 실업급여 받을 수 있는 결정적 차이',
+    thumbnailUrl: articleThumbnail005,
     author: {
       name: '에디터 하린',
     },
@@ -168,6 +184,7 @@ export const mockArticles: ArticleDetail[] = [
   {
     articleId: 'article-2026-006',
     title: '연말정산 13월의 월급? - 놓치면 손해 보는 공제 항목 TOP 5',
+    thumbnailUrl: articleThumbnail006,
     author: {
       name: '에디터 유진',
     },
@@ -176,18 +193,21 @@ export const mockArticles: ArticleDetail[] = [
   {
     articleId: 'article-2026-007',
     title: '이직할 때 연봉 협상 기술 - 내 가치를 제대로 증명하는 법',
+    thumbnailUrl: articleThumbnail007,
     author: { name: '에디터 태윤' },
     publishedAt: '2026-01-15T09:00:00Z',
   },
   {
     articleId: 'article-2026-008',
     title: '주린이를 위한 포트폴리오 가이드 - 분산 투자의 핵심 노하우',
+    thumbnailUrl: articleThumbnail008,
     author: { name: '에디터 채원' },
     publishedAt: '2026-01-08T09:00:00Z',
   },
   {
     articleId: 'article-2026-009',
     title: '분할 매수의 기술 - 변동성 심한 장에서 살아남는 법',
+    thumbnailUrl: articleThumbnail009,
     author: { name: '에디터 시우' },
     publishedAt: '2025-12-30T09:00:00Z',
   },

@@ -1,6 +1,7 @@
 import type { ComponentProps } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import articleHeroThumbnail from '@/assets/article/hero/thumbnail_article_2026_001.png';
 import type { ArticleCardItem } from '@/mock/article';
 
 import ArticleHeroCard from './ArticleHeroCard';
@@ -9,7 +10,7 @@ const featuredArticle: ArticleCardItem = {
   articleId: 'article-story-hero',
   title:
     '전세사기 방지 필수 체크리스트 | 계약 전 확인, 특약 작성, 보증보험까지',
-  thumbnailUrl: '/images/article/article_thumbnail.png',
+  thumbnailUrl: articleHeroThumbnail,
   authorName: '에디터 샐리',
   publishedAt: '2026-03-05T10:00:00Z',
 };
