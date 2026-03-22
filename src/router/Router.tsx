@@ -16,6 +16,7 @@ import LearningPage from '@/pages/learning/LearningPage';
 import NotesPage from '@/pages/note/NotesPage';
 import IncorrectNoteDetailPage from '@/pages/note/IncorrectNoteDetailPage';
 import MyPage from '@/pages/MyPage';
+import NicknamePage from '@/pages/NicknamePage';
 import ArticleListPage from '@/pages/article/ArticleListPage';
 import ArticleDetailPage from '@/pages/article/ArticleDetailPage';
 import LearningRoadmapPage from '@/pages/learning/LearningRoadmapPage';
@@ -43,6 +44,7 @@ export default function Router() {
               <Route path="/notes" element={<NotesPage />} />
               <Route path="/mypage" element={<MyPage />} />
             </Route>
+            <Route path="/mypage/nickname" element={<NicknamePage />} />
             <Route
               path="/learning/:categoryId/:chapterId"
               element={<LearningChapterPage />}
