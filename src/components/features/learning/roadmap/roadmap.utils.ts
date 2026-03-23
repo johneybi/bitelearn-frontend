@@ -31,5 +31,9 @@ export function getRoadmapOffset(index: number) {
 
 export function getRoadmapLayoutHeight(count: number) {
   const TEXT_H = 72;
+  if (count <= 0) {
+    return HALF_BTN * 2 + TEXT_H;
+  }
+
   return HALF_BTN + (count - 1) * STEP_Y + HALF_BTN + TEXT_H;
 }
