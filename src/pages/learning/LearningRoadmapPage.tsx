@@ -6,12 +6,14 @@ import { getLearningChapters } from '@/api/learning/learning.api';
 import type { ChapterSummaryDto } from '@/api/learning/learning.types';
 import AppLoading from '@/components/common/AppLoading';
 import StageNode from '@/components/features/learning/roadmap/StageNode';
+import RoadmapDecoration from '@/components/features/learning/roadmap/RoadmapDecoration';
 import { Button } from '@/components/ui/button';
 import RoadmapCurve from '@/components/features/learning/roadmap/RoadmapCurve';
 import {
   getRoadmapLayoutHeight,
   getRoadmapOffset,
   STEP_Y,
+  HALF_BTN,
 } from '@/components/features/learning/roadmap/roadmap.utils';
 import { getCategoryMetaByRouteId } from '@/constants/learningNavigation';
 import { logError } from '@/lib/logError';
@@ -94,8 +96,19 @@ export default function LearningRoadmapPage() {
   const roadmapHeight = getRoadmapLayoutHeight(count);
 
   return (
-    <div className="flex h-full flex-col bg-white text-slate-900">
-      <div className="shrink-0 border-b border-slate-100 bg-white px-4">
+    <div className="relative isolate flex h-full flex-col overflow-hidden">
+      {/* 
+        로드맵 배경 이미지 레이어 
+        - pointer-events-none: 클릭 간섭 방지
+        - -z-10: Stacking Context에서 최하단(배경) 배치 (블렌드 모드 버그 방지)
+        - bg-[length:auto_100%]: 비율 유지하며 "세로 100% 길이"에 딱 맞게 꽉 채움 (또는 bg-cover 혼용 가능)
+      */}
+      <div 
+        className="absolute inset-0 -z-10 pointer-events-none bg-[length:auto_100%] bg-top bg-no-repeat"
+        style={{ backgroundImage: "url('/assets/roadmap-bg.png')" }}
+      />
+
+      <div className="relative z-10 shrink-0 border-b border-slate-100 bg-white px-4">
         <div className="flex h-14 items-center">
           <Button
             variant="ghost"
@@ -114,7 +127,7 @@ export default function LearningRoadmapPage() {
         </div>
       </div>
 
-      <section className="hide-scrollbar flex-1 overflow-y-auto px-6 pb-10 pt-10">
+      <section className="relative flex-1 overflow-y-auto px-6 pb-10 pt-10 hide-scrollbar">
         <div
           className="relative mx-auto w-full"
           style={{ height: roadmapHeight }}
@@ -143,10 +156,60 @@ export default function LearningRoadmapPage() {
                   <StageNode
                     chapter={chapter}
                     index={index}
+                    categoryCode={category.code}
                     onSelect={() => handleSelectChapter(chapter.chapterId)}
                   />
                 </div>
               ))}
+
+              {/* 로드맵 장식 캐릭터
+                피그마 기준 각 decoration center Y를 노드 center 기준 오프셋으로 환산:
+                  mungmung  : 노드0 center - 5
+                  house     : 노드0 center + 141
+                  tree(left): 노드1 center + 49
+                  bulldog   : 노드2 center + 37
+                  tree(right): 노드3 center + 72
+              */}
+              {count > 0 && (
+                <RoadmapDecoration
+                  type="mungmung"
+                  anchorY={0 * STEP_Y + HALF_BTN - 5}
+                  side="right"
+                  sideOffset={-24}
+                />
+              )}
+              {count > 0 && (
+                <RoadmapDecoration
+                  type="house"
+                  anchorY={0 * STEP_Y + HALF_BTN + 141}
+                  side="right"
+                  sideOffset={-50}
+                />
+              )}
+              {count > 1 && (
+                <RoadmapDecoration
+                  type="tree"
+                  anchorY={1 * STEP_Y + HALF_BTN + 49}
+                  side="left"
+                  sideOffset={-40}
+                />
+              )}
+              {count > 2 && (
+                <RoadmapDecoration
+                  type="bulldog"
+                  anchorY={2 * STEP_Y + HALF_BTN + 37}
+                  side="left"
+                  sideOffset={-29}
+                />
+              )}
+              {count > 3 && (
+                <RoadmapDecoration
+                  type="tree"
+                  anchorY={3 * STEP_Y + HALF_BTN + 72}
+                  side="right"
+                  sideOffset={-59}
+                />
+              )}
             </>
           )}
 

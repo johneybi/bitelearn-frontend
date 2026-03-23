@@ -166,3 +166,55 @@
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* ==========================================================================
+   Glass Label Effect
+   — ① backdrop-filter blur + saturate
+   — ② Noise Texture via SVG feTurbulence (background layer)
+   — ③ Inner Top Glow (radial-gradient background layer)
+   — ④ Gradient-ish border (rgba border, no mask-composite)
+   — ⑦ Box shadow: outer float + inset top light + inset bottom dark
+   ========================================================================== */
+
+/* 진행중 / 학습가능 상태 (opacity 높게) */
+.glass-label {
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+
+  background:
+    /* ③ Inner Top Glow */
+    radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.30) 0%, transparent 60%),
+    /* ② Noise Texture */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"),
+    /* ① Base glass tint */
+    rgba(255, 255, 255, 0.82);
+
+  border: 1px solid rgba(255, 255, 255, 0.50);
+
+  /* ⑦ outer float shadow + inset top glow + inset bottom dark line */
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.70),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* 완료 / 잠김 상태 (opacity 낮게, 더 투명하게) */
+.glass-label-dim {
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+
+  background:
+    /* ③ Inner Top Glow (더 약하게) */
+    radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.18) 0%, transparent 55%),
+    /* ② Noise Texture */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"),
+    /* ① Base glass tint (더 투명하게) */
+    rgba(255, 255, 255, 0.52);
+
+  border: 1px solid rgba(255, 255, 255, 0.30);
+
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.50),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+}
