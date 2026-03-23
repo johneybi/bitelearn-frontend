@@ -1,69 +1,174 @@
-import { ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight, ChevronUp } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import type { CategoryChapters } from '@/mock/chapter';
+import TextBadge from '@/components/common/TextBadge';
+import type { MockTopicSummary } from '@/mock/learning';
 
-type CategoryCardProps = {
-  cat: CategoryChapters;
-  onSelect: () => void;
+const TOPIC_ICONS: Record<string, string> = {
+  jeonse: '🏦',
+  'monthly-rent': '💸',
+  buying: '🏢',
+  salary: '💵',
+  credit: '💳',
+  employment: '🧑‍💼',
+  'salary-negotiation': '🤝',
+  'year-end-tax': '🧾',
+  'income-tax': '📊',
+  etf: '📈',
+  stock: '📉',
+  pension: '🏝️',
 };
 
-export default function CategoryCard({ cat, onSelect }: CategoryCardProps) {
-  const progress = Math.round(
-    (cat.completedChapters / cat.totalChapters) * 100
-  );
-  const isComplete = cat.completedChapters === cat.totalChapters;
+type TopicRowProps = {
+  topic: MockTopicSummary;
+  onSelect: (topicId: string) => void;
+};
+
+function TopicRow({ topic, onSelect }: TopicRowProps) {
+  const progressedCount = topic.chapters.filter(
+    (chapter) => chapter.status !== 'READY'
+  ).length;
+  const totalCount = topic.chapters.length;
+  const hasStarted = progressedCount > 0;
+  const isComplete = totalCount > 0 && progressedCount === totalCount;
 
   return (
-    <Button
-      variant="outline"
-      onClick={onSelect}
-      className="flex h-auto w-full flex-col items-start gap-6 rounded-[24px] border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-slate-300 hover:bg-white active:scale-[0.98]"
+    <button
+      type="button"
+      onClick={() => onSelect(topic.topicId)}
+      className="flex w-full items-center gap-1 px-0 pb-5 pt-3 text-left"
     >
-      <div className="flex w-full items-start justify-between">
-        <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-slate-50 text-3xl">
-            {cat.emoji}
-          </div>
+      <span className="flex h-[22px] w-[22px] shrink-0 items-center justify-center text-[18px] leading-none">
+        {TOPIC_ICONS[topic.topicId] ?? '•'}
+      </span>
 
-          <div className="text-left">
-            <h3 className="text-lg font-bold leading-tight text-slate-900">
-              {cat.categoryName}
-            </h3>
-            <p className="mt-1 text-sm font-medium text-slate-500">
-              {cat.tagline}
-            </p>
-          </div>
+      <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
+        <div className="text-base font-semibold leading-6 text-foreground">
+          {topic.topicName}
         </div>
 
-        {isComplete && (
-          <div className="rounded-md bg-slate-900 px-2 py-0.5 text-xs font-bold text-white">
-            완료
-          </div>
-        )}
-      </div>
-
-      <div className="w-full">
-        <div className="mb-2 flex items-end justify-between px-1">
-          <span className="text-xs font-bold text-slate-400">
-            {cat.completedChapters} / {cat.totalChapters} 챕터 완료
-          </span>
-          <span className="text-sm font-bold text-slate-900">{progress}%</span>
-        </div>
-
-        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-          <div
-            className="h-full rounded-full bg-slate-900 transition-all duration-300"
-            style={{ width: `${progress}%` }}
+        <div className="flex items-center gap-3.5">
+          {hasStarted && (
+            <TextBadge
+              variant={isComplete ? 'default' : 'primary'}
+              className="px-2.5 py-1.5"
+            >
+              {`${progressedCount}/${totalCount}`}
+            </TextBadge>
+          )}
+          <ChevronRight
+            size={24}
+            strokeWidth={1.75}
+            className="text-slate-600"
           />
         </div>
       </div>
+    </button>
+  );
+}
 
-      <div className="flex w-full items-center justify-center border-t border-slate-50 pt-2">
-        <span className="flex items-center gap-1 text-xs font-bold text-slate-300">
-          자세히 보기 <ChevronRight size={14} />
-        </span>
-      </div>
-    </Button>
+type CategoryCardProps = {
+  categoryId: string;
+  categoryName: string;
+  categoryTagline: string;
+  categoryIconSrc: string;
+  progress: number;
+  topics: MockTopicSummary[];
+  isExpanded: boolean;
+  onToggle: () => void;
+  onSelectTopic: (topicId: string) => void;
+};
+
+export default function CategoryCard({
+  categoryId,
+  categoryName,
+  categoryTagline,
+  categoryIconSrc,
+  progress,
+  topics,
+  isExpanded,
+  onToggle,
+  onSelectTopic,
+}: CategoryCardProps) {
+  return (
+    <div className="overflow-hidden rounded-2xl bg-card shadow-[0_12px_16px_rgba(237,238,246,1)]">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="w-full px-2 pt-2 text-left"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="h-[68px] w-[68px] shrink-0 overflow-hidden">
+              <img
+                src={categoryIconSrc}
+                alt={categoryName}
+                className="h-full w-full object-contain"
+              />
+            </div>
+
+            <div className="flex flex-col gap-0.5">
+              <h3 className="text-lg font-semibold leading-7 text-foreground">
+                {categoryName}
+              </h3>
+              <p className="text-sm font-medium leading-5 text-slate-400">
+                {categoryTagline}
+              </p>
+            </div>
+          </div>
+
+          {!isExpanded && (
+            <div className="pr-2 text-slate-600">
+              <ChevronDown size={32} strokeWidth={1.5} />
+            </div>
+          )}
+        </div>
+
+        {progress > 0 && (
+          <div className="px-3 pb-5 pt-1">
+            <div className="mb-1 flex items-center justify-between">
+              <span className="text-[11px] font-medium leading-5 text-slate-400">
+                학습진행률
+              </span>
+              <span className="text-[11px] font-bold leading-5 text-slate-700">
+                {progress}%
+              </span>
+            </div>
+
+            <div className="h-[6px] overflow-hidden rounded-full bg-slate-100">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-orange-200 to-orange-400"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+        )}
+      </button>
+
+      {isExpanded && (
+        <div className="px-4 pb-4 pt-0">
+          <div className="px-0">
+            {topics.map((topic, index) => (
+              <div
+                key={`${categoryId}-${topic.topicId}`}
+                className={
+                  index !== topics.length - 1 ? 'border-b border-slate-100' : ''
+                }
+              >
+                <TopicRow topic={topic} onSelect={onSelectTopic} />
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={onToggle}
+              className="flex w-full items-center justify-center gap-1.5 pt-2 text-xs font-medium leading-4 text-slate-600"
+            >
+              <span className="pb-0.5">접기</span>
+              <ChevronUp size={18} strokeWidth={1.75} />
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

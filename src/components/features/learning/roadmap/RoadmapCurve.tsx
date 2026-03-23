@@ -35,17 +35,19 @@ export default function RoadmapCurve({
     >
       <path
         d={d}
-        stroke="#F8FAFC"
+        className="stroke-white/40"
         strokeWidth="16"
         strokeLinecap="round"
         strokeLinejoin="round"
+        fill="none"
       />
       <path
         d={d}
-        stroke="#E2E8F0"
+        className="stroke-white/60"
         strokeWidth="8"
         strokeLinecap="round"
         strokeLinejoin="round"
+        fill="none"
       />
     </svg>
   );

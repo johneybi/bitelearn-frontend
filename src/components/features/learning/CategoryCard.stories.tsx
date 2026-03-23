@@ -1,8 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { MOCK_CATEGORY_CHAPTERS } from '@/mock/chapter';
+import realEstateIcon from '@/assets/icons/category/real_estate.png';
+import { getMockLearningSummaryByCategory } from '@/mock/learning';
 
 import CategoryCard from './CategoryCard';
+
+const summaryByCategory = getMockLearningSummaryByCategory();
+const realEstateSummary = summaryByCategory['real-estate'];
+const total = realEstateSummary?.total ?? 0;
+const progressed = realEstateSummary?.progressed ?? 0;
+const progress = total > 0 ? Math.round((progressed / total) * 100) : 0;
 
 const meta = {
   title: 'Learning/CategoryCard',
@@ -12,15 +19,25 @@ const meta = {
     layout: 'padded',
   },
   args: {
-    cat: MOCK_CATEGORY_CHAPTERS[0],
-    onSelect: () => {},
+    categoryId: 'real-estate',
+    categoryName: '부동산 · 주거',
+    categoryTagline: '내 보증금, 내가 지킨다',
+    categoryIconSrc: realEstateIcon,
+    progress,
+    topics: realEstateSummary?.topics ?? [],
+    isExpanded: false,
+    onToggle: () => {},
+    onSelectTopic: () => {},
   },
 } satisfies Meta<typeof CategoryCard>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const Collapsed: Story = {
+  args: {
+    isExpanded: false,
+  },
   render: (args) => (
     <div className="mx-auto w-full max-w-md">
       <CategoryCard {...args} />
@@ -28,16 +45,25 @@ export const Default: Story = {
   ),
 };
 
-export const Completed: Story = {
+export const Expanded: Story = {
+  args: {
+    isExpanded: true,
+  },
   render: (args) => (
     <div className="mx-auto w-full max-w-md">
       <CategoryCard {...args} />
     </div>
   ),
+};
+
+export const NoProgress: Story = {
   args: {
-    cat: {
-      ...MOCK_CATEGORY_CHAPTERS[0],
-      completedChapters: MOCK_CATEGORY_CHAPTERS[0].totalChapters,
-    },
+    progress: 0,
+    isExpanded: false,
   },
+  render: (args) => (
+    <div className="mx-auto w-full max-w-md">
+      <CategoryCard {...args} />
+    </div>
+  ),
 };

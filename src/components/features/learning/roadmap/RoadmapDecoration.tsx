@@ -64,14 +64,14 @@ const ANIM_PRESETS = {
    * 발을 pivot으로 좌우로 느긋하게 흔들림.
    */
   sway: {
-    keyframes:            [0, 2.5, 0, -2.5, 0],
-    duration:             4,
-    repeatDelay:          0.8,
-    charPivotFraction:    0.9,
-    charRotateRatio:      1.0,
-    charSkewRatio:        0,
-    shadowPivotFraction:  0.5,
-    shadowSkewRatio:      2.0,
+    keyframes: [0, 2.5, 0, -2.5, 0],
+    duration: 4,
+    repeatDelay: 0.8,
+    charPivotFraction: 0.9,
+    charRotateRatio: 1.0,
+    charSkewRatio: 0,
+    shadowPivotFraction: 0.5,
+    shadowSkewRatio: 2.0,
   },
 
   /**
@@ -80,14 +80,14 @@ const ANIM_PRESETS = {
    * 빈도 낮게 가끔 한 방향으로 휙 불었다가 천천히 제자리로.
    */
   wind: {
-    keyframes:            [0, 3, 3.5, 3, 0.5, 0],
-    duration:             2.5,
-    repeatDelay:          6,
-    charPivotFraction:    0.95,
-    charRotateRatio:      0,
-    charSkewRatio:        1.2,
-    shadowPivotFraction:  0.5,
-    shadowSkewRatio:      1.5,
+    keyframes: [0, 3, 3.5, 3, 0.5, 0],
+    duration: 2.5,
+    repeatDelay: 6,
+    charPivotFraction: 0.95,
+    charRotateRatio: 0,
+    charSkewRatio: 1.2,
+    shadowPivotFraction: 0.5,
+    shadowSkewRatio: 1.5,
   },
 } satisfies Record<string, AnimPreset>;
 
@@ -96,23 +96,71 @@ const ANIM_PRESETS = {
 const DECORATION_CONFIGS: Record<string, DecorationConfig> = {
   house: {
     containerSize: 180,
-    shadow: { src: '/assets/roadmap/house-shadow.png',    size: 176, offsetX: 4,   offsetY: 0   },
-    char:   { src: '/assets/roadmap/house-char.png',      size: 128, offsetX: 24,  offsetY: 26, opacity: 1   },
+    shadow: {
+      src: '/assets/roadmap/house-shadow.png',
+      size: 176,
+      offsetX: 4,
+      offsetY: 0,
+    },
+    char: {
+      src: '/assets/roadmap/house-char.png',
+      size: 128,
+      offsetX: 24,
+      offsetY: 26,
+      opacity: 1,
+    },
   },
   mungmung: {
     containerSize: 180,
-    shadow: { src: '/assets/roadmap/mungmung-shadow.png', size: 200, offsetX: -15, offsetY: -9  },
-    char:   { src: '/assets/roadmap/mungmung-char.png',   size: 168, offsetX: 12,  offsetY: -5, opacity: 0.9, flip: true, animation: 'sway' },
+    shadow: {
+      src: '/assets/roadmap/mungmung-shadow.png',
+      size: 200,
+      offsetX: -15,
+      offsetY: -9,
+    },
+    char: {
+      src: '/assets/roadmap/mungmung-char.png',
+      size: 168,
+      offsetX: 12,
+      offsetY: -5,
+      opacity: 0.9,
+      flip: true,
+      animation: 'sway',
+    },
   },
   bulldog: {
     containerSize: 180,
-    shadow: { src: '/assets/roadmap/mungmung-shadow.png', size: 200, offsetX: -11, offsetY: -12 },
-    char:   { src: '/assets/roadmap/bulldog-char.png',    size: 168, offsetX: 8,   offsetY: -10, opacity: 0.9, animation: 'sway' },
+    shadow: {
+      src: '/assets/roadmap/mungmung-shadow.png',
+      size: 200,
+      offsetX: -11,
+      offsetY: -12,
+    },
+    char: {
+      src: '/assets/roadmap/bulldog-char.png',
+      size: 168,
+      offsetX: 8,
+      offsetY: -10,
+      opacity: 0.9,
+      animation: 'sway',
+    },
   },
   tree: {
     containerSize: 180,
-    shadow: { src: '/assets/roadmap/tree-shadow.png',     size: 200, offsetX: -21, offsetY: -17 },
-    char:   { src: '/assets/roadmap/tree-char.png',       size: 128, offsetX: 23,  offsetY: -11, opacity: 0.8, animation: 'wind' },
+    shadow: {
+      src: '/assets/roadmap/tree-shadow.png',
+      size: 200,
+      offsetX: -21,
+      offsetY: -17,
+    },
+    char: {
+      src: '/assets/roadmap/tree-char.png',
+      size: 128,
+      offsetX: 23,
+      offsetY: -11,
+      opacity: 0.8,
+      animation: 'wind',
+    },
   },
 };
 
@@ -123,7 +171,7 @@ function FillImage({ src }: { src: string }) {
     <img
       alt=""
       src={src}
-      className="absolute inset-0 w-full h-full pointer-events-none"
+      className="pointer-events-none absolute inset-0 h-full w-full"
       style={{ objectFit: 'fill' }}
     />
   );
@@ -151,9 +199,9 @@ function AnimatedDecorationLayers({
     shadowSkewRatio,
   } = preset;
 
-  const rotateVal     = useMotionValue(0);
+  const rotateVal = useMotionValue(0);
   const charRotateVal = useTransform(rotateVal, (v) => v * charRotateRatio);
-  const charSkewVal   = useTransform(rotateVal, (v) => v * charSkewRatio);
+  const charSkewVal = useTransform(rotateVal, (v) => v * charSkewRatio);
   const shadowSkewVal = useTransform(rotateVal, (v) => v * shadowSkewRatio);
 
   useEffect(() => {
@@ -193,14 +241,14 @@ function AnimatedDecorationLayers({
   return (
     <>
       <motion.div
-        className="absolute pointer-events-none mix-blend-multiply"
+        className="pointer-events-none absolute mix-blend-multiply"
         style={shadowStyle}
       >
         <FillImage src={shadow.src} />
       </motion.div>
 
-      <motion.div className="absolute pointer-events-none" style={charStyle}>
-        <div className="w-full h-full" style={charInnerStyle}>
+      <motion.div className="pointer-events-none absolute" style={charStyle}>
+        <div className="h-full w-full" style={charInnerStyle}>
           <FillImage src={char.src} />
         </div>
       </motion.div>
@@ -235,11 +283,14 @@ function StaticDecorationLayers({
 
   return (
     <>
-      <div className="absolute pointer-events-none mix-blend-multiply" style={shadowStyle}>
+      <div
+        className="pointer-events-none absolute mix-blend-multiply"
+        style={shadowStyle}
+      >
         <FillImage src={shadow.src} />
       </div>
 
-      <div className="absolute pointer-events-none" style={charStyle}>
+      <div className="pointer-events-none absolute" style={charStyle}>
         <FillImage src={char.src} />
       </div>
     </>
@@ -258,7 +309,12 @@ type Props = {
   sideOffset?: number;
 };
 
-export default function RoadmapDecoration({ type, anchorY, side, sideOffset = -20 }: Props) {
+export default function RoadmapDecoration({
+  type,
+  anchorY,
+  side,
+  sideOffset = -20,
+}: Props) {
   const cfg = DECORATION_CONFIGS[type];
   if (!cfg) return null;
 
@@ -277,7 +333,7 @@ export default function RoadmapDecoration({ type, anchorY, side, sideOffset = -2
   const preset = char.animation ? ANIM_PRESETS[char.animation] : null;
 
   return (
-    <div className="absolute pointer-events-none" style={containerStyle}>
+    <div className="pointer-events-none absolute" style={containerStyle}>
       {preset ? (
         <AnimatedDecorationLayers shadow={shadow} char={char} preset={preset} />
       ) : (
